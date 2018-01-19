@@ -34,9 +34,13 @@
 
   function checkLoginState() {
     FB.getLoginStatus(function (response) {
-      $.post('/api/auth/facebook', {accessToken: response.authResponse.accessToken}, function (data) {
+
+        $.post('/api/auth/facebook', {accessToken: response.authResponse.accessToken}, function (data) {
         alert(JSON.stringify(data))
       })
+
+
+
     })
   }
 

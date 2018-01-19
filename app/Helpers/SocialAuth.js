@@ -16,9 +16,6 @@ module.exports = {
       json: true
     })
 
-
-    console.log(fetchProfile.body)
-
     if (!_.has(fetchProfile.body, 'id', 'name', 'email')) throw new Error('Not enough data inside facebook response')
 
     return {

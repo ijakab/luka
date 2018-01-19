@@ -15,6 +15,8 @@ class AuthController {
 
     const socialUser = await SocialAuth[params.network](request.input('accessToken'))
 
+    // todo check if user is existing, connect profiles and give JWT token...
+
     return socialUser
 
   }
