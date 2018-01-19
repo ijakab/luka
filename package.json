@@ -1,0 +1,28 @@
+{
+  "name": "HomeHapp-API",
+  "version": "0.0.1",
+  "description": "New HomeHapp API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node ace test"
+  },
+  "author": "hlozancic",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@adonisjs/ace": "^4.0.7",
+    "@adonisjs/auth": "^2.0.10",
+    "@adonisjs/bodyparser": "^2.0.0",
+    "@adonisjs/cors": "^1.0.3",
+    "@adonisjs/fold": "^4.0.5",
+    "@adonisjs/framework": "^4.0.28",
+    "@adonisjs/ignitor": "^1.0.14",
+    "@adonisjs/lucid": "^4.0.24",
+    "got": "^8.0.2"
+  },
+  "devDependencies": {},
+  "autoload": {
+    "App": "./app"
+  }
+}
