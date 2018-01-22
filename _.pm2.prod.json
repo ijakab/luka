@@ -1,0 +1,17 @@
+/* _____________________________________________________________________________
+this file is just a placeholder to be c/p to pm2.prod.json which is git ignored
+ _____________________________________________________________________________ */
+{
+  "apps": [
+    {
+      "name": "80 Adonis starter - PRODUCTION",
+      "script": "app.js",
+      "watch": false,
+      "log_date_format": "YYYY-MM-DD HH:mm",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 80
+      }
+    }
+  ]
+}
