@@ -33,7 +33,10 @@
     "header": {
       "filename": "apidoc.md"
     },
-    "order": []
+    "order": [
+      "Auth",
+      "User"
+    ]
   },
   "autoload": {
     "App": "./app"
