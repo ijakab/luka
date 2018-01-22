@@ -2,8 +2,8 @@
 public/docs
 
 # The development sqlite file
+database/test.sqlite
 database/development.sqlite
-database/adonis.sqlite
 
 # Node modules
 node_modules
