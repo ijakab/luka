@@ -47,6 +47,7 @@ const namedMiddleware = {
 |
 */
 const serverMiddleware = [
+  'App/Middleware/Server/StaticAuth',
   'Adonis/Middleware/Static',
   'Adonis/Middleware/Cors'
 ]

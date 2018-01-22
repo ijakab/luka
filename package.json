@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "docs": "rimraf public/docs && apidoc -i start/ -o public/docs",
     "test": "node ace test"
   },
   "author": "hlozancic",
@@ -23,7 +24,16 @@
     "got": "^8.0.2"
   },
   "devDependencies": {
+    "apidoc": "^0.17.6",
+    "rimraf": "^2.6.2",
     "sqlite3": "^3.1.13"
+  },
+  "apidoc": {
+    "description": "",
+    "header": {
+      "filename": "apidoc.md"
+    },
+    "order": []
   },
   "autoload": {
     "App": "./app"

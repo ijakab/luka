@@ -74,5 +74,12 @@ module.exports = {
       secret: Env.get('APP_KEY'),
       expiresIn: '15 minutes'
     }
+  },
+
+  staticAuth: {
+    realm: 'API Documentation',
+    username: 'admin',
+    password: 'admin123',
+    protectedUrls: ['/docs']
   }
 }
