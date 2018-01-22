@@ -1,4 +1,6 @@
-# ![](project-image.png)
+![Adonis starter](project-image.png)
+
+# Adonis starter
 
 Jumpstart for a new backend project based on AdonisJS framework.
 
@@ -19,7 +21,7 @@ Just fork this project and use it as you would use any other AdonisJS project
 - Built-in language translation for response messages *
 - Auto served public folder via static serve and middleware for basic auth for static files
 - Auto documentation builder script using apidoc
-- Default pm2 config for production purposes *
+- Default basic pm2 config for staging/production purposes
 - Basic unit test logic bootstrap *
 
 ## package.json scripts
