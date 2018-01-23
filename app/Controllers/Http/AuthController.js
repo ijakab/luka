@@ -9,7 +9,7 @@ const Hash = use('Hash')
 
 class AuthController {
 
-  async register({request, response}) {
+  async register({request, response, auth}) {
 
     const allParams = sanitize(request.post(), {
       email: 'normalize_email:!rd'
@@ -23,14 +23,11 @@ class AuthController {
       passwordRepeat: 'required|same:password',
     })
 
-    // todo refactor this when you catch password match error
-    if (validation.fails()) {
-      console.log(validation)
-      return response.badRequest()
-    }
+    if (validation.fails()) return response.badRequest()
 
     // first we check if this email already exists in another account
-    const existingAccount = Account.findBy('email', allParams.email)
+    const existingAccount = await Account.findBy('email', allParams.email)
+
     // also try to fetch user profile of found account if any
     let user = existingAccount && await existingAccount.user().fetch()
 
@@ -40,7 +37,7 @@ class AuthController {
     // if user is not existing, check username and create new user
     if (!user) {
 
-      const existingUsername = User.findBy('username', allParams.username).getCount()
+      const existingUsername = await User.query().where('username', allParams.username).getCount()
 
       if (existingUsername) return response.badRequest('User with this username already exists') // todo translate
 
@@ -55,6 +52,7 @@ class AuthController {
     await Account.create({
       user_id: user.id,
       type: 'main',
+      email: allParams.email,
       password: allParams.password
     })
 
@@ -108,7 +106,6 @@ class AuthController {
     const accessToken = request.input('accessToken')
 
     const socialUser = await SocialAuth[params.network](accessToken)
-
 
 
     // todo check if user is existing, connect profiles and give JWT token...

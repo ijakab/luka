@@ -13,6 +13,7 @@ class UserSchema extends Schema {
       table.string('primaryEmail', 254).notNullable().unique()
 
       table.string('fullName', 80).notNullable()
+      table.date('dob', 80)
       table.string('avatar', 80)
       table.timestamps()
     })
