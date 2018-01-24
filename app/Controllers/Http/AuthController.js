@@ -7,6 +7,8 @@ const SocialAuth = use('App/Helpers/SocialAuth')
 const {validate, sanitize} = use('Validator')
 const Hash = use('Hash')
 
+const _ = use('lodash')
+
 class AuthController {
 
   async register({request, response, auth}) {
@@ -17,7 +19,7 @@ class AuthController {
 
     const validation = await validate(allParams, {
       fullName: 'required',
-      username: 'required',
+      username: 'required|string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$', // allow alpha numeric + _- from 3 to 20 chars
       email: 'required|email',
       password: 'required|min:6',
       passwordRepeat: 'required|same:password',
@@ -71,25 +73,31 @@ class AuthController {
 
     const validation = await validate(allParams, {
       username: 'required_without_any:email',
-      email: 'required_without_any:username',
+      email: 'required_without_any:username|email',
       password: 'required_with_any:username,email'
     })
 
     if (validation.fails()) return response.badRequest()
 
-    // find user by username or email
+    // find user by username or email, and get his main account
     const user = await User.query()
       .where({
-        [allParams.username ? 'username' : 'email']: allParams.username || allParams.email
+        [allParams.username ? 'username' : 'primaryEmail']: allParams.username || allParams.email
+      })
+      .with('accounts', (builder) => {
+        builder.where('type', 'main')
       })
       .first()
 
-    if (!user) return response.notFound()
+    // get main account info
+    const userAccount = user && _.first(user.getRelated('accounts').rows)
+
+    if (!userAccount) return response.notFound()
 
     // check pass
-    const validPass = await Hash.verify(allParams.password, user.password)
+    const validPass = await Hash.verify(allParams.password, userAccount.password)
 
-    if (!validPass) return response.badRequest() // todo add language translations
+    if (!validPass) return response.badRequest('Invalid password') // todo add language translations
 
     // generate tokens
     const token = await auth
@@ -130,6 +138,3 @@ class AuthController {
 
 
 module.exports = AuthController
-
-
-

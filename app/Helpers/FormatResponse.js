@@ -3,9 +3,9 @@ const Env = use('Env')
 const debug = Env.get('DEBUG', false)
 const node_env = Env.get('NODE_ENV', 'development')
 
-module.exports = function formatResponse(data = '', options = {}) {
+module.exports = function formatResponse(data, options = {}) {
 
-  data = data.toJSON ? data.toJSON() : data
+  data = (data && data.toJSON) ? data.toJSON() : (data || '')
   options.defaultMsg = options.defaultMsg || 'Server response'
 
   let payload = {

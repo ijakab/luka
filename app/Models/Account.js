@@ -9,6 +9,10 @@ class Account extends Model {
     this.addHook('beforeCreate', 'Account.hashPassword')
   }
 
+  user() {
+    return this.belongsTo('App/Models/User')
+  }
+
   static get hidden () {
     return ['password']
   }

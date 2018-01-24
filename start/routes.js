@@ -11,8 +11,3 @@ function requireRoutes(group) {
 
 requireRoutes('Auth').prefix('api/auth')
 
-
-Route.get('getToken', 'AuthController.getToken')
-Route.get('test', 'AuthController.test').middleware('auth')
-
-

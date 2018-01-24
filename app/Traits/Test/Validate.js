@@ -5,9 +5,16 @@ module.exports = function (suite) {
 
     return async function (forValidation, rules) {
 
-      const validation = await validate(forValidation, rules)
+      // create array from it so we allow multiple to be validated as one
+      forValidation = Array.isArray(forValidation) ? forValidation : [forValidation]
 
-      if (validation.fails()) throw new Error('Validation failed!')
+      for (let validationObj of forValidation) {
+
+        const validation = await validate(validationObj, rules)
+
+        if (validation.fails()) throw new Error('Validation failed!')
+
+      }
 
     }
   })
