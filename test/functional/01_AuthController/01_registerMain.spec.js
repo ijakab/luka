@@ -38,11 +38,11 @@ test('Should NOT register user with special chars inside username', async ({clie
 
   let usernames = ['$$$richy$$$', 'I have space chars', 'NO', 'My-username-is-waaaaaaay-to-loooong']
 
-  for (let username of usernames) {
-    usernameTester.username = username
-    let response = await client.post('/api/auth/register').send(usernameTester).end()
+  await Promise.all(usernames.map((u) => {
+    const response = client.post('/api/auth/register').send(u).end()
 
     response.assertStatus(400)
-  }
+  }))
+
 
 })
