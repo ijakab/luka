@@ -29,17 +29,20 @@ test('Should NOT register same user', async ({client}) => {
 
 test('Should NOT register user with special chars inside username', async ({client}) => {
 
-  let usernameTester = {
+  const usernameTester = {
     fullName: 'Username tester',
     email: 'username_tester@email.com',
     password: 'testPass123',
     passwordRepeat: 'testPass123'
   }
 
-  let usernames = ['$$$richy$$$', 'I have space chars', 'NO', 'My-username-is-waaaaaaay-to-loooong']
+  const usernames = ['$$$richy$$$', 'I have space chars', 'NO', 'My-username-is-waaaaaaay-to-loooong']
 
-  await Promise.all(usernames.map((u) => {
-    const response = client.post('/api/auth/register').send(u).end()
+  await Promise.all(usernames.map(async (username) => {
+
+    const userPayload = Object.assign({username}, usernameTester)
+
+    const response = await client.post('/api/auth/register').send(userPayload).end()
 
     response.assertStatus(400)
   }))
