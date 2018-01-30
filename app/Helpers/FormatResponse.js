@@ -26,7 +26,7 @@ module.exports = async function (existingResponse, locale = defaultLocale) {
       message = Antl.forLocale(locale).formatMessage(message) // if params are needed for string format... use it in controller
     } catch (err) {
       // message translation is not existing in db or params were not sent correctly
-      Logger.warning('Message "%s" is missing translation for locale %s!\n%s', message, locale.toUpperCase(), err.message)
+      if(node_env !== 'testing') Logger.warning('Message "%s" is missing translation for locale %s!\n%s', message, locale.toUpperCase(), err.message)
 
       // save untranslated string to db...
       let details = message.split('.')
