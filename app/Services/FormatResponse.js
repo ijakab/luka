@@ -1,7 +1,6 @@
 'use strict'
 
 const Env = use('Env')
-const Logger = use('Logger')
 const debug = Env.get('DEBUG', false)
 const node_env = Env.get('NODE_ENV', 'development')
 
@@ -24,7 +23,7 @@ module.exports = async function (existingResponse, locale) {
   }
 
   // translate message if needed
-  message = await translateService(locale, message)
+  message = translateService(locale, message)
 
   // create payload
   let payload = {

@@ -10,4 +10,3 @@ function requireRoutes(group) {
 // routing goes here:
 
 requireRoutes('Auth').prefix('api/auth')
-

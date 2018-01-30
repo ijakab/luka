@@ -3,15 +3,16 @@
 const User = use('App/Models/User')
 const Account = use('App/Models/Account')
 
-const SocialAuth = use('App/Helpers/SocialAuth')
+const SocialAuth = use('App/Services/SocialAuth')
 const {validate, sanitize} = use('Validator')
 const Hash = use('Hash')
+const Event = use('Event')
 
 const _ = use('lodash')
 
 class AuthController {
 
-  async register({request, response, auth}) {
+  async register({request, response, auth, locale}) {
 
     const allParams = sanitize(request.post(), {
       email: 'normalize_email:!rd'
@@ -23,12 +24,12 @@ class AuthController {
       username: 'required|string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$', // allow alpha numeric + _- from 3 to 20 chars
       email: 'required|email',
       password: 'required|min:6',
-      passwordRepeat: 'required|same:password',
+      passwordRepeat: 'required|same:password'
     })
 
     if (validation.fails()) return response.badRequest()
 
-    // first we check if this email already exists in another account
+    // first we check if this email already exists in another account (fb, google, etc)
     const existingAccount = await Account.findBy('email', allParams.email)
 
     // also try to fetch user profile of found account if any
@@ -47,22 +48,35 @@ class AuthController {
       user = await User.create({
         username: allParams.username,
         fullName: allParams.fullName,
-        primaryEmail: allParams.email
+        email: allParams.email
       })
     }
 
     // now create account
-    await Account.create({
+    const account = await Account.create({
       user_id: user.id,
       type: 'main',
       email: allParams.email,
-      password: allParams.password
+      password: allParams.password,
+      validated: false // set validated to false, email needs to be checked for main account...
     })
+
+    // ****************************************** NOTE ******************************************
+    // depending of your app... you can login user now, or demand him to activate email...
+    // in this starter app we are allowing NOT activated users to login also...
+    // ****************************************** **** ******************************************
 
     // finally login this guy
     const token = await auth
       .withRefreshToken()
-      .generate(user, {custom: 'payload'}) // todo remove custom payload
+      .generate(user) // you can add custom payload as second input to generate(u,payload)...
+
+
+    // fire an event that new user was created... we need to send welcome email, etc.
+    Event.fire('user::register', {
+      user: user.toJSON(),
+      account: account.toJSON()
+    })
 
     response.ok({user, token: token.token, refreshToken: token.refreshToken})
   }
@@ -80,10 +94,15 @@ class AuthController {
 
     if (validation.fails()) return response.badRequest()
 
+    // ****************************************** NOTE ******************************************
+    // add your own logic if you want to disallow users to login without verified email in main account
+    // in this starter app we are allowing NOT activated users to login also...
+    // ****************************************** **** ******************************************
+
     // find user by username or email, and get his main account
     const user = await User.query()
       .where({
-        [allParams.username ? 'username' : 'primaryEmail']: allParams.username || allParams.email
+        [allParams.username ? 'username' : 'email']: allParams.username || allParams.email
       })
       .with('accounts', (builder) => {
         builder.where('type', 'main')
@@ -98,13 +117,12 @@ class AuthController {
     // check pass
     const validPass = await Hash.verify(allParams.password, userAccount.password)
 
-    if (!validPass) return response.badRequest('auth.invalidPassword') // todo add language translations
+    if (!validPass) return response.badRequest('auth.invalidPassword')
 
     // generate tokens
     const token = await auth
       .withRefreshToken()
-      .generate(user, {custom: 'payload'}) // todo remove custom payload
-
+      .generate(user) // you can add custom payload as second input to generate(u,payload)...
 
     response.ok({user, token: token.token, refreshToken: token.refreshToken})
   }
@@ -124,7 +142,6 @@ class AuthController {
     return response.ok(socialUser)
 
   }
-
 
   async refreshToken({request, response}) {
 
