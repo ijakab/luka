@@ -20,13 +20,10 @@ class ExceptionHandler {
    *
    * @return {void}
    */
-  async handle(error, {request, response}) {
+  async handle(error, {response, locale}) {
 
-    if (process.env.NODE_ENV === 'testing') {
-      console.log(error)
-    }
+    response.status(error.status || error.statusCode || 500).send(await formatResponse(error, locale))
 
-    response.status(error.status || error.statusCode || 500).send(formatResponse(error, {defaultMsg: 'serverError'}))
   }
 
   /**

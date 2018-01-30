@@ -17,6 +17,7 @@ class AuthController {
       email: 'normalize_email:!rd'
     })
 
+    // email and username are not under unique:users rule because of auto merge account rule
     const validation = await validate(allParams, {
       fullName: 'required',
       username: 'required|string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$', // allow alpha numeric + _- from 3 to 20 chars
