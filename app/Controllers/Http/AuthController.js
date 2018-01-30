@@ -34,14 +34,14 @@ class AuthController {
     let user = existingAccount && await existingAccount.user().fetch()
 
     // if there is a user, and he has main account... we can't create duplicate then
-    if (user && existingAccount.type === 'main') return response.badRequest('User with this email already exists') // todo translation...
+    if (user && existingAccount.type === 'main') return response.badRequest('auth.emailExists')
 
     // if user is not existing, check username and create new user
     if (!user) {
 
       const existingUsername = await User.query().where('username', allParams.username).getCount()
 
-      if (existingUsername) return response.badRequest('User with this username already exists') // todo translate
+      if (existingUsername) return response.badRequest('auth.usernameExists')
 
       user = await User.create({
         username: allParams.username,
@@ -97,7 +97,7 @@ class AuthController {
     // check pass
     const validPass = await Hash.verify(allParams.password, userAccount.password)
 
-    if (!validPass) return response.badRequest('Invalid password') // todo add language translations
+    if (!validPass) return response.badRequest('auth.invalidPassword') // todo add language translations
 
     // generate tokens
     const token = await auth
