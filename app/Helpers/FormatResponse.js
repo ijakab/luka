@@ -13,9 +13,16 @@ module.exports = async function (existingResponse, locale = defaultLocale) {
 
   // format it to json if needed
   let data = (existingResponse && existingResponse.toJSON) ? existingResponse.toJSON() : (existingResponse || '')
+  let message
 
-  // fetch message as a string always
-  let message = (data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message) : 'Server response')
+  // check if we are dealing with validation.messages()
+  if (Array.isArray(data) && data.length && data[0].field && data[0].validation) {
+    message = `validation.${data[0].field}.${data[0].validation}`
+    data = [] // reset data to empty response
+  } else {
+    // fetch message as a string always
+    message = (data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message) : 'Server response')
+  }
 
   // translate response if needed
   if (/^[\w/-]+\.[\w\./-]+$/.test(message)) {
@@ -26,7 +33,7 @@ module.exports = async function (existingResponse, locale = defaultLocale) {
       message = Antl.forLocale(locale).formatMessage(message) // if params are needed for string format... use it in controller
     } catch (err) {
       // message translation is not existing in db or params were not sent correctly
-      if(node_env !== 'testing') Logger.warning('Message "%s" is missing translation for locale %s!\n%s', message, locale.toUpperCase(), err.message)
+      if (node_env !== 'testing') Logger.warning('Message "%s" is missing translation for locale %s!\n%s', message, locale.toUpperCase(), err.message)
 
       // save untranslated string to db...
       let details = message.split('.')
