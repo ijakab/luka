@@ -1,6 +1,6 @@
 'use strict'
 
-const formatResponse = use('App/Helpers/FormatResponse')
+const formatResponse = use('App/Services/FormatResponse')
 
 class FormatResponseMiddleware {
 
@@ -10,7 +10,7 @@ class FormatResponseMiddleware {
     await next()
     // after everything is finished, handle response logic upstream
 
-    if (!response._lazyBody.content) response._lazyBody.content = response._lazyBody.method
+    if (!response._lazyBody.content) response._lazyBody.content = `response.${response._lazyBody.method}`
     response[response._lazyBody.method](await formatResponse(response._lazyBody.content, locale))
   }
 }
