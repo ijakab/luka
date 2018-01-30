@@ -1,6 +1,6 @@
 'use strict'
 
-const formatResponse = use('App/Helpers/FormatResponse')
+const formatResponse = use('App/Services/FormatResponse')
 
 /**
  * This class handles all exceptions thrown during
