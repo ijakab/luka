@@ -22,7 +22,9 @@ class ExceptionHandler {
    */
   async handle(error, {response, locale}) {
 
-    response.status(error.status || error.statusCode || 500).send(await formatResponse(error, locale))
+    const status = error.status || error.statusCode || 500
+
+    response.status(status).send(await formatResponse(error, locale))
 
   }
 

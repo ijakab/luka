@@ -19,7 +19,7 @@ module.exports = async function (existingResponse, locale) {
     data = [] // reset data to empty response
   } else {
     // fetch message as a string always
-    message = (data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message) : 'Server response')
+    message = (data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message || '') : '')
   }
 
   // translate message if needed

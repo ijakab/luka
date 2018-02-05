@@ -12,10 +12,10 @@ const _ = use('lodash')
 
 class AuthController {
 
-  async register({request, response, auth, locale}) {
+  async register({request, response, auth}) {
 
     const allParams = sanitize(request.post(), {
-      email: 'normalize_email:!rd'
+      email: 'normalize_email'
     })
 
     // email and username are not under unique:users rule because of auto merge account rule
@@ -143,13 +143,15 @@ class AuthController {
 
   }
 
-  async refreshToken({request, response}) {
+  async refreshToken({request, response, auth}) {
 
     const refreshToken = request.input('refreshToken')
 
-    await auth
+    const newToken = await auth
       .newRefreshToken()
       .generateForRefreshToken(refreshToken)
+
+    response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
   }
 
 }
