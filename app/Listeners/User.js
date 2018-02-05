@@ -6,6 +6,8 @@ module.exports = {
 
   register: async (data) => {
 
+
+
     await mailService.send('emails.registration', data.user.email, {
       locale: data.user.language,
       user: data.user,

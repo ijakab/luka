@@ -12,7 +12,7 @@ const _ = use('lodash')
 
 class AuthController {
 
-  async register({request, response, auth}) {
+  async register({request, response, auth, locale}) {
 
     const allParams = sanitize(request.post(), {
       email: 'normalize_email'
@@ -24,7 +24,8 @@ class AuthController {
       username: 'required|string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$', // allow alpha numeric + _- from 3 to 20 chars
       email: 'required|email',
       password: 'required|min:6',
-      passwordRepeat: 'required|same:password'
+      passwordRepeat: 'required|same:password',
+      language: 'string|min:2|max:2'
     })
 
     if (validation.fails()) return response.badRequest()
@@ -48,7 +49,8 @@ class AuthController {
       user = await User.create({
         username: allParams.username,
         fullName: allParams.fullName,
-        email: allParams.email
+        email: allParams.email,
+        language: allParams.language || locale
       })
     }
 
@@ -73,10 +75,7 @@ class AuthController {
 
 
     // fire an event that new user was created... we need to send welcome email, etc.
-    Event.fire('user::register', {
-      user: user.toJSON(),
-      account: account.toJSON()
-    })
+    Event.fire('user::register', {user, account})
 
     response.ok({user, token: token.token, refreshToken: token.refreshToken})
   }

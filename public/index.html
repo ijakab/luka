@@ -8,7 +8,6 @@
 <h1>Facebook login api call quick example</h1>
 
 
-
 <script>
 
   (function (d, s, id) {
@@ -35,10 +34,11 @@
   function checkLoginState() {
     FB.getLoginStatus(function (response) {
 
-        $.post('/api/auth/facebook', {accessToken: response.authResponse.accessToken}, function (data) {
+      console.log(response)
+
+      $.post('/api/auth/facebook', {accessToken: response.authResponse.accessToken}, function (data) {
         alert(JSON.stringify(data))
       })
-
 
 
     })
