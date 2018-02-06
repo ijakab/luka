@@ -1,33 +1,60 @@
 <html>
 <head>
+  <meta name="google-signin-client_id"
+        content="951284770271-a5ljtunlkji4bubph8s6o29s0fbqn43l.apps.googleusercontent.com">
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script>
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0]
+      if (d.getElementById(id)) {
+        return
+      }
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://connect.facebook.net/en_US/sdk.js'
+      fjs.parentNode.insertBefore(js, fjs)
+    }(document, 'script', 'facebook-jssdk'))
+
+
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '1568056789980374',
+        cookie: true,
+        xfbml: true,
+        version: 'v2.7'
+      })
+    }
+  </script>
+
+
 </head>
 
 <body>
 
-<h1>Facebook login api call quick example</h1>
+<h1>Facebook and google login api call quick example</h1>
+
+
+<fb:login-button
+  scope="public_profile,email"
+  onlogin="checkLoginState();">
+</fb:login-button>
+
+
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+
+<button onclick="linkedIn()">LINKEDIN</button>
 
 
 <script>
+  function linkedIn() {
 
-  (function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0]
-    if (d.getElementById(id)) {
-      return
-    }
-    js = d.createElement(s)
-    js.id = id
-    js.src = 'https://connect.facebook.net/en_US/sdk.js'
-    fjs.parentNode.insertBefore(js, fjs)
-  }(document, 'script', 'facebook-jssdk'))
-
-
-  window.fbAsyncInit = function () {
-    FB.init({
-      appId: '1568056789980374',
-      cookie: true,
-      xfbml: true,
-      version: 'v2.7'
+    var clientId = '8651cf8kok4kgm'
+    var redirectUrl = 'http://localhost:3333/api/auth/linkedIn'
+    // todo ajax not working... redirect will break... ...also /auth/linkedIn is POST route... -.-
+    $.get('https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectUrl + '&scope=r_basicprofile,r_emailaddress', function (data) {
+      console.log('dodje,', data)
     })
   }
 
@@ -37,21 +64,21 @@
       console.log(response)
 
       $.post('/api/auth/facebook', {accessToken: response.authResponse.accessToken}, function (data) {
-        alert(JSON.stringify(data))
+        alert(JSON.stringify(data, '', '\t'))
       })
 
 
     })
   }
 
+  function onSignIn(googleUser) {
+
+    // google is constantly calling this method... so make sure to check your token and cancel this post req if needed
+    $.post('/api/auth/google', {accessToken: googleUser.Zi.access_token}, function (data) {
+      alert(JSON.stringify(data, '', '\t'))
+    })
+  }
 </script>
-
-
-<fb:login-button
-  scope="public_profile,email"
-  onlogin="checkLoginState();">
-</fb:login-button>
-
 
 </body>
 </html>

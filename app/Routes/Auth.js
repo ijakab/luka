@@ -31,13 +31,6 @@ module.exports = Route.group(() => {
    * @apiParam {string} [email] Send username or email
    * @apiParam {string} password Password for this username/email
    *
-   * @apiSuccess {String} token JWT token used for authorization
-   * @apiSuccess {String} refreshToken JWT token used for authorization
-   * @apiSuccess {Object} user  User object
-   * @apiSuccess {String} user.id
-   * @apiSuccess {String} user.fullName
-   * @apiSuccess {String} user.email
-   * TODO add other user attributes here
    */
   Route.post('/login', 'AuthController.login')
 

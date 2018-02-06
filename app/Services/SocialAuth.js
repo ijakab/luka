@@ -28,10 +28,9 @@ module.exports = {
   },
 
 
-  // todo test this out
   google: async function (accessToken) {
 
-    const apiUrl = 'https://www.googleapis.com/plus/v1/'
+    const apiUrl = 'https://www.googleapis.com/plus/v1'
     const profileUrl = `${apiUrl}/people/me`
 
     const fetchProfile = await got(profileUrl, {
@@ -46,7 +45,7 @@ module.exports = {
 
     return {
       id: fetchProfile.body.id,
-      name: fetchProfile.body.name,
+      name: fetchProfile.body.displayName,
       email: _.get(fetchProfile.body, 'emails.0.value'),
       avatar: _.get(fetchProfile.body, 'image.url')
     }
