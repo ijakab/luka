@@ -18,8 +18,9 @@ module.exports = {
       expiresIn: '1 day'
     })
 
-    // edit your local params for email as you wish
-    await mailService.send('emails.registration', account.email, {
+    // first param is email subject. You can use translation logic here also, or just write your own subject.
+    await mailService.send('email.registration', account.email, {
+      // edit your local params for email as you wish
       locale: user.language,
       user: {
         fullName: user.fullName

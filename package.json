@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "prepare": "node ace migration:run && node ace seed && npm run docs",
+    "refresh": "node ace migration:refresh && node ace seed",
     "docs": "rimraf public/docs && apidoc -i app/ -o public/docs",
     "test": "node ace test"
   },

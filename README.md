@@ -15,7 +15,7 @@ Just fork this project and use it as you would use any other AdonisJS project
 - Logic to connect social accounts together with standard *
 - User signup and login logic using JWT tokens
 - Refresh JWT token logic
-- Email service with templates *
+- Email service with templates
 - User password reset and account e-mail confirmation *
 - Custom responses with built-in response format logic
 - Built-in language translation for response messages
@@ -26,6 +26,11 @@ Just fork this project and use it as you would use any other AdonisJS project
 
 ## package.json scripts
 
+`npm run prepare` - runs migrations, DB seeds and builds docs for you. Run this after configuring .env
+
 `npm run test` - runs unit tests
 
 `npm run docs` - builds documentation using [apidoc specification](http://apidocjs.com/)
+
+`npm run refresh` - helper script while developing... Refreshes migrations and runs DB seed
+
