@@ -56,6 +56,19 @@ class LocaleSeeder {
         item: 'registration.validationLink.title',
         text: 'VALIDATE EMAIL'
       },
+      // --- RESEND VALIDATION EMAIL --- //
+      {
+        locale: 'en',
+        group: 'email',
+        item: 'resendValidation.subject',
+        text: 'Email validation - resend'
+      },
+      {
+        locale: 'en',
+        group: 'email',
+        item: 'resendValidation.hi',
+        text: 'Hi'
+      },
       // --- ERRORS --- //
       {
         locale: 'en',

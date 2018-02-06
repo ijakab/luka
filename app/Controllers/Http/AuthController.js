@@ -171,6 +171,15 @@ class AuthController {
 
   }
 
+
+  async resendValidation({request, response, token}) {
+
+    // todo
+    //
+    //Event.fire('user::resendValidation', {user, account})
+
+  }
+
 }
 
 

@@ -28,6 +28,29 @@ module.exports = {
       validateUrl: `${VALIDATE_EMAIL_URL}?token=${mailToken}`
     })
 
+  },
+
+
+  resendValidation: async({user, account}) => {
+
+    // generate validate token for email
+    const mailToken = await jwt.sign({
+      mailValidation: account.id
+    }, APP_KEY, {
+      expiresIn: '1 day'
+    })
+
+
+    await mailService.send('email.resendValidation', account.email, {
+      // edit your local params for email as you wish
+      locale: user.language,
+      user: {
+        fullName: user.fullName
+      },
+      validateUrl: `${VALIDATE_EMAIL_URL}?token=${mailToken}`
+    })
+
+
   }
 
 }
