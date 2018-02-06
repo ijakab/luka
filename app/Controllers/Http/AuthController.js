@@ -4,11 +4,9 @@ const User = use('App/Models/User')
 const Account = use('App/Models/Account')
 
 const SocialAuth = use('App/Services/SocialAuth')
-const {validate, sanitize} = use('Validator')
+const {validate, sanitize, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
-
-const _ = use('lodash')
 
 class AuthController {
 
@@ -64,7 +62,7 @@ class AuthController {
     })
 
     // fire an event that new user was created... we need to send welcome email, etc.
-    Event.fire('user::register', {user, account})
+    Event.fire('user::register', {account})
 
     response.ok('auth.userRegistered')
   }
@@ -87,19 +85,17 @@ class AuthController {
       .where({
         [allParams.username ? 'username' : 'email']: allParams.username || allParams.email
       })
-      .with('accounts', (builder) => {
-        builder.where('type', 'main')
-      })
       .first()
 
-    // get main account info
-    const userAccount = user && _.first(user.getRelated('accounts').rows)
+    // get main account info if we found user at all
+    const mainAccount = user && await user.getMainAccount()
 
-    if (!userAccount) return response.notFound()
-    if(!userAccount.validated) return response.forbidden('auth.mailNotValideted')
+    if (!mainAccount) return response.notFound()
+
+    if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')
 
     // check pass
-    const validPass = await Hash.verify(allParams.password, userAccount.password)
+    const validPass = await Hash.verify(allParams.password, mainAccount.password)
 
     if (!validPass) return response.badRequest('auth.invalidPassword')
 
@@ -114,7 +110,7 @@ class AuthController {
 
   async socialLogin({request, response, params}) {
 
-    const accessToken = request.input('accessToken')
+    const accessToken = request.input('token')
     const socialHandler = SocialAuth[params.network]
 
     if (!socialHandler) return response.notFound()
@@ -132,7 +128,12 @@ class AuthController {
 
   async refreshToken({request, response, auth}) {
 
-    const refreshToken = request.input('refreshToken')
+    // todo ... think about this... every time we get new db entry, should we destroy old refresh token?
+    // or should we just skip generation of newRefreshToken below? ???
+
+    const refreshToken = request.input('token')
+
+    if(!refreshToken) return response.badRequest()
 
     const newToken = await auth
       .newRefreshToken()
@@ -157,11 +158,23 @@ class AuthController {
   }
 
 
-  async resendValidation({request, response, token}) {
+  async resendValidation({request, response}) {
 
-    // todo
-    //
-    //Event.fire('user::resendValidation', {user, account})
+    const resendEmail = request.input('resendEmail')
+
+    // check if email was sent
+    if (!is.email(resendEmail)) return response.badRequest()
+
+    // find account for this email
+    const account = await Account.findBy('email', resendEmail)
+
+    // we are sending email validated on unknown email on purpose, so no one can guess which email exists in db
+    if (!account || account.validated) return response.badRequest('auth.emailAlreadyValidated')
+
+    // send validation email in async way
+    Event.fire('user::resendValidation', {account})
+
+    response.ok('auth.emailValidationResent')
 
   }
 

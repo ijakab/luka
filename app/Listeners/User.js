@@ -9,7 +9,10 @@ const VALIDATE_EMAIL_URL = Env.get('VALIDATE_EMAIL_URL')
 
 module.exports = {
 
-  register: async ({user, account}) => {
+  register: async ({account}) => {
+
+    // fetch account user
+    const user = await account.user().fetch()
 
     // generate validate token for email
     const mailToken = await jwt.sign({
@@ -31,7 +34,10 @@ module.exports = {
   },
 
 
-  resendValidation: async({user, account}) => {
+  resendValidation: async ({account}) => {
+
+    // fetch account user
+    const user = await account.user().fetch()
 
     // generate validate token for email
     const mailToken = await jwt.sign({

@@ -56,8 +56,20 @@ module.exports = Route.group(() => {
    * @apiParam {string} token JWT token you got inside registration email
    *
    */
+  // uses check token policy, because it parses custom JWT token created specifically for email reset
   Route.post('/validateEmail', 'AuthController.validateEmail').middleware(['checkToken'])
 
+
+  /**
+   * @api {post} /api/auth/resendValidation Resend validation
+   * @apiGroup Auth
+   *
+   * @apiDescription If for some reason email validation should be resent. Hit this route.
+   *
+   * @apiParam {string} resendEmail Email of user you wish to resend validation to
+   *
+   */
+  Route.post('/resendValidation', 'AuthController.resendValidation')
 
   // ****************************************** NOTE ******************************************
   // KEEP THIS GUY AT THE BOTTOM!

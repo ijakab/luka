@@ -8,7 +8,7 @@ class AccountSchema extends Schema {
       table.increments()
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.enum('type', ['main', 'facebook', 'google', 'linkedIn'])
-      table.string('email', 254).notNullable().unique()
+      table.string('email', 254).notNullable() // email is not unique, because user can have same email on facebook and google, etc.
       table.boolean('validated').defaultTo(false)
 
       // social id and password are not strictly required because one excludes another

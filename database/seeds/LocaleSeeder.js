@@ -34,7 +34,7 @@ class LocaleSeeder {
       {
         locale: 'en',
         group: 'auth',
-        item: 'mailNotValideted',
+        item: 'mailNotValidated',
         text: 'Please validate your email.'
       },
       {
@@ -42,6 +42,18 @@ class LocaleSeeder {
         group: 'auth',
         item: 'emailValidated',
         text: 'Email successfully validated!'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
+        item: 'emailAlreadyValidated',
+        text: 'Email is already validated!'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
+        item: 'emailValidationResent',
+        text: 'Email validation resent!'
       },
       // --- REGISTRATION EMAIL --- //
       {

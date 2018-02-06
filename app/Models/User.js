@@ -11,6 +11,11 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
+  async getMainAccount() {
+    return await this.accounts().where('type', 'main').first()
+
+  }
+
   static get dates() {
     return super.dates.concat(['dob'])
   }
