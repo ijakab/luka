@@ -10,6 +10,8 @@ const translateService = use('App/Services/Translate')
 
 const _ = use('lodash')
 
+const NO_REPLY_EMAIL = Env.get('SEND_EMAIL_FROM', 'Admin <no-reply@starter.com>')
+
 module.exports = {
 
   // simple mail function... will be used most of the times...
@@ -34,7 +36,7 @@ module.exports = {
       await Mail.send(template, data, (message) => {
         message
           .to(to)
-          .from(Env.get('SEND_EMAIL_FROM', 'Admin <no-reply@starter.com>'))
+          .from(NO_REPLY_EMAIL)
           .subject(subject)
       })
     } catch (err) {

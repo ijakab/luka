@@ -22,6 +22,16 @@ class ExceptionHandler {
    */
   async handle(error, {response, locale}) {
 
+    // translate some default errors
+    switch (error.name) {
+      case 'TokenExpiredError':
+        error.message = 'error.tokenExpired'
+        break
+      case 'JsonWebTokenError':
+        error.message = 'error.invalidToken'
+        break
+    }
+
     const status = error.status || error.statusCode || 500
 
     response.status(status).send(await formatResponse(error, locale))

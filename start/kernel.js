@@ -34,7 +34,7 @@ const globalMiddleware = [
 |
 */
 const namedMiddleware = {
-  auth: 'Adonis/Middleware/Auth'
+  checkToken: 'App/Middleware/Named/CheckToken'
 }
 
 /*

@@ -130,8 +130,11 @@ class AuthController {
   async socialLogin({request, response, params}) {
 
     const accessToken = request.input('accessToken')
+    const socialHandler = SocialAuth[params.network]
 
-    const socialUser = await SocialAuth[params.network](accessToken)
+    if (!socialHandler) return response.notFound()
+
+    const socialUser = await socialHandler(accessToken)
 
 
     // todo check if user is existing, connect profiles and give JWT token...
@@ -151,6 +154,21 @@ class AuthController {
       .generateForRefreshToken(refreshToken)
 
     response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
+  }
+
+
+  async validateEmail({request, response, token}) {
+
+    // first check if this valid token has account info inside
+    if (!token.mailValidation) return response.unauthorized()
+
+    await Account
+      .query()
+      .where('id', token.mailValidation)
+      .update({validated: true})
+
+    response.ok('auth.emailValidated')
+
   }
 
 }

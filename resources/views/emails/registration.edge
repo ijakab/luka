@@ -1,15 +1,3 @@
 <h2>{{ translate('emails.registration.welcome') }} {{user.fullName}}!</h2>
 
-<pre>
-  locale: {{locale}}
-</pre>
-
-user:
-<pre>
-  {{user}}
-</pre>
-
-account:
-<pre>
-  {{account}}
-</pre>
+<p>{{ translate('emails.registration.validationLink.description') }} <a href="{{ validateUrl }}">{{ translate('emails.registration.validationLink.title') }}</a></p>

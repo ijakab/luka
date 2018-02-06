@@ -41,12 +41,28 @@ module.exports = Route.group(() => {
    *
    * @apiDescription Refresh your expired JWT token.
    *
-   * @apiParam {string} [refreshToken] JWT refresh token
+   * @apiParam {string} token JWT refresh token
    *
    */
   Route.post('/refreshToken', 'AuthController.refreshToken')
 
 
+  /**
+   * @api {post} /api/auth/validateEmail Validate email
+   * @apiGroup Auth
+   *
+   * @apiDescription Validate email with JWT token sent on registration email
+   *
+   * @apiParam {string} token JWT token you got inside registration email
+   *
+   */
+  Route.post('/validateEmail', 'AuthController.validateEmail').middleware(['checkToken'])
+
+
+  // ****************************************** NOTE ******************************************
+  // KEEP THIS GUY AT THE BOTTOM!
+  // /:network route will conflict with other routes if you are not careful :)
+  // ****************************************** **** ******************************************
   /**
    * @api {post} /api/auth/:network Social login
    * @apiGroup Auth
@@ -55,7 +71,7 @@ module.exports = Route.group(() => {
    * users account if there is one. If there is no user account, then new account will be created for this user.
    *
    * @apiParam {routeParam} network Name of social network you are using (facebook, google, linkedIn)
-   * @apiParam {string} accessToken Token you got after successful oAuth to one of social networks
+   * @apiParam {string} token Token you got after successful oAuth to one of social networks
    *
    */
   Route.post('/:network', 'AuthController.socialLogin')

@@ -10,7 +10,7 @@ class FormatResponseMiddleware {
     await next()
     // after everything is finished, handle response logic upstream
 
-    response.send(await formatResponse(response._lazyBody.content, locale))
+    response[response._lazyBody.method](await formatResponse(response._lazyBody.content, locale))
   }
 }
 
