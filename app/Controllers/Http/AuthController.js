@@ -63,21 +63,10 @@ class AuthController {
       validated: false // set validated to false, email needs to be checked for main account...
     })
 
-    // ****************************************** NOTE ******************************************
-    // depending of your app... you can login user now, or demand him to activate email...
-    // in this starter app we are allowing NOT activated users to login also...
-    // ****************************************** **** ******************************************
-
-    // finally login this guy
-    const token = await auth
-      .withRefreshToken()
-      .generate(user) // you can add custom payload as second input to generate(u,payload)...
-
-
     // fire an event that new user was created... we need to send welcome email, etc.
     Event.fire('user::register', {user, account})
 
-    response.ok({user, token: token.token, refreshToken: token.refreshToken})
+    response.ok('auth.userRegistered')
   }
 
 
@@ -93,11 +82,6 @@ class AuthController {
 
     if (validation.fails()) return response.badRequest()
 
-    // ****************************************** NOTE ******************************************
-    // add your own logic if you want to disallow users to login without verified email in main account
-    // in this starter app we are allowing NOT activated users to login also...
-    // ****************************************** **** ******************************************
-
     // find user by username or email, and get his main account
     const user = await User.query()
       .where({
@@ -112,6 +96,7 @@ class AuthController {
     const userAccount = user && _.first(user.getRelated('accounts').rows)
 
     if (!userAccount) return response.notFound()
+    if(!userAccount.validated) return response.forbidden('auth.mailNotValideted')
 
     // check pass
     const validPass = await Hash.verify(allParams.password, userAccount.password)

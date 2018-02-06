@@ -28,6 +28,18 @@ class LocaleSeeder {
       {
         locale: 'en',
         group: 'auth',
+        item: 'userRegistered',
+        text: 'Successfully registered! Please validate your email.'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
+        item: 'mailNotValideted',
+        text: 'Please validate your email.'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
         item: 'emailValidated',
         text: 'Email successfully validated!'
       },
