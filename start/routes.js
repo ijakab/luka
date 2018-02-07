@@ -2,11 +2,12 @@
 
 const Route = use('Route')
 
-function requireRoutes(group) {
+// routing goes here:
+_requireRoutes('Auth').prefix('api/auth')
+_requireRoutes('User').prefix('api/user')
+
+
+// --- PRIVATE
+function _requireRoutes(group) {
   return require(`../app/Routes/${group}`)
 }
-
-
-// routing goes here:
-
-requireRoutes('Auth').prefix('api/auth')

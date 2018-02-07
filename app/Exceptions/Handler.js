@@ -25,8 +25,10 @@ class ExceptionHandler {
     // translate some default errors
     switch (error.name) {
       case 'TokenExpiredError':
+      case 'ExpiredJwtToken':
         error.message = 'error.tokenExpired'
         break
+      case 'InvalidJwtToken':
       case 'JsonWebTokenError':
       case 'InvalidRefreshToken':
         error.message = 'error.invalidToken'

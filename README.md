@@ -12,11 +12,11 @@ Just fork this project and use it as you would use any other AdonisJS project
 - Slug generator logic *
 - Basic User model with separate Account model
 - Account model has support for Google+, Facebook and LinkedIn social login
-- Logic to connect social accounts together with standard *
+- Logic to connect social accounts together with standard
 - User signup and login logic using JWT tokens
 - Refresh JWT token logic
 - Email service with templates
-- User password reset and account e-mail confirmation *
+- User password reset and account e-mail confirmation
 - Custom responses with built-in response format logic
 - Built-in language translation for response messages
 - Auto served public folder via static serve and middleware for basic auth for static files

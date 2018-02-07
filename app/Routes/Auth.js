@@ -100,6 +100,17 @@ module.exports = Route.group(() => {
   Route.post('/resetPassword', 'AuthController.resetPassword').middleware(['checkToken'])
 
 
+  /**
+   * @api {get} /api/auth/accounts List accounts
+   * @apiGroup Auth
+   *
+   * @apiPermission JWT
+   *
+   * @apiDescription Route where you can see all registered accounts for this user.
+   *
+   */
+  Route.get('/accounts', 'AuthController.accounts').middleware(['getUser'])
+
 
   // ****************************************** NOTE ******************************************
   // KEEP THIS GUYS AT THE BOTTOM!

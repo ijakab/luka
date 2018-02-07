@@ -101,7 +101,7 @@ class AuthController {
   }
 
 
-  async socialRedirect({response, request, params, ally}) {
+  async socialRedirect({request, response, params, ally}) {
 
     if (request.input('linkOnly')) return response.ok({
       url: await ally.driver(params.network).getRedirectUrl()
@@ -200,7 +200,7 @@ class AuthController {
   }
 
 
-  async validateEmail({request, response, token}) {
+  async validateEmail({response, token}) {
 
     // first check if this valid token has account info inside
     if (!token.mailValidation) return response.unauthorized()
@@ -290,6 +290,14 @@ class AuthController {
     await mainAccount.save()
 
     response.ok('auth.passwordReseted')
+  }
+
+
+  async accounts({response, user}) {
+
+    const accounts = await user.accounts().fetch()
+
+    response.ok(accounts)
   }
 
 
