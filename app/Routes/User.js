@@ -5,7 +5,7 @@ module.exports = Route.group(() => {
 
   /**
    * @api {get} /api/user/me Me
-   * @apiGroup Auth
+   * @apiGroup User
    *
    * @apiPermission JWT
    *

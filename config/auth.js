@@ -78,8 +78,8 @@ module.exports = {
 
   staticAuth: {
     realm: 'API Documentation',
-    username: 'admin',
-    password: 'admin123',
+    username: Env.get('DOCS_AUTH_USERNAME', 'admin'),
+    password: Env.get('DOCS_AUTH_PASSWORD', 'admin123'),
     protectedUrls: ['/docs']
   }
 }

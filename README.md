@@ -7,6 +7,8 @@ Jumpstart for a new backend project based on AdonisJS framework.
 ## Installation
 Just fork this project and use it as you would use any other AdonisJS project
 
+After cloning, edit your .env file (c/p .env.example) and run `npm run prepare` to speed things up.
+
 ## What's in a box?
 - Cleaned up AdonisJS installation for API usage only
 - Slug generator logic *
