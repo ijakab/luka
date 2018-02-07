@@ -3,10 +3,10 @@
 const User = use('App/Models/User')
 const Account = use('App/Models/Account')
 
-const SocialAuth = use('App/Services/SocialAuth')
 const {validate, sanitize, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
+const shortId = require('shortid')
 
 class AuthController {
 
@@ -101,35 +101,100 @@ class AuthController {
   }
 
 
-  async socialLogin({request, response, params}) {
+  async socialRedirect({response, request, params, ally}) {
 
-    const accessToken = request.input('token')
-    const socialHandler = SocialAuth[params.network]
+    if (request.input('linkOnly')) return response.ok({
+      url: await ally.driver(params.network).getRedirectUrl()
+    })
 
-    if (!socialHandler) return response.notFound()
+    await ally.driver(params.network).redirect()
+  }
 
-    const socialUser = await socialHandler(accessToken)
+  async socialLogin({request, response, params, ally, auth, locale}) {
+
+    // wire up post as get... so ally can recognize social code
+    ally._request._qs = {code: request.input('token')}
+
+    const socialUser = await ally.driver(params.network).getUser()
+
+    // first try finding this user
+    let account = await Account.query().where({socialId: socialUser.getId(), type: params.network}).first()
+    let user // we will fill this void by newly created user or found one...
+
+    if (account) {
+      // user is existing just log him in
+      user = await account.user().fetch()
+    } else {
+      // user did't exist at all... we will create new user or connect accounts for him
+      const userObject = sanitize({
+        socialId: socialUser.getId(),
+        network: params.network,
+        fullName: socialUser.getName(),
+        email: socialUser.getEmail(),
+        avatar: socialUser.getAvatar()
+      }, {
+        email: 'normalize_email'
+      })
+
+      // first, let's try to find this user by email
+      account = await Account.findBy('email', userObject.email)
+
+      if (account) {
+        // just fetch user of this account
+        user = await account.user().fetch()
+      } else {
+        // there is no account at all... we need to create user and account!
+        // we cant fetch username from social media, and it's require for our system... we need to generate it
+        let newUsername = userObject.email.split('@')[0] // we take first part of email as username if possible
+
+        // check if username that we are custom generating is already existing
+        const usernameExisting = await User.query().where('username', newUsername).getCount()
+
+        // username existed... so just create some random mambo-jumbo for this one
+        if (usernameExisting) newUsername = `${shortId.generate()}-${newUsername}`
+
+        let avatar
+        if (userObject.avatar) {
+          // todo
+          // upload avatar if there is avatar
+          avatar = userObject.avatar
+        }
+
+        user = await User.create({
+          username: newUsername,
+          fullName: userObject.fullName,
+          email: userObject.email,
+          avatar: avatar,
+          language: locale
+        })
+      }
+
+      // now just create account and we are ready to go
+      await Account.create({
+        user_id: user.id,
+        type: params.network,
+        socialId: userObject.socialId,
+        email: userObject.email,
+        validated: true // it's always validated if oAuth was success
+      })
+    }
+
+    // whatever happens... new user, or existing one... generate token for him
+    const token = await auth
+      .withRefreshToken()
+      .generate(user) // you can add custom payload as second input to generate(u,payload)...
 
 
-    // todo check if user is existing, connect profiles and give JWT token...
-    // search users by email or that social media id? todo
-
-
-    return response.ok(socialUser)
+    response.ok({user, token: token.token, refreshToken: token.refreshToken})
   }
 
   async refreshToken({request, response, auth}) {
-
-    // todo ... think about this... every time we get new db entry, should we destroy old refresh token?
-    // or should we just skip generation of newRefreshToken below? ???
 
     const refreshToken = request.input('token')
 
     if (!refreshToken) return response.badRequest()
 
-    const newToken = await auth
-      .newRefreshToken()
-      .generateForRefreshToken(refreshToken)
+    const newToken = await auth.generateForRefreshToken(refreshToken)
 
     response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
   }

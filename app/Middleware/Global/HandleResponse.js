@@ -8,9 +8,11 @@ class FormatResponseMiddleware {
 
     // await everything downstream, if error happens, run formatter nevertheless (catch)
     await next()
-    // after everything is finished, handle response logic upstream
 
-    response[response._lazyBody.method](await formatResponse(response._lazyBody.content, locale))
+    // after everything is finished, handle response logic upstream
+    if (response._lazyBody.method !== 'redirect') {
+      response[response._lazyBody.method](await formatResponse(response._lazyBody.content, locale))
+    }
   }
 }
 

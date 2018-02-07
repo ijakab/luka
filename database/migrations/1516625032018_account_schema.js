@@ -7,7 +7,7 @@ class AccountSchema extends Schema {
     this.create('accounts', (table) => {
       table.increments()
       table.integer('user_id').unsigned().references('id').inTable('users')
-      table.enum('type', ['main', 'facebook', 'google', 'linkedIn'])
+      table.enum('type', ['main', 'facebook', 'google', 'linkedin'])
       table.string('email', 254).notNullable() // email is not unique, because user can have same email on facebook and google, etc.
       table.boolean('validated').defaultTo(false)
 

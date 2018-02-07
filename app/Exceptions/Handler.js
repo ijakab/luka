@@ -28,6 +28,7 @@ class ExceptionHandler {
         error.message = 'error.tokenExpired'
         break
       case 'JsonWebTokenError':
+      case 'InvalidRefreshToken':
         error.message = 'error.invalidToken'
         break
     }

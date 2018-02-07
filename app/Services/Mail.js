@@ -40,7 +40,7 @@ module.exports = {
           .subject(subject)
       })
     } catch (err) {
-      Logger.error(err) // todo make helper for handling async errors in db...
+      Logger.error('MAIL SERVICE - ', err) // todo make helper for handling async errors in db...
     }
 
 

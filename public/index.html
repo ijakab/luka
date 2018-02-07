@@ -1,84 +1,49 @@
 <html>
 <head>
-  <meta name="google-signin-client_id"
-        content="951284770271-a5ljtunlkji4bubph8s6o29s0fbqn43l.apps.googleusercontent.com">
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <script>
-    (function (d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0]
-      if (d.getElementById(id)) {
-        return
-      }
-      js = d.createElement(s)
-      js.id = id
-      js.src = 'https://connect.facebook.net/en_US/sdk.js'
-      fjs.parentNode.insertBefore(js, fjs)
-    }(document, 'script', 'facebook-jssdk'))
-
-
-    window.fbAsyncInit = function () {
-      FB.init({
-        appId: '1568056789980374',
-        cookie: true,
-        xfbml: true,
-        version: 'v2.7'
-      })
-    }
-  </script>
-
-
 </head>
 
 <body>
-
-<h1>Facebook and google login api call quick example</h1>
-
-
-<fb:login-button
-  scope="public_profile,email"
-  onlogin="checkLoginState();">
-</fb:login-button>
+<a href="http://localhost:3333/api/auth/facebook/redirect">FACEBOOK LOGIN</a>
+<a href="http://localhost:3333/api/auth/google/redirect">GOOGLE LOGIN</a>
+<a href="http://localhost:3333/api/auth/linkedin/redirect">LINKEDIN LOGIN</a>
+<a href="http://localhost:3333/api/auth/unknown/redirect">UNKNOWN LOGIN</a>
+</body>
 
 
-<div class="g-signin2" data-onsuccess="onSignIn"></div>
-
-
-<button onclick="linkedIn()">LINKEDIN</button>
-
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
 <script>
-  function linkedIn() {
 
-    var clientId = '8651cf8kok4kgm'
-    var redirectUrl = 'http://localhost:3333/api/auth/linkedIn'
-    // todo ajax not working... redirect will break... ...also /auth/linkedIn is POST route... -.-
-    $.get('https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectUrl + '&scope=r_basicprofile,r_emailaddress', function (data) {
-      console.log('dodje,', data)
-    })
+  function GetURLParameter(sParam) {
+    var sPageURL = window.location.search.substring(1)
+    var sURLVariables = sPageURL.split('&')
+
+    for (var i = 0; i < sURLVariables.length; i++) {
+      var sParameterName = sURLVariables[i].split('=')
+      if (sParameterName[0] == sParam) {
+        return sParameterName[1]
+      }
+    }
   }
 
-  function checkLoginState() {
-    FB.getLoginStatus(function (response) {
 
-      console.log(response)
+  $(document).ready(function () {
+    // sniff get params to check if socialAuth was redirected
+    if (GetURLParameter('socialAuthSource')) {
 
-      $.post('/api/auth/facebook', {accessToken: response.authResponse.accessToken}, function (data) {
-        alert(JSON.stringify(data, '', '\t'))
+      alert('OAUTH REDIRECT CALLBACK DETECTED')
+
+      $.post('http://localhost:3333/api/auth/' + GetURLParameter('socialAuthSource'), {
+        token: GetURLParameter('code')
+      }, function (data) {
+        alert('check console!')
+        console.log('AUTHENTICATED WITH: ' + GetURLParameter('socialAuthSource'))
+        console.log(data)
       })
 
+    }
+  })
 
-    })
-  }
 
-  function onSignIn(googleUser) {
-
-    // google is constantly calling this method... so make sure to check your token and cancel this post req if needed
-    $.post('/api/auth/google', {accessToken: googleUser.Zi.access_token}, function (data) {
-      alert(JSON.stringify(data, '', '\t'))
-    })
-  }
 </script>
-
-</body>
 </html>
