@@ -6,7 +6,8 @@ class Account extends Model {
   static boot() {
     super.boot()
 
-    this.addHook('beforeCreate', 'Account.hashPassword')
+    // run before create and before update...
+    this.addHook('beforeSave', 'Account.hashPassword')
   }
 
   user() {

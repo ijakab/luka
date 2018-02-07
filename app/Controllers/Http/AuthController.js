@@ -53,7 +53,7 @@ class AuthController {
     }
 
     // now create account
-    const account = await Account.create({
+    const mainAccount = await Account.create({
       user_id: user.id,
       type: 'main',
       email: allParams.email,
@@ -62,7 +62,7 @@ class AuthController {
     })
 
     // fire an event that new user was created... we need to send welcome email, etc.
-    Event.fire('user::register', {account})
+    Event.fire('user::register', {user, mainAccount})
 
     response.ok('auth.userRegistered')
   }
@@ -70,28 +70,21 @@ class AuthController {
 
   async login({request, response, auth}) {
 
-    const allParams = request.post()
+    const allParams = sanitize(request.post(), {
+      email: 'normalize_email'
+    })
 
     const validation = await validate(allParams, {
       username: 'required_without_any:email',
-      email: 'required_without_any:username|email',
+      email: 'email|required_without_any:username',
       password: 'required_with_any:username,email'
     })
 
     if (validation.fails()) return response.badRequest()
 
-    // find user by username or email, and get his main account
-    const user = await User.query()
-      .where({
-        [allParams.username ? 'username' : 'email']: allParams.username || allParams.email
-      })
-      .first()
+    const {user, mainAccount} = await this._findLoginUser(allParams)
 
-    // get main account info if we found user at all
-    const mainAccount = user && await user.getMainAccount()
-
-    if (!mainAccount) return response.notFound()
-
+    if (!mainAccount || !user) return response.notFound()
     if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')
 
     // check pass
@@ -123,7 +116,6 @@ class AuthController {
 
 
     return response.ok(socialUser)
-
   }
 
   async refreshToken({request, response, auth}) {
@@ -133,7 +125,7 @@ class AuthController {
 
     const refreshToken = request.input('token')
 
-    if(!refreshToken) return response.badRequest()
+    if (!refreshToken) return response.badRequest()
 
     const newToken = await auth
       .newRefreshToken()
@@ -148,13 +140,13 @@ class AuthController {
     // first check if this valid token has account info inside
     if (!token.mailValidation) return response.unauthorized()
 
+    // then update account by using account id from token
     await Account
       .query()
       .where('id', token.mailValidation)
       .update({validated: true})
 
     response.ok('auth.emailValidated')
-
   }
 
 
@@ -165,17 +157,91 @@ class AuthController {
     // check if email was sent
     if (!is.email(resendEmail)) return response.badRequest()
 
-    // find account for this email
-    const account = await Account.findBy('email', resendEmail)
+    // find main account for this email
+    const mainAccount = await Account.query().where({'email': resendEmail, type: 'main'}).first()
 
     // we are sending email validated on unknown email on purpose, so no one can guess which email exists in db
-    if (!account || account.validated) return response.badRequest('auth.emailAlreadyValidated')
+    if (!mainAccount || mainAccount.validated) return response.badRequest('auth.emailAlreadyValidated')
 
     // send validation email in async way
-    Event.fire('user::resendValidation', {account})
+    Event.fire('user::resendValidation', {mainAccount})
 
     response.ok('auth.emailValidationResent')
+  }
 
+
+  async forgotPassword({request, response}) {
+
+    const allParams = sanitize(request.post(), {
+      email: 'normalize_email'
+    })
+
+    const validation = await validate(allParams, {
+      username: 'required_without_any:email',
+      email: 'email|required_without_any:username',
+    })
+
+    if (validation.fails()) return response.badRequest()
+
+    // find user and his main account
+    const {user, mainAccount} = await this._findLoginUser(allParams)
+
+    // if we don't find main account in our db, we will mimic OK response so no one knows that we don't have this user...
+    if (!mainAccount || !user) return response.ok('auth.forgotPasswordTokenSent')
+
+
+    // also check if this user validated his account at all
+    if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')
+
+    // send forgot password email in async way
+    Event.fire('user::forgotPassword', {user, mainAccount})
+
+
+    response.ok('auth.forgotPasswordTokenSent')
+  }
+
+
+  async resetPassword({request, response, token}) {
+
+    const allParams = request.post()
+
+    // first check if this valid token has account info inside
+    if (!token.passwordReset) return response.unauthorized()
+
+    const validation = await validate(allParams, {
+      password: 'required|min:6',
+      passwordRepeat: 'required|same:password'
+    })
+
+    if (validation.fails()) return response.badRequest()
+
+    // find main account by id found inside token
+    const mainAccount = await Account.find(token.passwordReset)
+
+    if (!mainAccount) return response.notFound()
+
+    // update password
+    mainAccount.password = allParams.password
+    await mainAccount.save()
+
+    response.ok('auth.passwordReseted')
+  }
+
+
+  // --- PRIVATE
+  async _findLoginUser(allParams) {
+    // find user by username or main account email
+    let user, mainAccount
+
+    if (allParams.username) {
+      user = await User.findBy('username', allParams.username)
+      mainAccount = user && await user.fetchMainAccount()
+    } else {
+      mainAccount = await Account.query().where({email: allParams.email, type: 'main'}).first()
+      user = mainAccount && await mainAccount.user().fetch()
+    }
+
+    return {mainAccount, user}
   }
 
 }

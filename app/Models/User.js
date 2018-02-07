@@ -3,6 +3,8 @@
 const Model = use('Model')
 
 class User extends Model {
+
+  // --- RELATIONS
   accounts() {
     return this.hasMany('App/Models/Account')
   }
@@ -11,13 +13,14 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  async getMainAccount() {
-    return await this.accounts().where('type', 'main').first()
-
-  }
-
+  // --- CONFIGURATION
   static get dates() {
     return super.dates.concat(['dob'])
+  }
+
+  // --- CUSTOM
+  async fetchMainAccount() {
+    return await this.accounts().where('type', 'main').first()
   }
 
 }

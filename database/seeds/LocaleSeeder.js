@@ -23,7 +23,7 @@ class LocaleSeeder {
         locale: 'en',
         group: 'auth',
         item: 'invalidPassword',
-        text: 'Invalid password'
+        text: 'Invalid password or username'
       },
       {
         locale: 'en',
@@ -54,6 +54,18 @@ class LocaleSeeder {
         group: 'auth',
         item: 'emailValidationResent',
         text: 'Email validation resent!'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
+        item: 'forgotPasswordTokenSent',
+        text: 'Reset password email sent!'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
+        item: 'passwordReseted',
+        text: 'Password was changed successfully!'
       },
       // --- REGISTRATION EMAIL --- //
       {
@@ -92,6 +104,25 @@ class LocaleSeeder {
         group: 'email',
         item: 'resendValidation.hi',
         text: 'Hi'
+      },
+      // --- FORGOT PASSWORD EMAIL --- //
+      {
+        locale: 'en',
+        group: 'email',
+        item: 'forgotPassword.subject',
+        text: 'Password reset'
+      },
+      {
+        locale: 'en',
+        group: 'email',
+        item: 'forgotPassword.resetLink.description',
+        text: 'If you demanded password reset for your account, please reset your password here:'
+      },
+      {
+        locale: 'en',
+        group: 'email',
+        item: 'forgotPassword.resetLink.title',
+        text: 'RESET PASSWORD'
       },
       // --- ERRORS --- //
       {

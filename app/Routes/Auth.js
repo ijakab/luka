@@ -56,7 +56,7 @@ module.exports = Route.group(() => {
    * @apiParam {string} token JWT token you got inside registration email
    *
    */
-  // uses check token policy, because it parses custom JWT token created specifically for email reset
+  // uses check token policy, because it parses custom JWT token created specifically for email
   Route.post('/validateEmail', 'AuthController.validateEmail').middleware(['checkToken'])
 
 
@@ -70,6 +70,36 @@ module.exports = Route.group(() => {
    *
    */
   Route.post('/resendValidation', 'AuthController.resendValidation')
+
+
+  /**
+   * @api {post} /api/auth/forgotPassword Forgot password
+   * @apiGroup Auth
+   *
+   * @apiDescription Route that sends email with password reset link.
+   *
+   * @apiParam {string} [email] Email of user who wants to reset password
+   * @apiParam {string} [username] Username of user who wants to reset password
+   *
+   */
+  Route.post('/forgotPassword', 'AuthController.forgotPassword')
+
+
+  /**
+   * @api {post} /api/auth/resetPassword Reset password
+   * @apiGroup Auth
+   *
+   * @apiDescription Route where you send password reset token together with new password
+   *
+   * @apiParam {string} token JWT token you got inside password reset email
+   * @apiParam {string} password New password for this user
+   * @apiParam {string} passwordRepeat Repeated password
+   *
+   */
+  // uses check token policy, because it parses custom JWT token created specifically for email
+  Route.post('/resetPassword', 'AuthController.resetPassword').middleware(['checkToken'])
+
+
 
   // ****************************************** NOTE ******************************************
   // KEEP THIS GUY AT THE BOTTOM!
