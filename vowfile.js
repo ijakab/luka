@@ -34,7 +34,7 @@ module.exports = (cli, runner) => {
      | Migrate the database before starting the tests.
      |
      */
-    await ace.call('migration:run')
+    // await ace.call('migration:run') todo wait adonis to fix bug with locales table not existing when running tests. after that remove migration from test script in package json
   })
 
   runner.after(async () => {

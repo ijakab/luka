@@ -48,6 +48,7 @@ test('Should login user using username or email', async ({client, validate}) => 
 
   responseEmail.assertStatus(200)
 
+  // validate both response payloads
   await validate([
     responseUsername.body.data[0],
     responseEmail.body.data[0]

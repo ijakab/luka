@@ -12,7 +12,7 @@ module.exports = function (suite) {
 
         const validation = await validate(validationObj, rules)
 
-        if (validation.fails()) throw new Error('Validation failed!')
+        if (validation.fails()) throw new Error(validation.messages()[0].message)
 
       }
 

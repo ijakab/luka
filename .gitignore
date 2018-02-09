@@ -12,6 +12,7 @@ tmp
 
 # Environment variables, never commit this file
 .env
+.env.test
 
 # PM2 configs
 pm2.stage.json

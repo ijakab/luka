@@ -3,10 +3,10 @@
 </head>
 
 <body>
-<a href="http://localhost:3333/api/auth/facebook/redirect">FACEBOOK LOGIN</a>
-<a href="http://localhost:3333/api/auth/google/redirect">GOOGLE LOGIN</a>
-<a href="http://localhost:3333/api/auth/linkedin/redirect">LINKEDIN LOGIN</a>
-<a href="http://localhost:3333/api/auth/unknown/redirect">UNKNOWN LOGIN</a>
+<a href="/api/auth/facebook/redirect">FACEBOOK LOGIN</a>
+<a href="/api/auth/google/redirect">GOOGLE LOGIN</a>
+<a href="/api/auth/linkedin/redirect">LINKEDIN LOGIN</a>
+<a href="/api/auth/unknown/redirect">UNKNOWN LOGIN</a>
 </body>
 
 
@@ -33,7 +33,7 @@
 
       alert('OAUTH REDIRECT CALLBACK DETECTED')
 
-      $.post('http://localhost:3333/api/auth/' + GetURLParameter('socialAuthSource'), {
+      $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
         token: GetURLParameter('code')
       }, function (data) {
         alert('check console!')

@@ -1,21 +1,153 @@
 'use strict'
 
 const {test, trait} = use('Test/Suite')('Auth - register main')
+const Env = use('Env')
+const User = use('App/Models/User')
+const _ = use('lodash')
+const jwt = use('jsonwebtoken')
 
 trait('Test/ApiClient')
 trait('App/Traits/Test/Validate')
+trait('App/Traits/Test/Sleep')
+trait('App/Traits/Test/GetEmail')
 
 const testData = require('../../testData')
 const testUser = testData.testUser
 
+let emailToken
 
-test('Register user', async ({client, validate}) => {
+test('Register user and check event&email', async ({client, validate, getEmail, assert}) => {
 
   const response = await client.post('/api/auth/register').send(testUser).end()
-
-  await validate(response.body.data[0], testData.validation.user)
-
   response.assertStatus(200)
+
+  // catch sent email using getEmail trait
+  const recentEmail = await getEmail()
+
+  assert.equal(_.first(recentEmail.message.to).address, testUser.email)
+  // check if jwt token is inside email html, and fetch it for later use
+  try {
+    emailToken = recentEmail.message.html.split(/href=.*?token\=(.+)?"/gmi)[1]
+  } catch (err) {
+    throw new Error('Email token was not found using regex pattern inside email sent to user on registration!')
+  }
+
+})
+
+test('Should not login user while account is not verified', async ({client}) => {
+
+  const response = await client.post('/api/auth/login').send({
+    username: testUser.username,
+    password: testUser.password
+  }).end()
+
+  response.assertStatus(403)
+
+})
+
+
+test('Should not validate email of user when wrong token is sent', async ({client, sleep}) => {
+
+  const noTokenInPayload = await client.post('/api/auth/validateEmail').send().end()
+
+  const totallyWrongResponse = await client.post('/api/auth/validateEmail').send({token: 'WRONG TOKEN!'}).end()
+
+  // get real user from db
+  const user = await User.first()
+  const expiredToken = await jwt.sign({
+    mailValidation: user.id
+  }, Env.get('APP_KEY'), {
+    expiresIn: '1 second'
+  })
+
+  // wait that one second, and a little bit so token expires :)
+  await sleep(1337)
+
+  const validJwtButExpired = await client.post('/api/auth/validateEmail').send({
+    token: expiredToken
+  }).end()
+
+
+  const validJwtButNotValidToken = await client.post('/api/auth/validateEmail').send({
+    token: await jwt.sign({
+      mailValidation: user.id
+    }, 'Wrong app key! Token was forged by some nasty guy', {
+      expiresIn: '1 day'
+    })
+  }).end()
+
+
+  // also validate response messages so we are sure token errors were thrown
+  validJwtButExpired.assertStatus(400)
+  validJwtButExpired.assertJSONSubset({
+    debug: {
+      untranslatedMsg: 'error.tokenExpired'
+    }
+  })
+
+  const otherResponses = [noTokenInPayload, totallyWrongResponse, validJwtButNotValidToken]
+  otherResponses.forEach((res) => {
+    res.assertStatus(400)
+    res.assertJSONSubset({
+      debug: {
+        untranslatedMsg: 'error.invalidToken'
+      }
+    })
+  })
+
+})
+
+
+test('It should resend validation for email of user', async ({client, getEmail, assert}) => {
+
+  const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
+  response.assertStatus(200)
+
+  // catch sent email using getEmail trait
+  const recentEmail = await getEmail()
+
+  assert.equal(_.first(recentEmail.message.to).address, testUser.email)
+  // check if jwt token is inside email html, and fetch it for later use
+  try {
+    emailToken = recentEmail.message.html.split(/href=.*?token\=(.+)?"/gmi)[1]
+  } catch (err) {
+    throw new Error('Email token was not found using regex pattern inside email sent to user on registration!')
+  }
+
+})
+
+
+test('Should validate email if token is sent correctly', async ({client}) => {
+
+  const response = await client.post('/api/auth/validateEmail').send({token: emailToken}).end()
+  response.assertStatus(200)
+
+})
+
+
+test('It should respond that email is already validated', async ({client, getEmail, assert}) => {
+
+  const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
+  response.assertStatus(400)
+  response.assertJSONSubset({
+    debug: {
+      untranslatedMsg: 'auth.emailAlreadyValidated'
+    }
+  })
+
+
+})
+
+test('It should also respond that email is already validated if email is typed wrong', async ({client, getEmail, assert}) => {
+  // this is to prevent people of using this route to fetch emails in our db
+  const response = await client.post('/api/auth/resendValidation').send({resendEmail: 'somestrangeguy@gmail.com'}).end()
+  response.assertStatus(400)
+  response.assertJSONSubset({
+    debug: {
+      untranslatedMsg: 'auth.emailAlreadyValidated'
+    }
+  })
+
 })
 
 

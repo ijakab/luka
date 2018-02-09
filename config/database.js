@@ -35,14 +35,6 @@ module.exports = {
     debug: Env.get('DB_DEBUG', false)
   },
 
-  testDb: {
-    client: 'sqlite3',
-    connection: {
-      filename: Helpers.databasePath(`${Env.get('TEST_DB_DATABASE', 'test')}.sqlite`)
-    },
-    useNullAsDefault: true,
-    debug: Env.get('TEST_DB_DEBUG', false)
-  },
 
   /*
    |--------------------------------------------------------------------------
