@@ -22,7 +22,8 @@ module.exports = async function (existingResponse, locale) {
     message = (data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message || '') : '')
   }
 
-  // translate message if needed
+  // translate message if needed and store old reference...
+  const untranslatedMsg = message
   message = translateService(locale, message)
 
   // create payload
@@ -31,11 +32,13 @@ module.exports = async function (existingResponse, locale) {
     message: message
   }
 
-  // show errors when developing
+  // show errors and useful info when developing
   if (node_env !== 'production' || debug) {
 
+    payload.debug = {untranslatedMsg}
+
     if (existingResponse instanceof Error) {
-      payload.error = {details: existingResponse, stack: existingResponse.stack}
+      payload.debug.error = {details: existingResponse, stack: existingResponse.stack}
     }
   }
 

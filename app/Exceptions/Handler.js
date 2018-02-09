@@ -27,11 +27,13 @@ class ExceptionHandler {
       case 'TokenExpiredError':
       case 'ExpiredJwtToken':
         error.message = 'error.tokenExpired'
+        error.status = 400
         break
       case 'InvalidJwtToken':
       case 'JsonWebTokenError':
       case 'InvalidRefreshToken':
         error.message = 'error.invalidToken'
+        error.status = 400
         break
     }
 
