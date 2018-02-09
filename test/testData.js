@@ -2,7 +2,7 @@ module.exports = {
   testUser: {
     username: 'oO-tester-_-',
     fullName: 'Tester Test',
-    email: 'test@email.com',
+    email: 'test@gmail.com',
     password: 'testPass123',
     passwordRepeat: 'testPass123'
   },

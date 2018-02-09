@@ -16,7 +16,7 @@ const testUser = testData.testUser
 
 let emailToken
 
-test('Register user and check event&email', async ({client, validate, getEmail, assert}) => {
+test('Register user and check email', async ({client, validate, getEmail, assert}) => {
 
   const response = await client.post('/api/auth/register').send(testUser).end()
   response.assertStatus(200)
@@ -34,6 +34,73 @@ test('Register user and check event&email', async ({client, validate, getEmail, 
 
 })
 
+test('Should NOT register same user', async ({client}) => {
+
+  const response = await client.post('/api/auth/register').send(testUser).end()
+
+  response.assertStatus(400)
+})
+
+test('Should NOT register user with invalid or same email (also using .+ for gmail)', async ({client}) => {
+
+  const emailTester = {
+    fullName: 'Email tester',
+    username: 'validUsername',
+    password: 'testPass123',
+    passwordRepeat: 'testPass123'
+  }
+
+  const invalidEmails = ['nomonkey.gmail.com', 'ilooksovalid@gmail..com', 'ihaveacomma@gmail,com']
+  // valid email is test@gmail.com
+  const validExistingEmails = ['t.e.s.t@gmail.com', 'test+04@gmail.com'] // check . and + syntax as same email if gmail account
+
+  await Promise.all(invalidEmails.map(async (email) => {
+
+    const userPayload = Object.assign({email}, emailTester)
+
+    const response = await client.post('/api/auth/register').send(userPayload).end()
+    response.assertStatus(400)
+  }))
+
+
+  // test if valid emails return emailExists error if slightly edited
+  await Promise.all(validExistingEmails.map(async (email) => {
+
+    const userPayload = Object.assign({email}, emailTester)
+
+    const response = await client.post('/api/auth/register').send(userPayload).end()
+    response.assertStatus(400)
+    response.assertJSONSubset({
+      debug: {
+        untranslatedMsg: 'auth.emailExists'
+      }
+    })
+  }))
+})
+
+test('Should NOT register user with special chars inside username', async ({client}) => {
+
+  const usernameTester = {
+    fullName: 'Username tester',
+    email: 'username_tester@gmail.com',
+    password: 'testPass123',
+    passwordRepeat: 'testPass123'
+  }
+
+  const usernames = ['$$$richy$$$', 'I have space chars', 'NO', 'My-username-is-waaaaaaay-to-loooong']
+
+  await Promise.all(usernames.map(async (username) => {
+
+    const userPayload = Object.assign({username}, usernameTester)
+
+    const response = await client.post('/api/auth/register').send(userPayload).end()
+
+    response.assertStatus(400)
+  }))
+
+
+})
+
 test('Should not login user while account is not verified', async ({client}) => {
 
   const response = await client.post('/api/auth/login').send({
@@ -44,7 +111,6 @@ test('Should not login user while account is not verified', async ({client}) => 
   response.assertStatus(403)
 
 })
-
 
 test('Should not validate email of user when wrong token is sent', async ({client, sleep}) => {
 
@@ -97,7 +163,6 @@ test('Should not validate email of user when wrong token is sent', async ({clien
 
 })
 
-
 test('It should resend validation for email of user', async ({client, getEmail, assert}) => {
 
   const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
@@ -116,14 +181,17 @@ test('It should resend validation for email of user', async ({client, getEmail, 
 
 })
 
+test('Should validate email if token is sent correctly', async ({client, assert}) => {
 
-test('Should validate email if token is sent correctly', async ({client}) => {
+  const user = await User.first()
+
+  // check if he is already validated
+  assert.isNotTrue(user.validated)
 
   const response = await client.post('/api/auth/validateEmail').send({token: emailToken}).end()
   response.assertStatus(200)
 
 })
-
 
 test('It should respond that email is already validated', async ({client, getEmail, assert}) => {
 
@@ -147,37 +215,5 @@ test('It should also respond that email is already validated if email is typed w
       untranslatedMsg: 'auth.emailAlreadyValidated'
     }
   })
-
-})
-
-
-test('Should NOT register same user', async ({client}) => {
-
-  const response = await client.post('/api/auth/register').send(testUser).end()
-
-  response.assertStatus(400)
-})
-
-
-test('Should NOT register user with special chars inside username', async ({client}) => {
-
-  const usernameTester = {
-    fullName: 'Username tester',
-    email: 'username_tester@email.com',
-    password: 'testPass123',
-    passwordRepeat: 'testPass123'
-  }
-
-  const usernames = ['$$$richy$$$', 'I have space chars', 'NO', 'My-username-is-waaaaaaay-to-loooong']
-
-  await Promise.all(usernames.map(async (username) => {
-
-    const userPayload = Object.assign({username}, usernameTester)
-
-    const response = await client.post('/api/auth/register').send(userPayload).end()
-
-    response.assertStatus(400)
-  }))
-
 
 })
