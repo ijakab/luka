@@ -128,6 +128,12 @@ class LocaleSeeder {
       {
         locale: 'en',
         group: 'error',
+        item: 'tooManyRequests',
+        text: 'Too many attempts... Slow down'
+      },
+      {
+        locale: 'en',
+        group: 'error',
         item: 'tokenExpired',
         text: 'Token has expired'
       },

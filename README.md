@@ -7,11 +7,11 @@ Jumpstart for a new backend project based on AdonisJS framework.
 ## Installation
 Just fork this project and use it as you would use any other AdonisJS project
 
-After cloning, edit your .env file (c/p .env.example) and run `npm run prepare` to speed things up.
+After cloning, edit your .env file (c/p .env.example) and run `npm run init` to speed things up.
 
 ## What's in a box?
 - Cleaned up AdonisJS installation for API usage only
-- Slug generator logic *
+- Throttle request logic to prevent bot spam on public routes
 - Basic User model with separate Account model
 - Account model has support for Google+, Facebook and LinkedIn social login
 - Logic to connect social accounts together with standard
@@ -28,7 +28,7 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run prepare` 
 
 ## package.json scripts
 
-`npm run prepare` - runs migrations, DB seeds and builds docs for you. Run this after configuring .env
+`npm run init` - runs migrations, DB seeds and builds docs for you. Run this after configuring .env
 
 `npm run test` - runs unit tests
 

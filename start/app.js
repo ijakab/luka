@@ -20,7 +20,9 @@ const providers = [
   '@adonisjs/antl/providers/AntlProvider',
   '@adonisjs/framework/providers/ViewProvider',
   '@adonisjs/mail/providers/MailProvider',
-  '@adonisjs/ally/providers/AllyProvider'
+  '@adonisjs/ally/providers/AllyProvider',
+  'adonis-cache/providers/CacheProvider',
+  'adonis-throttle-requests/providers/ThrottleRequestsProvider'
 ]
 
 /*
@@ -33,6 +35,7 @@ const providers = [
  |
  */
 const aceProviders = [
+  'adonis-cache/providers/CommandsProvider',
   '@adonisjs/lucid/providers/MigrationsProvider',
   '@adonisjs/vow/providers/VowProvider'
 ]
@@ -49,7 +52,9 @@ const aceProviders = [
  |   { Route: 'Adonis/Src/Route' }
  |
  */
-const aliases = {}
+const aliases = {
+  Cache: 'Adonis/Addons/Cache'
+}
 
 /*
  |--------------------------------------------------------------------------

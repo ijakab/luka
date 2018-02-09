@@ -34,6 +34,7 @@ const globalMiddleware = [
 |
 */
 const namedMiddleware = {
+  throttle: 'Adonis/Middleware/ThrottleRequests',
   checkToken: 'App/Middleware/Named/CheckToken',
   getUser: 'App/Middleware/Named/GetUser',
 }

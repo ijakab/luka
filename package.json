@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "prepare": "node ace migration:run && node ace seed && npm run docs",
+    "init": "node ace migration:run && node ace seed && npm run docs",
     "refresh": "node ace migration:refresh && node ace seed",
     "docs": "rimraf public/docs && apidoc -i app/ -o public/docs",
     "test": "(export ENV_PATH=.env.test|| set ENV_PATH=.env.test) && node ace migration:run && node ace seed && node ace test --bail"
@@ -27,7 +27,8 @@
     "@adonisjs/mail": "^3.0.5",
     "@adonisjs/validator": "^5.0.0",
     "@adonisjs/vow": "^1.0.14",
-    "got": "^8.0.3",
+    "adonis-cache": "^0.3.1",
+    "adonis-throttle-requests": "^1.0.1",
     "mysql": "^2.15.0",
     "shortid": "^2.2.8"
   },
