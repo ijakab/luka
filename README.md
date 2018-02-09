@@ -11,7 +11,7 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 
 ## What's in a box?
 - Cleaned up AdonisJS installation for API usage only
-- Throttle request logic to prevent bot spam on public routes
+- Throttle request logic to prevent bot spam on public routes (returns status 429)
 - Basic User model with separate Account model
 - Account model has support for Google+, Facebook and LinkedIn social login
 - Logic to connect social accounts together with standard

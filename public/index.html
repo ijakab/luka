@@ -42,6 +42,21 @@
       })
 
     }
+
+    // also handle email validations :)
+    if (GetURLParameter('token')) {
+
+      alert('EMAIL VALIDATION DETECTED')
+
+      $.post('/api/auth/validateEmail', {
+        token: GetURLParameter('token')
+      }, function (data) {
+        alert('check console!')
+        console.log('VALIDATED EMAIL')
+        console.log(data)
+      })
+
+    }
   })
 
 
