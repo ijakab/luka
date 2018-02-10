@@ -46,7 +46,7 @@
     // also handle email validations :)
     if (GetURLParameter('token')) {
 
-      alert('EMAIL VALIDATION DETECTED')
+      alert('EMAIL VALIDATION DETECTED... IF THIS WAS RESET PASSWORD REQUEST, PLEASE IMPLEMENT YOUR LOGIC CAUSE IT WILL NOT WORK :)')
 
       $.post('/api/auth/validateEmail', {
         token: GetURLParameter('token')

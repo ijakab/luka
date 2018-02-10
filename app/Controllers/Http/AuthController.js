@@ -97,7 +97,7 @@ class AuthController {
     // generate tokens
     const token = await auth
       .withRefreshToken()
-      .generate(user) // you can add custom payload as second input to generate(u,payload)...
+      .generate(user, {language: user.language}) // we are adding user language to payload for response translations
 
     response.ok({user, token: token.token, refreshToken: token.refreshToken})
   }
@@ -199,7 +199,7 @@ class AuthController {
     // whatever happens... new user, or existing one... generate token for him
     const token = await auth
       .withRefreshToken()
-      .generate(user) // you can add custom payload as second input to generate(u,payload)...
+      .generate(user, {language: user.language}) // we are adding user language to payload for response translations
 
 
     response.ok({user, token: token.token, refreshToken: token.refreshToken})

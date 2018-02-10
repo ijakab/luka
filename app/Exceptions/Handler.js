@@ -1,6 +1,8 @@
 'use strict'
 
 const formatResponse = use('App/Services/FormatResponse')
+const {decode} = use('jsonwebtoken')
+const _ = use('lodash')
 
 /**
  * This class handles all exceptions thrown during
@@ -9,18 +11,14 @@ const formatResponse = use('App/Services/FormatResponse')
  * @class ExceptionHandler
  */
 class ExceptionHandler {
-  /**
-   * Handle exception thrown during the HTTP lifecycle
-   *
-   * @method handle
-   *
-   * @param  {Object} error
-   * @param  {Object} options.request
-   * @param  {Object} options.response
-   *
-   * @return {void}
-   */
-  async handle(error, {response, locale}) {
+
+  async handle(error, ctx) {
+
+    // ****************************************** NOTE ******************************************
+    // This guy uses similar logic as global middleware HandleResponse.
+    // Is you are updating HandleResponse... be sure to check this one too...
+    // When Exception is thrown, global middleware is not called, so this guy needs format logic too
+    // ****************************************** **** ******************************************
 
     // translate some default errors
     switch (error.name) {
@@ -39,7 +37,17 @@ class ExceptionHandler {
 
     const status = error.status || error.statusCode || 500
 
-    response.status(status).send(await formatResponse(error, locale))
+    // if token is present inside request, try to get user locale from token instead of guessing depending of request
+    let locale, token
+    if (ctx.token) {
+      locale = _.get(ctx.token, 'data.language')
+    } else if (ctx.user) {
+      locale = ctx.user.language
+    } else if (token = ctx.auth.getAuthHeader()) { // one '=' is intentional!
+      locale = _.get(decode(token), 'data.language')
+    }
+
+    ctx.response.status(status).send(await formatResponse(error, ctx.locale || locale))
 
   }
 

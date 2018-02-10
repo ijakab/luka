@@ -17,7 +17,8 @@ module.exports = {
 
     // generate validate token for email
     const mailToken = await jwt.sign({
-      mailValidation: mainAccount.id
+      mailValidation: mainAccount.id,
+      data: {language: user.language}
     }, APP_KEY, {
       expiresIn: '1 day'
     })
@@ -42,7 +43,8 @@ module.exports = {
 
     // generate validate token for email
     const mailToken = await jwt.sign({
-      mailValidation: mainAccount.id
+      mailValidation: mainAccount.id,
+      data: {language: user.language}
     }, APP_KEY, {
       expiresIn: '1 day'
     })
@@ -68,9 +70,10 @@ module.exports = {
 
     // generate validate token for email
     const mailToken = await jwt.sign({
-      passwordReset: mainAccount.id
+      passwordReset: mainAccount.id,
+      data: {language: user.language}
     }, APP_KEY, {
-      expiresIn: '1 hour'
+      expiresIn: '15 minutes'
     })
 
 

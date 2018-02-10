@@ -12,7 +12,7 @@ const Server = use('Server')
 |
 */
 const globalMiddleware = [
-  'App/Middleware/Global/HandleResponse',
+  'App/Middleware/Global/HandleResponse', // keep this guy at the top!
   'Adonis/Middleware/BodyParser'
 ]
 
