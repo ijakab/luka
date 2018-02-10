@@ -8,7 +8,7 @@ module.exports = Route.group(() => {
    * @api {post} /api/auth/register Register
    * @apiGroup Auth
    *
-   * @apiDescription Register route. After register user will be logged in automatically (response is the same as login route).
+   * @apiDescription After register user user will get email for email confirmation.
    * If user already logged in using social networks before and email is the same, accounts will be connected automatically.
    *
    * @apiParam {string} fullName Full name of a user
@@ -136,7 +136,8 @@ module.exports = Route.group(() => {
    *
    * @apiDescription Response is same as standard login. This route automatically links social network profile with
    * users account if there is one. If there is no user account, then new account will be created for this user.
-   * Token is acquired after /auth/:network/redirect successful call
+   * Token (often call "code" instead of "token" in social responses) is acquired after /auth/:network/redirect
+   * successful call on web or you'll get accessToken immediately if using mobile app social SDKs.
    *
    * @apiParam {routeParam} network Name of social network you are using (facebook, google, linkedin)
    * @apiParam {string} [token] Token you got after successful oAuth to one of social networks (this or accessToken is required)
