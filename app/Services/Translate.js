@@ -60,6 +60,12 @@ function handleMissingTranslation(err, locale, message) {
       await Antl.bootLoader()
     })()
   } catch (err) {
-    Logger.error('TRANSLATE SERVICE - ', err) // todo make helper for handling async errors in db...
+
+    // TODO Read NOTE below
+    // ****************************************** NOTE ******************************************
+    // This error will not block user... If you think this error is important, for example, for
+    // admin... Please implement some kind of database model to keep track of errors like these
+    // ****************************************** **** ******************************************
+    Logger.error('TRANSLATE SERVICE - ', err)
   }
 }

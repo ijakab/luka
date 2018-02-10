@@ -40,7 +40,15 @@ module.exports = {
           .subject(subject)
       })
     } catch (err) {
-      Logger.error('MAIL SERVICE - ', err) // todo make helper for handling async errors in db...
+      // TODO Read NOTE below
+      // ****************************************** NOTE ******************************************
+      // Services like this often happen in background. Called by events or just called without
+      // await keyword that would wait for it to finish. Because of that reason it's a little bit
+      // harder to notify user about error that could have happened.
+      //
+      // Think about async events error handling in your app and adapt this code accordingly!
+      // ****************************************** **** ******************************************
+      Logger.error('MAIL SERVICE - ', err)
     }
 
 

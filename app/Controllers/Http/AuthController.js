@@ -155,8 +155,12 @@ class AuthController {
 
         let avatar
         if (userObject.avatar) {
-          // todo
-          // upload avatar if there is avatar
+          // TODO Read NOTE below
+          // ****************************************** NOTE ******************************************
+          // Depending of your logic, you will want to download this avatar from social media, and
+          // save it locally to your server. Maybe you will have model for files... or whatever, so
+          // please edit this as you wish.
+          // ****************************************** **** ******************************************
           avatar = userObject.avatar
         }
 
