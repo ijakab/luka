@@ -102,7 +102,6 @@ class AuthController {
     response.ok({user, token: token.token, refreshToken: token.refreshToken})
   }
 
-
   async socialRedirect({request, response, params, ally}) {
 
     if (request.input('linkOnly')) return response.ok({
@@ -115,7 +114,10 @@ class AuthController {
   async socialLogin({request, response, params, ally, auth, locale}) {
 
     // wire up post as get... so ally can recognize social code
-    ally._request._qs = {code: request.input('token')}
+    // todo accessToken is still not working...
+    // todo check here: https://github.com/adonisjs/adonis-ally/issues/29
+    // todo and here: https://forum.adonisjs.com/t/adonis-ally-and-ios-facebook-login/736
+    ally._request._qs = {code: request.input('token'), accessToken: request.input('accessToken')}
 
     const socialUser = await ally.driver(params.network).getUser()
 
