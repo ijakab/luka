@@ -84,13 +84,15 @@ class AuthController {
 
     const {user, mainAccount} = await this._findLoginUser(allParams)
 
-    if (!mainAccount || !user) return response.notFound()
+    // if we don't have user in db, respond with badRequest invalid username or password instead of 404
+    if (!mainAccount || !user) return response.badRequest('auth.invalidPasswordOrUsername')
+
     if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')
 
     // check pass
     const validPass = await Hash.verify(allParams.password, mainAccount.password)
 
-    if (!validPass) return response.badRequest('auth.invalidPassword')
+    if (!validPass) return response.badRequest('auth.invalidPasswordOrUsername')
 
     // generate tokens
     const token = await auth

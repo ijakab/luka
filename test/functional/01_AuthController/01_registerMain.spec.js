@@ -179,6 +179,23 @@ test('It should resend validation for email of user', async ({client, getEmail, 
     throw new Error('Email token was not found using regex pattern inside email sent to user on registration!')
   }
 
+  assert.exists(emailToken)
+
+})
+
+test('Should not allow password reset while account is not activated', async ({client}) => {
+
+  const response = await client.post('/api/auth/forgotPassword').send({
+    username: testUser.username
+  }).end()
+  response.assertStatus(403)
+
+  response.assertJSONSubset({
+    debug: {
+      untranslatedMsg: 'auth.mailNotValidated'
+    }
+  })
+
 })
 
 test('Should validate email if token is sent correctly', async ({client, assert}) => {
@@ -193,7 +210,7 @@ test('Should validate email if token is sent correctly', async ({client, assert}
 
 })
 
-test('It should respond that email is already validated', async ({client, getEmail, assert}) => {
+test('It should respond that email is already validated', async ({client}) => {
 
   const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
   response.assertStatus(400)
@@ -206,7 +223,7 @@ test('It should respond that email is already validated', async ({client, getEma
 
 })
 
-test('It should also respond that email is already validated if email is typed wrong', async ({client, getEmail, assert}) => {
+test('It should also respond that email is already validated if email is typed wrong', async ({client}) => {
   // this is to prevent people of using this route to fetch emails in our db
   const response = await client.post('/api/auth/resendValidation').send({resendEmail: 'somestrangeguy@gmail.com'}).end()
   response.assertStatus(400)

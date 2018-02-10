@@ -22,7 +22,7 @@ class LocaleSeeder {
       {
         locale: 'en',
         group: 'auth',
-        item: 'invalidPassword',
+        item: 'invalidPasswordOrUsername',
         text: 'Invalid password or username'
       },
       {

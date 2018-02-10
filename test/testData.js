@@ -3,7 +3,7 @@ module.exports = {
     username: 'oO-tester-_-',
     fullName: 'Tester Test',
     email: 'test@gmail.com',
-    password: 'testPass123',
+    password: 'testPass123', // later on in test it will be changed to Pass123
     passwordRepeat: 'testPass123'
   },
 
