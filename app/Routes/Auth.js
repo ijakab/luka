@@ -139,7 +139,9 @@ module.exports = Route.group(() => {
    * Token is acquired after /auth/:network/redirect successful call
    *
    * @apiParam {routeParam} network Name of social network you are using (facebook, google, linkedin)
-   * @apiParam {string} token Token you got after successful oAuth to one of social networks
+   * @apiParam {string} [token] Token you got after successful oAuth to one of social networks (this or accessToken is required)
+   * // todo check AuthController socialLogin about accessToken
+   * @apiParam {string} [accessToken] If you are using mobile SDKs for social auth, you immediately get accessToken, so use this instead of token (this or token is required)
    *
    */
   Route.post('/:network', 'AuthController.socialLogin')
