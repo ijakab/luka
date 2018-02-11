@@ -97,3 +97,8 @@ If translation is not found for required locale in database table locales... str
 
 Best example is inside **app/Services/Mail.js** and inside email templates (**resource/views/email/\*.edge**). 
 
+## Tips and tricks
+
+- For testing emails, there is a great site: [MailTrap](https://mailtrap.io/)
+- If you really want to send message response with validation errors when user fails to send some keys, you can freely use response.badRequest(validation.messages()). Response formatter will handle all the rest.
+- ... will add more :) #todo
