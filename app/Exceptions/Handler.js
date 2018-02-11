@@ -3,8 +3,6 @@
 const BaseExceptionHandler = use('BaseExceptionHandler')
 
 const formatResponse = use('App/Services/FormatResponse')
-const {decode} = use('jsonwebtoken')
-const _ = use('lodash')
 
 /**
  * This class handles all exceptions thrown during
@@ -14,7 +12,7 @@ const _ = use('lodash')
  */
 class ExceptionHandler extends BaseExceptionHandler {
 
-  async handle(error, ctx) {
+  async handle(error, {response, locale}) {
 
     // ****************************************** NOTE ******************************************
     // This guy uses similar logic as global middleware HandleResponse.
@@ -39,17 +37,8 @@ class ExceptionHandler extends BaseExceptionHandler {
 
     const status = error.status || error.statusCode || 500
 
-    // if token is present inside request, try to get user locale from token instead of guessing depending of request
-    let locale, token
-    if (ctx.token) {
-      locale = _.get(ctx.token, 'data.language')
-    } else if (ctx.user) {
-      locale = ctx.user.language
-    } else if (token = ctx.auth.getAuthHeader()) { // one '=' is intentional!
-      locale = _.get(decode(token), 'data.language')
-    }
 
-    ctx.response.status(status).send(await formatResponse(error, ctx.locale || locale))
+    response.status(status).send(await formatResponse(error, locale))
 
   }
 

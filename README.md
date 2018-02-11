@@ -99,6 +99,7 @@ Best example is inside **app/Services/Mail.js** and inside email templates (**re
 
 ## Tips and tricks
 
+- If you want to translate all responses to user language, use `Accept-Language` header or `?lang` query parameter in every request (ex. send values like: en, de, fr, xx)
 - For testing emails, there is a great site: [MailTrap](https://mailtrap.io/)
 - If you really want to send message response with validation errors when user fails to send some keys, you can freely use response.badRequest(validation.messages()). Response formatter will handle all the rest.
 - ... will add more :) #todo

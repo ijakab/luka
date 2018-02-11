@@ -99,7 +99,7 @@ class AuthController {
     // generate tokens
     const token = await auth
       .withRefreshToken()
-      .generate(user, {language: user.language}) // we are adding user language to payload for response translations
+      .generate(user) // you can add token payload if needed as second parameter
 
     response.ok({user, token: token.token, refreshToken: token.refreshToken})
   }
@@ -201,7 +201,7 @@ class AuthController {
     // whatever happens... new user, or existing one... generate token for him
     const token = await auth
       .withRefreshToken()
-      .generate(user, {language: user.language}) // we are adding user language to payload for response translations
+      .generate(user) // you can add token payload if needed as second parameter
 
 
     response.ok({user, token: token.token, refreshToken: token.refreshToken})
