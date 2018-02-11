@@ -223,13 +223,13 @@ test('It should respond that email is already validated', async ({client}) => {
 
 })
 
-test('It should also respond that email is already validated if email is typed wrong', async ({client}) => {
+test('Resend validation should fail with 404 if wrong email', async ({client}) => {
   // this is to prevent people of using this route to fetch emails in our db
   const response = await client.post('/api/auth/resendValidation').send({resendEmail: 'somestrangeguy@gmail.com'}).end()
-  response.assertStatus(400)
+  response.assertStatus(404)
   response.assertJSONSubset({
     debug: {
-      untranslatedMsg: 'auth.emailAlreadyValidated'
+      untranslatedMsg: 'auth.emailOrUsernameNotFound'
     }
   })
 

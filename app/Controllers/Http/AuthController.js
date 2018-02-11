@@ -244,8 +244,8 @@ class AuthController {
     // find main account for this email
     const mainAccount = await Account.query().where({'email': resendEmail, type: 'main'}).first()
 
-    // we are sending email validated on unknown email on purpose, so no one can guess which email exists in db
-    if (!mainAccount || mainAccount.validated) return response.badRequest('auth.emailAlreadyValidated')
+    if (!mainAccount) return response.notFound('auth.emailOrUsernameNotFound')
+    if (mainAccount.validated) return response.badRequest('auth.emailAlreadyValidated')
 
     // send validation email in async way
     Event.fire('user::resendValidation', {mainAccount})
@@ -270,9 +270,8 @@ class AuthController {
     // find user and his main account
     const {user, mainAccount} = await this._findLoginUser(allParams)
 
-    // if we don't find main account in our db, we will mimic OK response so no one knows that we don't have this user...
-    if (!mainAccount || !user) return response.ok('auth.forgotPasswordTokenSent')
-
+    if(!user) return response.notFound('auth.emailOrUsernameNotFound')
+    if(!mainAccount) return response.notFound('auth.mainAccountNotFound')
 
     // also check if this user validated his account at all
     if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')

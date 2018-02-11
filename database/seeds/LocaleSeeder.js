@@ -22,6 +22,18 @@ class LocaleSeeder {
       {
         locale: 'en',
         group: 'auth',
+        item: 'emailOrUsernameNotFound',
+        text: 'User with this email or username is not existing'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
+        item: 'mainAccountNotFound',
+        text: 'User is not registered with his main account (try social media login)'
+      },
+      {
+        locale: 'en',
+        group: 'auth',
         item: 'invalidPasswordOrUsername',
         text: 'Invalid password or username'
       },
