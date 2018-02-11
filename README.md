@@ -15,18 +15,18 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 - Cleaned up AdonisJS installation for API usage only
 - Throttle request logic to prevent bot spam on public routes (returns status 429)
 - Basic User model with separate Account model
-- Account model has support for Google+, Facebook and LinkedIn social login
+- Account model has support for Google+, Facebook, LinkedIn and other popular networks
 - Logic to connect social accounts together with standard
 - User signup and login logic using JWT tokens
 - Refresh JWT token logic
-- Email service with templates
-- User password reset and account e-mail confirmation
-- Custom responses with built-in response format logic
-- Built-in language translation for response messages, emails, whatever
+- Email service with templates and translations
+- User forgot/reset password and account e-mail confirmation logic
+- Custom responses with built-in response formatter
+- Built-in language translation for response messages, emails, etc.
 - Auto served public folder via static serve and middleware for basic auth for static files
 - Auto documentation builder script using apidoc
-- Default basic pm2 config for staging/production purposes
-- Basic unit test logic bootstrap
+- Basic unit test bootstrap
+- Few test traits to make tests easier to write (catch email, validate response, sleep)
 
 ## package.json scripts
 
@@ -37,6 +37,14 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 `npm run docs` - builds documentation using [apidoc specification](http://apidocjs.com/)
 
 `npm run refresh` - helper script while developing... Refreshes migrations and runs DB seed
+
+## PM2 configuration and starting process
+
+Adonis handles environments with .env files... So there is no need to specify pm2 config files at all in most cases.
+
+Just run: `pm2 start server.js --name "PORT APP_NAME"` and adonis will start project using .env file...
+
+Example: `pm2 start server.js --name "1337 ADONIS STARTER API"`
 
 ## Adonis starter gotchas
 
