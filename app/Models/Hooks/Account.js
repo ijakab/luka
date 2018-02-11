@@ -20,9 +20,9 @@ AccountHook.hashPassword = async (accountInstance) => {
   if (accountInstance.password) {
     accountInstance.password = await Hash.make(accountInstance.password)
 
-    // also if this is update of existing, invalidate tokens
+    // also if this is update of existing, invalidate tokens by deleting them
     if (accountInstance.$persisted) {
-      await Token.query().where({user_id: accountInstance.user_id, is_revoked: false}).update({is_revoked: true})
+      await Token.query().where({user_id: accountInstance.user_id, is_revoked: false}).delete()
     }
 
   }
