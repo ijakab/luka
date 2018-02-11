@@ -1,5 +1,7 @@
 'use strict'
 
+const BaseExceptionHandler = use('BaseExceptionHandler')
+
 const formatResponse = use('App/Services/FormatResponse')
 const {decode} = use('jsonwebtoken')
 const _ = use('lodash')
@@ -10,7 +12,7 @@ const _ = use('lodash')
  *
  * @class ExceptionHandler
  */
-class ExceptionHandler {
+class ExceptionHandler extends BaseExceptionHandler {
 
   async handle(error, ctx) {
 
