@@ -28,7 +28,7 @@ class FormatResponseMiddleware {
     if (lazyBody.method !== 'redirect') {
 
       // handle error 429 for too many attempts
-      if (lazyBody.method === 'tooManyRequests') {
+      if (ctx.response.response.statusCode === 429) {
         lazyBody.content = 'error.tooManyRequests'
       }
 

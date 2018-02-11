@@ -28,14 +28,16 @@ class AuthController {
 
     if (validation.fails()) return response.badRequest()
 
-    // first we check if this email already exists in another account (fb, google, etc)
+    // first we check if this email already has MAIN account type
+    const existingMainAccount = await Account.query().where({email: allParams.email, type: 'main'}).getCount()
+
+    if (existingMainAccount) return response.badRequest('auth.emailExists')
+
+    // then... let's try to find any account for this email (user can have fb, google, etc. before main)
     const existingAccount = await Account.findBy('email', allParams.email)
 
-    // also try to fetch user profile of found account if any
+    // fetch user profile of found account if there is any accounts
     let user = existingAccount && await existingAccount.user().fetch()
-
-    // if there is a user, and he has main account... we can't create duplicate then
-    if (user && existingAccount.type === 'main') return response.badRequest('auth.emailExists')
 
     // if user is not existing, check username and create new user
     if (!user) {
@@ -236,7 +238,7 @@ class AuthController {
 
     const resendEmail = request.input('resendEmail')
 
-    // check if email was sent
+    // check if correct email format was sent
     if (!is.email(resendEmail)) return response.badRequest()
 
     // find main account for this email
