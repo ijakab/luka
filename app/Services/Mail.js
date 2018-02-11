@@ -6,7 +6,7 @@ const Logger = use('Logger')
 const defaultLocale = Env.get('APP_LOCALE', 'en')
 
 const User = use('App/Models/User')
-const translateService = use('App/Services/Translate')
+const translate = use('App/Helpers/Translate')
 
 const _ = use('lodash')
 
@@ -29,7 +29,7 @@ module.exports = {
     }
 
     // get subject from data, or try to get subject from translate service
-    const subject = translateService(data.locale || defaultLocale, data.subject || `${template}.subject`)
+    const subject = translate(data.locale || defaultLocale, data.subject || `${template}.subject`)
 
     // send email
     try {

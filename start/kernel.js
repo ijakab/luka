@@ -50,7 +50,7 @@ const namedMiddleware = {
 |
 */
 const serverMiddleware = [
-  'App/Middleware/Server/StaticAuth',
+  'App/Middleware/Server/StaticAuth', // keep this middleware BEFORE static middleware
   'Adonis/Middleware/Static',
   'Adonis/Middleware/Cors'
 ]

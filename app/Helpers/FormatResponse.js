@@ -4,7 +4,7 @@ const Env = use('Env')
 const debug = Env.get('DEBUG', false)
 const node_env = Env.get('NODE_ENV', 'development')
 
-const translateService = use('App/Services/Translate')
+const translate = use('App/Helpers/Translate')
 
 
 module.exports = async function (existingResponse, locale) {
@@ -24,7 +24,7 @@ module.exports = async function (existingResponse, locale) {
 
   // translate message if needed and store old reference...
   const untranslatedMsg = message
-  message = translateService(locale, message)
+  message = translate(locale, message)
 
   // create payload
   let payload = {

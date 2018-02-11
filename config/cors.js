@@ -58,7 +58,7 @@ module.exports = {
   | header. The value can be on of the following.
   |
   | Boolean: false - Disallow all
-  | String: Comma seperated list of allowed headers
+  | String: Comma separated list of allowed headers
   | Array - An array of allowed headers
   |
   */

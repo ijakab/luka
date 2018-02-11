@@ -2,7 +2,7 @@
 
 const BaseExceptionHandler = use('BaseExceptionHandler')
 
-const formatResponse = use('App/Services/FormatResponse')
+const formatResponse = use('App/Helpers/FormatResponse')
 
 /**
  * This class handles all exceptions thrown during

@@ -1,6 +1,6 @@
 'use strict'
 
-const formatResponse = use('App/Services/FormatResponse')
+const formatResponse = use('App/Helpers/FormatResponse')
 
 class FormatResponseMiddleware {
 

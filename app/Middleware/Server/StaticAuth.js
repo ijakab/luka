@@ -13,7 +13,7 @@
  * Then add configuration to auth.js configuration like:
  *
  staticAuth: {
- realm: 'Mepha Documentation',
+ realm: 'My Documentation',
  username: 'admin',
  password: 'mephaDocs',
  protectedUrls: ['/docs']

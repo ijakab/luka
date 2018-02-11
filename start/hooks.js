@@ -2,10 +2,10 @@ const {hooks} = require('@adonisjs/ignitor')
 
 hooks.after.providersBooted(() => {
   const View = use('View')
-  const translateService = use('App/Services/Translate')
+  const translate = use('App/Helpers/Translate')
 
   // expose translate function to views also...
   View.global('translate', function (message, options) {
-    return translateService(this.resolve('locale'), message, options)
+    return translate(this.resolve('locale'), message, options)
   })
 })
