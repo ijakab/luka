@@ -3,9 +3,11 @@
 const Model = use('Model')
 
 class Account extends Model {
+
   static boot() {
     super.boot()
 
+    this.addTrait('CastDate')
     // run before create and before update...
     this.addHook('beforeSave', 'Account.hashPassword')
   }
@@ -17,6 +19,7 @@ class Account extends Model {
   static get hidden () {
     return ['password']
   }
+
 }
 
 module.exports = Account

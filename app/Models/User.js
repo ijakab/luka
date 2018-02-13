@@ -4,6 +4,16 @@ const Model = use('Model')
 
 class User extends Model {
 
+  // --- CONFIGURATION
+  static boot() {
+    super.boot()
+    this.addTrait('CastDate')
+  }
+
+  static get dates() {
+    return super.dates.concat(['dob'])
+  }
+
   // --- RELATIONS
   accounts() {
     return this.hasMany('App/Models/Account')
@@ -11,11 +21,6 @@ class User extends Model {
 
   tokens() {
     return this.hasMany('App/Models/Token')
-  }
-
-  // --- CONFIGURATION
-  static get dates() {
-    return super.dates.concat(['dob'])
   }
 
   // --- CUSTOM
