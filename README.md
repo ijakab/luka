@@ -58,6 +58,23 @@ Benefits of using this logic is that you can separate routes in easier to naviga
 
 Please check the logic inside *start/routes.js* and *app/Routes* to better understand how it can be used.
 
+### Dates format in responses
+
+This starter includes CastDate Models trait. This should be used inside every model like this:
+
+```javascript
+static boot() {
+  super.boot()
+  this.addTrait('CastDate') // <-- just after super.boot, add CastDate trait
+}
+```
+
+CastDate trait by default formats all dates inside model using unix timestamp (milliseconds). But if you need any other format you can pass second argument to .addTrait like this:
+
+`this.addTrait('CastDate', {format: 'DD.MM.YYYY. HH:mm'})`
+
+It accepts all rules from [moment.js format method](http://momentjs.com/docs/#/displaying/format/). Defaulting to: "x".
+
 ### API response formatting
 
 Inside **start/kernel.js**  globalMiddleware you will notice **HandleResponse** middleware. This middleware should stay on top of the global middleware list because it awaits everything and it is called before response is sent to user.
@@ -100,6 +117,7 @@ Best example is inside **app/Services/Mail.js** and inside email templates (**re
 ## Tips and tricks
 
 - If you want to translate all responses to user language, use `Accept-Language` header or `?lang` query parameter in every request (ex. send values like: en, de, fr, xx)
-- For testing emails, there is a great site: [MailTrap](https://mailtrap.io/)
+- For testing emails, there is a great site: [MailTrap](https://mailtrap.io/). Make account there and configure email inside .env
+- If needed you can edit **CastDate** trait inside **app/Models/Traits/CastDate.js** to change default formatting of dates on entire project.
 - If you really want to send message response with validation errors when user fails to send some keys, you can freely use response.badRequest(validation.messages()). Response formatter will handle all the rest.
 - ... will add more :) #todo
