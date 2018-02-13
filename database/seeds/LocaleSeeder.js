@@ -140,6 +140,12 @@ class LocaleSeeder {
       {
         locale: 'en',
         group: 'error',
+        item: 'notFound',
+        text: 'Record not found'
+      },
+      {
+        locale: 'en',
+        group: 'error',
         item: 'tooManyRequests',
         text: 'Too many attempts... Slow down'
       },

@@ -22,6 +22,9 @@ class ExceptionHandler extends BaseExceptionHandler {
 
     // translate some default errors
     switch (error.name) {
+      case 'ModelNotFoundException': // findOrFail handle...
+        error.message = 'error.notFound'
+        break
       case 'TokenExpiredError':
       case 'ExpiredJwtToken':
         error.message = 'error.tokenExpired'
