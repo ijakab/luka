@@ -30,30 +30,30 @@ const config = use('Adonis/Src/Config').get('auth.staticAuth')
 const validConfig = config && config.protectedUrls.length
 
 class StaticAuth {
-  async handle({request, response}, next) {
+    async handle({request, response}, next) {
 
-    // if there is no valid config... skip this middleware
-    if (!validConfig) return await next()
+        // if there is no valid config... skip this middleware
+        if (!validConfig) return await next()
 
-    // check if currently visited url is matching protectedUrls
-    if (!request.match(config.protectedUrls)) return await next()
+        // check if currently visited url is matching protectedUrls
+        if (!request.match(config.protectedUrls)) return await next()
 
-    // access native node request/response
-    const req = request.request
-    const res = response.response
+        // access native node request/response
+        const req = request.request
+        const res = response.response
 
-    // gather credentials
-    const credentials = auth(req)
+        // gather credentials
+        const credentials = auth(req)
 
-    if (!credentials || credentials.name !== config.username || credentials.pass !== config.password) {
-      res.statusCode = 401
-      // send Basic Auth header so browser prompts user for user/pass
-      res.setHeader('WWW-Authenticate', `Basic realm="${config.realm || 'Protected Area'}"`)
-      return res.end('Access denied')
+        if (!credentials || credentials.name !== config.username || credentials.pass !== config.password) {
+            res.statusCode = 401
+            // send Basic Auth header so browser prompts user for user/pass
+            res.setHeader('WWW-Authenticate', `Basic realm="${config.realm || 'Protected Area'}"`)
+            return res.end('Access denied')
+        }
+
+        await next()
     }
-
-    await next()
-  }
 }
 
 module.exports = StaticAuth

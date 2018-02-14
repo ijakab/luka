@@ -17,13 +17,13 @@ const AccountHook = module.exports = {}
  */
 AccountHook.hashPassword = async (accountInstance) => {
 
-  if (accountInstance.password) {
-    accountInstance.password = await Hash.make(accountInstance.password)
+    if (accountInstance.password) {
+        accountInstance.password = await Hash.make(accountInstance.password)
 
-    // also if this is update of existing, invalidate tokens by deleting them
-    if (accountInstance.$persisted) {
-      await Token.query().where({user_id: accountInstance.user_id, is_revoked: false}).delete()
+        // also if this is update of existing, invalidate tokens by deleting them
+        if (accountInstance.$persisted) {
+            await Token.query().where({user_id: accountInstance.user_id, is_revoked: false}).delete()
+        }
+
     }
-
-  }
 }

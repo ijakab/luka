@@ -1,16 +1,16 @@
 module.exports = function (suite) {
-  suite.Context.getter('sleep', () => {
+    suite.Context.getter('sleep', () => {
 
-    // simple sleep function...
-    return async function (ms) {
-      return await new Promise((resolve) => {
+        // simple sleep function...
+        return async function (ms) {
+            return await new Promise((resolve) => {
 
-        setTimeout(() => {
-          resolve()
+                setTimeout(() => {
+                    resolve()
 
-        }, ms)
-      })
+                }, ms)
+            })
 
-    }
-  })
+        }
+    })
 }

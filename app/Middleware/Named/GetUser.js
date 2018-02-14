@@ -4,13 +4,13 @@
 // this middleware queries db for user model
 
 class GetUser {
-  async handle(ctx, next) {
+    async handle(ctx, next) {
 
-    // get and set user to context if token is valid and not expired
-    ctx.user = await ctx.auth.getUser()
+        // get and set user to context if token is valid and not expired
+        ctx.user = await ctx.auth.getUser()
 
-    await next()
-  }
+        await next()
+    }
 }
 
 module.exports = GetUser

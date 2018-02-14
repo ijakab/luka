@@ -4,13 +4,13 @@
 // you can also use this if you only need users id or any data inside token payload w/o need to query db
 
 class CheckToken {
-  async handle(ctx, next) {
+    async handle(ctx, next) {
 
-    // set token extracted payload to context if it's valid and not expired
-    ctx.token = await ctx.auth._verifyToken(ctx.auth.getAuthHeader())
+        // set token extracted payload to context if it's valid and not expired
+        ctx.token = await ctx.auth._verifyToken(ctx.auth.getAuthHeader())
 
-    await next()
-  }
+        await next()
+    }
 }
 
 module.exports = CheckToken

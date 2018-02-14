@@ -9,5 +9,5 @@ _requireRoutes('User').prefix('api/user')
 
 // --- PRIVATE
 function _requireRoutes(group) {
-  return require(`../app/Routes/${group}`)
+    return require(`../app/Routes/${group}`)
 }

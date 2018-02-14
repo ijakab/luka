@@ -12,8 +12,8 @@ const Server = use('Server')
 |
 */
 const globalMiddleware = [
-  'App/Middleware/Global/HandleResponse', // keep this guy at the top!
-  'Adonis/Middleware/BodyParser'
+    'App/Middleware/Global/HandleResponse', // keep this guy at the top!
+    'Adonis/Middleware/BodyParser'
 ]
 
 /*
@@ -34,9 +34,9 @@ const globalMiddleware = [
 |
 */
 const namedMiddleware = {
-  throttle: 'Adonis/Middleware/ThrottleRequests',
-  checkToken: 'App/Middleware/Named/CheckToken',
-  getUser: 'App/Middleware/Named/GetUser',
+    throttle: 'Adonis/Middleware/ThrottleRequests',
+    checkToken: 'App/Middleware/Named/CheckToken',
+    getUser: 'App/Middleware/Named/GetUser',
 }
 
 /*
@@ -50,12 +50,12 @@ const namedMiddleware = {
 |
 */
 const serverMiddleware = [
-  'App/Middleware/Server/StaticAuth', // keep this middleware BEFORE static middleware
-  'Adonis/Middleware/Static',
-  'Adonis/Middleware/Cors'
+    'App/Middleware/Server/StaticAuth', // keep this middleware BEFORE static middleware
+    'Adonis/Middleware/Static',
+    'Adonis/Middleware/Cors'
 ]
 
 Server
-  .registerGlobal(globalMiddleware)
-  .registerNamed(namedMiddleware)
-  .use(serverMiddleware)
+    .registerGlobal(globalMiddleware)
+    .registerNamed(namedMiddleware)
+    .use(serverMiddleware)

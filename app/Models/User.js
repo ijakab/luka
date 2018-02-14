@@ -4,29 +4,29 @@ const Model = use('Model')
 
 class User extends Model {
 
-  // --- CONFIGURATION
-  static boot() {
-    super.boot()
-    this.addTrait('CastDate')
-  }
+    // --- CONFIGURATION
+    static boot() {
+        super.boot()
+        this.addTrait('CastDate')
+    }
 
-  static get dates() {
-    return super.dates.concat(['dob'])
-  }
+    static get dates() {
+        return super.dates.concat(['dob'])
+    }
 
-  // --- RELATIONS
-  accounts() {
-    return this.hasMany('App/Models/Account')
-  }
+    // --- RELATIONS
+    accounts() {
+        return this.hasMany('App/Models/Account')
+    }
 
-  tokens() {
-    return this.hasMany('App/Models/Token')
-  }
+    tokens() {
+        return this.hasMany('App/Models/Token')
+    }
 
-  // --- CUSTOM
-  async fetchMainAccount() {
-    return await this.accounts().where('type', 'main').first()
-  }
+    // --- CUSTOM
+    async fetchMainAccount() {
+        return await this.accounts().where('type', 'main').first()
+    }
 
 }
 

@@ -11,18 +11,18 @@
  |
  */
 const providers = [
-  '@adonisjs/framework/providers/AppProvider',
-  '@adonisjs/auth/providers/AuthProvider',
-  '@adonisjs/bodyparser/providers/BodyParserProvider',
-  '@adonisjs/cors/providers/CorsProvider',
-  '@adonisjs/lucid/providers/LucidProvider',
-  '@adonisjs/validator/providers/ValidatorProvider',
-  '@adonisjs/antl/providers/AntlProvider',
-  '@adonisjs/framework/providers/ViewProvider',
-  '@adonisjs/mail/providers/MailProvider',
-  '@adonisjs/ally/providers/AllyProvider',
-  'adonis-cache/providers/CacheProvider',
-  'adonis-throttle-requests/providers/ThrottleRequestsProvider'
+    '@adonisjs/framework/providers/AppProvider',
+    '@adonisjs/auth/providers/AuthProvider',
+    '@adonisjs/bodyparser/providers/BodyParserProvider',
+    '@adonisjs/cors/providers/CorsProvider',
+    '@adonisjs/lucid/providers/LucidProvider',
+    '@adonisjs/validator/providers/ValidatorProvider',
+    '@adonisjs/antl/providers/AntlProvider',
+    '@adonisjs/framework/providers/ViewProvider',
+    '@adonisjs/mail/providers/MailProvider',
+    '@adonisjs/ally/providers/AllyProvider',
+    'adonis-cache/providers/CacheProvider',
+    'adonis-throttle-requests/providers/ThrottleRequestsProvider'
 ]
 
 /*
@@ -35,9 +35,9 @@ const providers = [
  |
  */
 const aceProviders = [
-  'adonis-cache/providers/CommandsProvider',
-  '@adonisjs/lucid/providers/MigrationsProvider',
-  '@adonisjs/vow/providers/VowProvider'
+    'adonis-cache/providers/CommandsProvider',
+    '@adonisjs/lucid/providers/MigrationsProvider',
+    '@adonisjs/vow/providers/VowProvider'
 ]
 
 /*
@@ -53,7 +53,7 @@ const aceProviders = [
  |
  */
 const aliases = {
-  Cache: 'Adonis/Addons/Cache'
+    Cache: 'Adonis/Addons/Cache'
 }
 
 /*

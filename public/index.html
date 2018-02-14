@@ -14,50 +14,50 @@
 
 <script>
 
-  function GetURLParameter(sParam) {
-    var sPageURL = window.location.search.substring(1)
-    var sURLVariables = sPageURL.split('&')
+    function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1)
+        var sURLVariables = sPageURL.split('&')
 
-    for (var i = 0; i < sURLVariables.length; i++) {
-      var sParameterName = sURLVariables[i].split('=')
-      if (sParameterName[0] == sParam) {
-        return sParameterName[1]
-      }
-    }
-  }
-
-
-  $(document).ready(function () {
-    // sniff get params to check if socialAuth was redirected
-    if (GetURLParameter('socialAuthSource')) {
-
-      alert('OAUTH REDIRECT CALLBACK DETECTED')
-
-      $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
-        token: GetURLParameter('code')
-      }, function (data) {
-        alert('check console!')
-        console.log('AUTHENTICATED WITH: ' + GetURLParameter('socialAuthSource'))
-        console.log(data)
-      })
-
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=')
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1]
+            }
+        }
     }
 
-    // also handle email validations :)
-    if (GetURLParameter('token')) {
 
-      alert('EMAIL VALIDATION DETECTED... IF THIS WAS RESET PASSWORD REQUEST, PLEASE IMPLEMENT YOUR LOGIC CAUSE IT WILL NOT WORK :)')
+    $(document).ready(function () {
+        // sniff get params to check if socialAuth was redirected
+        if (GetURLParameter('socialAuthSource')) {
 
-      $.post('/api/auth/validateEmail', {
-        token: GetURLParameter('token')
-      }, function (data) {
-        alert('check console!')
-        console.log('VALIDATED EMAIL')
-        console.log(data)
-      })
+            alert('OAUTH REDIRECT CALLBACK DETECTED')
 
-    }
-  })
+            $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
+                token: GetURLParameter('code')
+            }, function (data) {
+                alert('check console!')
+                console.log('AUTHENTICATED WITH: ' + GetURLParameter('socialAuthSource'))
+                console.log(data)
+            })
+
+        }
+
+        // also handle email validations :)
+        if (GetURLParameter('token')) {
+
+            alert('EMAIL VALIDATION DETECTED... IF THIS WAS RESET PASSWORD REQUEST, PLEASE IMPLEMENT YOUR LOGIC CAUSE IT WILL NOT WORK :)')
+
+            $.post('/api/auth/validateEmail', {
+                token: GetURLParameter('token')
+            }, function (data) {
+                alert('check console!')
+                console.log('VALIDATED EMAIL')
+                console.log(data)
+            })
+
+        }
+    })
 
 
 </script>
