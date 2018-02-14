@@ -14,6 +14,7 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 
 - Cleaned up AdonisJS installation for API usage only
 - Throttle request logic to prevent bot spam on public routes (returns status 429)
+- Slug generator trait for models
 - Basic User model with separate Account model
 - Account model has support for Google+, Facebook, LinkedIn and other popular networks
 - Logic to connect social accounts together with standard
@@ -57,6 +58,28 @@ There are few tweaks to Adonis natural behaviour in this starter project :)
 Benefits of using this logic is that you can separate routes in easier to navigate way, and also... you can prefix and add group middleware to routes simpler.
 
 Please check the logic inside *start/routes.js* and *app/Routes* to better understand how it can be used.
+
+### Slugify trait
+
+To use slug trait simply add a trait inside model you want:
+
+```javascript
+static boot() {
+  super.boot()
+  this.addTrait('Slugify', {column: 'title'})
+}
+```
+
+`Column option is required!` - just set column which you want slugified.
+
+`Also please add slug column to your table inside migrations!` You can change this column via options also, by setting `dbKey` option if for some reason you don't want to name slug column *slug*.
+
+
+By default it uses rfc3986 standard for slugs but you can pass any options to second param of addTrait method. 
+You can even use sufix and prefix, etc. 
+
+For more info check source code of this trait: **app/Models/Traits/Slugify.js**
+
 
 ### Dates format in responses
 

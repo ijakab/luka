@@ -3,7 +3,7 @@
 const {test, trait} = use('Test/Suite')('User - user main')
 
 trait('Test/ApiClient')
-trait('App/Traits/Test/Validate')
+trait(require('../../Traits/Validate'))
 
 const testData = require('../../testData')
 const testUser = testData.testUser

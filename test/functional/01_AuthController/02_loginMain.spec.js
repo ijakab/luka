@@ -7,9 +7,9 @@ const _ = use('lodash')
 const jwt = use('jsonwebtoken')
 
 trait('Test/ApiClient')
-trait('App/Traits/Test/Validate')
-trait('App/Traits/Test/Sleep')
-trait('App/Traits/Test/GetEmail')
+trait(require('../../Traits/Validate'))
+trait(require('../../Traits/Sleep'))
+trait(require('../../Traits/GetEmail'))
 
 const testData = require('../../testData')
 const testUser = testData.testUser
