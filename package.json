@@ -49,6 +49,7 @@
     ]
   },
   "autoload": {
-    "App": "./app"
+    "App": "./app",
+    "CustomTest": "./test/Traits"
   }
 }

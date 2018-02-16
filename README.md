@@ -27,7 +27,7 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 - Auto served public folder via static serve and middleware for basic auth for static files
 - Auto documentation builder script using apidoc
 - Basic unit test bootstrap
-- Few test traits to make tests easier to write (catch email, validate response, sleep)
+- Few test traits to make tests easier to write (find them inside: **./Test/Traits**)
 
 ## package.json scripts
 
