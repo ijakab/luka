@@ -99,9 +99,7 @@ class AuthController {
         if (!validPass) return response.badRequest('auth.invalidPasswordOrUsername')
 
         // generate tokens
-        const token = await auth
-            .withRefreshToken()
-            .generate(user) // you can add token payload if needed as second parameter
+        const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
 
         response.ok({user, token: token.token, refreshToken: token.refreshToken})
     }
@@ -201,24 +199,62 @@ class AuthController {
         }
 
         // whatever happens... new user, or existing one... generate token for him
-        const token = await auth
-            .withRefreshToken()
-            .generate(user) // you can add token payload if needed as second parameter
+        const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
 
 
         response.ok({user, token: token.token, refreshToken: token.refreshToken})
     }
 
-    async refreshToken({request, response, auth, token}) {
+    async refreshToken({request, response, auth}) {
 
         const refreshToken = request.input('token')
 
         if (!refreshToken) return response.badRequest()
 
-        // create new token from refresh token, but add old custom payload to it
-        const newToken = await auth.generateForRefreshToken(refreshToken, token.data)
+        // create new token from refresh token
+        const newToken = await auth.newRefreshToken().generateForRefreshToken(refreshToken)
 
         response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
+
+
+        // TODO Read NOTE below
+        // ****************************************** NOTE ******************************************
+        // If token had any custom payload. Custom payload will not be present in newly generated
+        // access token. So, if you have custom payload logic, please adapt code below to your liking.
+        // Of course... delete upper code and use only this bottom one :)
+        // ****************************************** **** ******************************************
+
+        // const refreshToken = request.input('token')
+        //
+        // if (!refreshToken) return response.badRequest()
+        //
+        // const Encryption = use('Encryption') // NOTE: put this on top of this file, where other imports are
+        // const Token = use('App/Models/Token') // NOTE: put this on top of this file, where other imports are
+        //
+        //
+        // const decryptedToken = Encryption.decrypt(refreshToken)
+        // const user = await User
+        //     .query()
+        //     .whereHas('tokens', (builder) => {
+        //         builder.where({token: decryptedToken, type: 'jwt_refresh_token', is_revoked: false})
+        //     })
+        //     .first()
+        // if (!user) throw(new Error('InvalidRefreshToken'))
+        //
+        // // ****************************************** NOTE ******************************************
+        // // handle your custom payload here if needed... you have user object ready :)
+        // // ****************************************** **** ******************************************
+        // const customPayload = null
+        // // ********
+        //
+        // // create new token from refresh token
+        // const newToken = await this._generateUserTokens(auth, user, customPayload)
+        //
+        // // delete old refresh token from db
+        // await Token.query().where('token', decryptedToken).delete()
+        //
+        //
+        // response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
     }
 
 
@@ -323,6 +359,7 @@ class AuthController {
 
 
     // --- PRIVATE
+
     async _findLoginUser(allParams) {
         // find user by username or main account email
         let user, mainAccount
@@ -336,6 +373,20 @@ class AuthController {
         }
 
         return {mainAccount, user}
+    }
+
+
+    async _generateUserTokens(auth, user, customPayload) {
+
+        return await auth
+            .withRefreshToken()
+            .generate(user, customPayload)
+
+        // TODO Read NOTE below
+        // ****************************************** NOTE ******************************************
+        // If you are adding custom payload, be aware that it will not stay there after token refresh
+        // You need to update refreshToken method to handle custom payload also!
+        // ****************************************** **** ******************************************
     }
 
 }
