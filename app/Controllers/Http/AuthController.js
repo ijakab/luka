@@ -6,7 +6,9 @@ const Account = use('App/Models/Account')
 const {validate, sanitize, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
-const shortId = require('shortid')
+const shortId = use('shortid')
+
+const validationRule = use('App/Helpers/ValidationRule')
 
 class AuthController {
 
@@ -19,11 +21,11 @@ class AuthController {
         // email and username are not under unique:users rule because of auto merge account rule
         const validation = await validate(allParams, {
             fullName: 'required',
-            username: 'required|string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$', // allow alpha numeric + _- from 3 to 20 chars
+            username: validationRule('username', 'required'),
             email: 'required|email',
-            password: 'required|min:6',
+            password: validationRule('password', 'required'),
             passwordRepeat: 'required|same:password',
-            language: 'string|min:2|max:2'
+            language: validationRule('language')
         })
 
         if (validation.fails()) return response.badRequest()
@@ -77,9 +79,9 @@ class AuthController {
         })
 
         const validation = await validate(allParams, {
-            username: 'required_without_any:email',
+            username: validationRule('username', 'required_without_any:email'),
             email: 'email|required_without_any:username',
-            password: 'required_with_any:username,email'
+            password: validationRule('password', 'required_with_any:username,email')
         })
 
         if (validation.fails()) return response.badRequest()
@@ -261,7 +263,7 @@ class AuthController {
         })
 
         const validation = await validate(allParams, {
-            username: 'required_without_any:email',
+            username: validationRule('username', 'required_without_any:email'),
             email: 'email|required_without_any:username',
         })
 
@@ -292,7 +294,7 @@ class AuthController {
         if (!token.passwordReset) return response.unauthorized()
 
         const validation = await validate(allParams, {
-            password: 'required|min:6',
+            password: validationRule('password', 'required'),
             passwordRepeat: 'required|same:password'
         })
 

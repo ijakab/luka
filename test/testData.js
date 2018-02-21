@@ -1,3 +1,5 @@
+const validationRule = require('../app/Helpers/ValidationRule')
+
 module.exports = {
     testUser: {
         username: 'oO-tester-_-',
@@ -11,7 +13,7 @@ module.exports = {
         user: {
             user: 'required|object',
             'user.fullName': 'required|string',
-            'user.username': 'required|string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$',
+            'user.username': validationRule('username', 'required'),
             'user.email': 'required|email',
             token: 'required|string',
             refreshToken: 'required|string'

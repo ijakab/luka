@@ -1,6 +1,6 @@
 'use strict'
 
-const slug = require('slug')
+const slug = use('slug')
 
 class Slugify {
     register(Model, customOptions = {}) {

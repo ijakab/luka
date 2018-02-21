@@ -141,6 +141,7 @@ Best example is inside **app/Services/Mail.js** and inside email templates (**re
 
 - If you want to translate all responses to user language, use `Accept-Language` header or `?lang` query parameter in every request (ex. send values like: en, de, fr, xx)
 - For testing emails, there is a great site: [MailTrap](https://mailtrap.io/). Make account there and configure email inside .env
+- For validation reuse logic there is a helper `App/Helpers/ValidationRule`. You can add your rules there and use this helper if you like it.
 - If needed you can edit **CastDate** trait inside **app/Models/Traits/CastDate.js** to change default formatting of dates on entire project.
 - If you really want to send message response with validation errors when user fails to send some keys, you can freely use response.badRequest(validation.messages()). Response formatter will handle all the rest.
 - ... will add more :) #todo
