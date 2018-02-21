@@ -209,13 +209,14 @@ class AuthController {
         response.ok({user, token: token.token, refreshToken: token.refreshToken})
     }
 
-    async refreshToken({request, response, auth}) {
+    async refreshToken({request, response, auth, token}) {
 
         const refreshToken = request.input('token')
 
         if (!refreshToken) return response.badRequest()
 
-        const newToken = await auth.generateForRefreshToken(refreshToken)
+        // create new token from refresh token, but add old custom payload to it
+        const newToken = await auth.generateForRefreshToken(refreshToken, token.data)
 
         response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
     }

@@ -39,12 +39,14 @@ module.exports = Route.group(() => {
      * @api {post} /api/auth/refreshToken Refresh token
      * @apiGroup Auth
      *
-     * @apiDescription Refresh your expired JWT token.
+     * @apiPermission JWT
+     *
+     * @apiDescription Refresh your expired JWT token. You need to pass old access token!
      *
      * @apiParam {string} token JWT refresh token
      *
      */
-    Route.post('/refreshToken', 'AuthController.refreshToken')
+    Route.post('/refreshToken', 'AuthController.refreshToken').middleware(['checkToken'])
 
 
     /**
