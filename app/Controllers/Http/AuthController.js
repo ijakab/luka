@@ -220,8 +220,15 @@ class AuthController {
         // TODO Read NOTE below
         // ****************************************** NOTE ******************************************
         // If token had any custom payload. Custom payload will not be present in newly generated
-        // access token. So, if you have custom payload logic, please adapt code below to your liking.
-        // Of course... delete upper code and use only this bottom one :)
+        // access token. If custom payload is easily recreated without knowledge of who user is,
+        // just add second parameter to generateForRefreshToken(refreshToken, CUSTOM_PAYLOAD_HERE)
+        //
+        // If you have custom payload logic, and it's somehow connected to user that is owner of token
+        // please adapt code below to your liking. Of course... delete upper code and use only this bottom one :)
+        //
+        // P.S.: You probably don't need custom payload at all! Think about sending that payload
+        // differently. For example... If you have some kind of user permissions in token, why not
+        // instead sending them together with user object when user is logged in?
         // ****************************************** **** ******************************************
 
         // const refreshToken = request.input('token')

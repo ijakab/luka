@@ -12,22 +12,22 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 
 ## What's in a box?
 
-- Cleaned up AdonisJS installation for API usage only
-- Throttle request logic to prevent bot spam on public routes (returns status 429)
-- Slug generator trait for models
-- Basic User model with separate Account model
-- Account model has support for Google+, Facebook, LinkedIn and other popular networks
-- Logic to connect social accounts together with standard
-- User signup and login logic using JWT tokens
-- Refresh JWT token logic
-- Email service with templates and translations
-- User forgot/reset password and account e-mail confirmation logic
-- Custom responses with built-in response formatter
-- Built-in language translation for response messages, emails, etc.
-- Auto served public folder via static serve and middleware for basic auth for static files
-- Auto documentation builder script using apidoc
-- Basic unit test bootstrap
-- Few test traits to make tests easier to write (find them inside: **./Test/Traits**)
+- [x] Cleaned up AdonisJS installation for API usage only
+- [x] Throttle request logic to prevent bot spam on public routes (returns status 429)
+- [x] Slug generator trait for models
+- [x] Basic User model with separate Account model
+- [x] Account model has support for Google+, Facebook, LinkedIn and other popular networks
+- [x] Logic to connect social accounts together with standard
+- [x] User signup and login logic using JWT tokens
+- [x] Refresh JWT token logic
+- [x] Email service with templates and translations
+- [x] User forgot/reset password and account e-mail confirmation logic
+- [x] Custom responses with built-in response formatter
+- [x] Built-in language translation for response messages, emails, etc.
+- [x] Auto served public folder via static serve and middleware for basic auth for static files
+- [x] Auto documentation builder script using apidoc
+- [x] Basic unit test bootstrap
+- [x] Few test traits to make tests easier to write (find them inside: **./Test/Traits**)
 
 ## package.json scripts
 
