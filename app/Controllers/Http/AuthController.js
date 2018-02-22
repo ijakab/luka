@@ -164,8 +164,8 @@ class AuthController {
                 // ****************************************** NOTE ******************************************
                 // Social media will return some information but not everything we need for main account creation.
                 // We need username as required parameter and we can't get it from social media.
-                // This is why we will send status 202 (Accepted) and demand client to resend same request, but
-                // with information that we need.
+                // This is why we will send status 202 (Accepted) and demand client to call this route again
+                // with information that we need (accessToken and username in this case).
                 // ****************************************** **** ******************************************
 
                 // first check if user already sent username, if not, demand username before continuing
