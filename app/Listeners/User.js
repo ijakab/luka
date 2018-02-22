@@ -35,6 +35,20 @@ module.exports = {
     },
 
 
+    validated: async ({user}) => {
+
+        // first param is email subject. You can use translation logic here also, or just write your own subject.
+        await mailService.send('email.welcomeUser', user.email, {
+            // edit your local params for email as you wish
+            locale: user.language,
+            user: {
+                fullName: user.fullName
+            }
+        })
+
+    },
+
+
     resendValidation: async ({user, mainAccount}) => {
 
         // fetch mainAccount user if not sent

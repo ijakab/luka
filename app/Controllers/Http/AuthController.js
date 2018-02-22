@@ -197,6 +197,10 @@ class AuthController {
                     avatar: avatar,
                     language: locale
                 })
+
+                // we just created new social user, they are automatically validated (no need for email validation)
+                // so... let's send that welcome email to them
+                Event.fire('user::validated', {user})
             }
 
             // now just create account and we are ready to go
@@ -282,10 +286,20 @@ class AuthController {
         if (!token.mailValidation) return response.unauthorized()
 
         // then update account by using account id from token
-        await Account
+        const account = await Account
             .query()
-            .where('id', token.mailValidation)
-            .update({validated: true})
+            .where({id: token.mailValidation, type: 'main'})
+            .first()
+
+        if (!account) return response.notFound()
+
+        if (account.validated) return response.badRequest('auth.emailAlreadyValidated')
+
+        account.validated = true
+        await account.save()
+
+        // user just validated his account... send welcome mail
+        Event.fire('user::validated', {user: await account.user().fetch()})
 
         response.ok('auth.emailValidated')
     }
