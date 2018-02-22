@@ -17,7 +17,9 @@ const AccountHook = module.exports = {}
  */
 AccountHook.hashPassword = async (accountInstance) => {
 
-    if (accountInstance.password) {
+    // if password changed, hash it!
+    if (accountInstance.$originalAttributes.password !== accountInstance.$attributes.password) {
+
         accountInstance.password = await Hash.make(accountInstance.password)
 
         // also if this is update of existing, invalidate tokens by deleting them

@@ -123,6 +123,13 @@ class LocaleSeeder {
                 item: 'resendValidation.hi',
                 text: 'Hi'
             },
+            // --- WELCOME USER PASSWORD EMAIL --- //
+            {
+                locale: 'en',
+                group: 'email',
+                item: 'welcomeUser.subject',
+                text: 'Welcome!'
+            },
             // --- FORGOT PASSWORD EMAIL --- //
             {
                 locale: 'en',

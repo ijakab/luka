@@ -261,7 +261,7 @@ class AuthController {
         //         builder.where({token: decryptedToken, type: 'jwt_refresh_token', is_revoked: false})
         //     })
         //     .first()
-        // if (!user) throw(new Error('InvalidRefreshToken'))
+        // if (!user) throw new Error('InvalidRefreshToken')
         //
         // // ****************************************** NOTE ******************************************
         // // handle your custom payload here if needed... you have user object ready :)
@@ -291,7 +291,8 @@ class AuthController {
             .where({id: token.mailValidation, type: 'main'})
             .first()
 
-        if (!account) return response.notFound()
+        // if account was not found... token is most likely invalid
+        if (!account) throw new Error('InvalidJwtToken')
 
         if (account.validated) return response.badRequest('auth.emailAlreadyValidated')
 

@@ -21,6 +21,8 @@ class ExceptionHandler extends BaseExceptionHandler {
         // ****************************************** **** ******************************************
 
         // translate some default errors
+        if (error.name === 'Error') error.name = error.message // fallback for non named errors
+
         switch (error.name) {
             case 'ModelNotFoundException': // findOrFail handle...
                 error.message = 'error.notFound'
