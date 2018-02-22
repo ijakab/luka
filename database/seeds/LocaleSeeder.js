@@ -79,6 +79,12 @@ class LocaleSeeder {
                 item: 'passwordReseted',
                 text: 'Password was changed successfully!'
             },
+            {
+                locale: 'en',
+                group: 'auth',
+                item: 'socialLoginProvideUsername',
+                text: 'Please provide your username'
+            },
             // --- REGISTRATION EMAIL --- //
             {
                 locale: 'en',

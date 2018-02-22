@@ -30,7 +30,6 @@
     "adonis-cache": "^0.3.1",
     "adonis-throttle-requests": "^1.0.1",
     "mysql": "^2.15.0",
-    "shortid": "^2.2.8",
     "slug": "^0.9.1"
   },
   "devDependencies": {

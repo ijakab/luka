@@ -13,13 +13,19 @@ module.exports = async function (existingResponse, locale) {
     let data = (existingResponse && existingResponse.toJSON) ? existingResponse.toJSON() : (existingResponse || '')
     let message
 
+    // add custom response message option
+    if (typeof data === 'object' && data._message) {
+        message = data._message
+        delete data._message
+    }
+
     // check if we are dealing with validation.messages()
     if (Array.isArray(data) && data.length && data[0].field && data[0].validation) {
-        message = `validation.${data[0].field}.${data[0].validation}`
+        message = message || `validation.${data[0].field}.${data[0].validation}`
         data = [] // reset data to empty response
     } else {
         // fetch message as a string always
-        message = (data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message || '') : '')
+        message = message || ((data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message || '') : ''))
     }
 
     // translate message if needed and store old reference...

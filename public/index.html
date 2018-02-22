@@ -35,7 +35,24 @@
 
             $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
                 token: GetURLParameter('code')
-            }, function (data) {
+            }, function (data, message, xhr) {
+
+
+                // on 202 we need to provide username and repeat same request
+                if(xhr.status === 202) {
+
+                    var username = prompt('Enter your username')
+
+                    $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
+                        accessToken: data.data[0].accessToken,
+                        username: username
+                    }, function (data) {
+                        alert('check console!')
+                        console.log('AUTHENTICATED WITH: ' + GetURLParameter('socialAuthSource'))
+                        console.log(data)
+                    })
+                }
+
                 alert('check console!')
                 console.log('AUTHENTICATED WITH: ' + GetURLParameter('socialAuthSource'))
                 console.log(data)
@@ -46,7 +63,7 @@
         // also handle email validations :)
         if (GetURLParameter('token')) {
 
-            alert('EMAIL VALIDATION DETECTED... IF THIS WAS RESET PASSWORD REQUEST, PLEASE IMPLEMENT YOUR LOGIC CAUSE IT WILL NOT WORK :)')
+            alert('EMAIL VALIDATION DETECTED... IF THIS WAS RESET PASSWORD REQUEST, PLEASE IMPLEMENT YOUR LOGIC CAUSE IT WILL NOT WORK IN THIS DEMO :)')
 
             $.post('/api/auth/validateEmail', {
                 token: GetURLParameter('token')

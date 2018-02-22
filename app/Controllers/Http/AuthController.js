@@ -6,7 +6,6 @@ const Account = use('App/Models/Account')
 const {validate, sanitize, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
-const shortId = use('shortid')
 
 const validationRule = use('App/Helpers/ValidationRule')
 
@@ -115,11 +114,12 @@ class AuthController {
 
     async socialLogin({request, response, params, ally, auth, locale}) {
 
-        const allParams = request.only(['token', 'accessToken'])
+        const allParams = request.only(['token', 'accessToken', 'username'])
 
         const validation = await validate(allParams, {
             token: 'required_without_any:accessToken',
-            accessToken: 'required_without_any:token'
+            accessToken: 'required_without_any:token',
+            username: validationRule('username') // not required!
         })
 
         if (validation.fails()) return response.badRequest()
@@ -140,7 +140,7 @@ class AuthController {
             // user is existing just log him in
             user = await account.user().fetch()
         } else {
-            // user did't exist at all... we will create new user or connect accounts for him
+            // social user did't exist at all... we will create new user or connect accounts for him
             const userObject = sanitize({
                 socialId: socialUser.getId(),
                 network: params.network,
@@ -158,15 +158,26 @@ class AuthController {
                 // just fetch user of this account
                 user = await account.user().fetch()
             } else {
+
                 // there is no account at all... we need to create user and account!
-                // we cant fetch username from social media, and it's require for our system... we need to generate it
-                let newUsername = userObject.email.split('@')[0] // we take first part of email as username if possible
 
-                // check if username that we are custom generating is already existing
-                const usernameExisting = await User.query().where('username', newUsername).getCount()
+                // ****************************************** NOTE ******************************************
+                // Social media will return some information but not everything we need for main account creation.
+                // We need username as required parameter and we can't get it from social media.
+                // This is why we will send status 202 (Accepted) and demand client to resend same request, but
+                // with information that we need.
+                // ****************************************** **** ******************************************
 
-                // username existed... so just create some random mambo-jumbo for this one
-                if (usernameExisting) newUsername = `${shortId.generate()}-${newUsername}`
+                // first check if user already sent username, if not, demand username before continuing
+                if (!allParams.username) return response.accepted({
+                    accessToken: socialUser.getAccessToken(),
+                    _message: 'auth.socialLoginProvideUsername'
+                })
+
+                // check if this username is taken
+                const existingUsername = await User.query().where('username', allParams.username).getCount()
+                if (existingUsername) return response.badRequest('auth.usernameExists')
+
 
                 let avatar
                 if (userObject.avatar) {
@@ -180,7 +191,7 @@ class AuthController {
                 }
 
                 user = await User.create({
-                    username: newUsername,
+                    username: allParams.username,
                     fullName: userObject.fullName,
                     email: userObject.email,
                     avatar: avatar,
