@@ -12,10 +12,11 @@ module.exports = Route.group(() => {
      * If user already logged in using social networks before and email is the same, accounts will be connected automatically.
      *
      * @apiParam {string} fullName Full name of a user
-     * @apiParam {string} username Unique username
+     * @apiParam {string} username Unique username (rule: string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$)
      * @apiParam {string} email Unique email
-     * @apiParam {string} password Password for this user
+     * @apiParam {string} password Password for this user (rule: min:6)
      * @apiParam {string} passwordRepeat Repeated password
+     * @apiParam {string} [language=en] Language (rule: string|min:2|max:2)
      *
      */
     Route.post('/register', 'AuthController.register')
@@ -92,7 +93,7 @@ module.exports = Route.group(() => {
      * @apiDescription Route where you send password reset token together with new password
      *
      * @apiParam {string} token JWT token you got inside password reset email
-     * @apiParam {string} password New password for this user
+     * @apiParam {string} password New password for this user (rule: min:6)
      * @apiParam {string} passwordRepeat Repeated password
      *
      */
@@ -146,7 +147,7 @@ module.exports = Route.group(() => {
      * @apiParam {routeParam} network Name of social network you are using (facebook, google, linkedin)
      * @apiParam {string} [token] Token you got after successful oAuth to one of social networks (this or accessToken is required)
      * @apiParam {string} [accessToken] If you are using mobile SDKs for social auth, you immediately get accessToken, so use this instead of token (this or token is required)
-     * @apiParam {string} [username] When user is not existing, he will need username. This one is required after response with status 202 (Accepted)
+     * @apiParam {string} [username] When user is not existing, he will need username. This one is required after response with status 202 (Accepted) (rule: string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$)
      *
      */
     Route.post('/:network', 'AuthController.socialLogin')
