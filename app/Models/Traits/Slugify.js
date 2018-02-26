@@ -31,8 +31,7 @@ class Slugify {
 
         Model.addHook('beforeSave', async (model) => {
 
-            // generate slug if slug was not forced
-            let slugString = model[opts.dbKey] || slug(`${opts.prefix}${model[opts.column]}${opts.sufix}`, opts.slugOptions)
+            let slugString = slug(`${opts.prefix}${model[opts.column]}${opts.sufix}`, opts.slugOptions)
 
             // check if this slug already exists in db, and if it does, add '-count' sufix to it
             let count = await Model.query().where(opts.dbKey, slugString).getCount()
