@@ -66,8 +66,8 @@ test('Should login user using username or email', async ({client, validate}) => 
 
     // validate both response payloads
     await validate([
-        responseUsername.body.data[0],
-        responseEmail.body.data[0]
+        responseUsername.body.data,
+        responseEmail.body.data
     ], testData.validation.user)
 
 })
@@ -228,11 +228,11 @@ test('Should login user using new password', async ({client, validate}) => {
     }).end()
 
     response.assertStatus(200)
-    await validate(response.body.data[0], testData.validation.user)
+    await validate(response.body.data, testData.validation.user)
 
     // save token and refresh token for other tests...
-    testData.token = response.body.data[0].token
-    testData.refreshToken = response.body.data[0].refreshToken
+    testData.token = response.body.data.token
+    testData.refreshToken = response.body.data.refreshToken
 
 })
 
