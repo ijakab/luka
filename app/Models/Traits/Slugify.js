@@ -35,9 +35,13 @@ class Slugify {
             let slugString = model[opts.dbKey] || slug(`${opts.prefix}${model[opts.column]}${opts.sufix}`, opts.slugOptions)
 
             // check if this slug already exists in db, and if it does, add '-count' sufix to it
-            let count = 0
-            while (await Model.query().where(opts.dbKey, `${slugString}${count ? `-${count}` : ''}`).getCount()) {
-                count++
+            let count = await Model.query().where(opts.dbKey, slugString).getCount()
+
+            if (count) {
+                // cover edge case...
+                while (await Model.query().where(opts.dbKey, `${slugString}${count ? `-${count}` : ''}`).getCount()) {
+                    count++
+                }
             }
 
             // fill value of dbKey with slug
