@@ -4,13 +4,15 @@ const formatResponse = use('App/Helpers/FormatResponse')
 
 class FormatResponseMiddleware {
 
-    async handle({response, locale}, next) {
+    async handle({request, response, locale}, next) {
 
         // await everything downstream, if error happens, run formatter nevertheless (catch)
         await next()
 
         // after everything is finished, handle response logic upstream
         const lazyBody = response._lazyBody
+
+        const isMobile = request.header('x-is-mobile')
 
 
         if (lazyBody.method !== 'redirect') {
@@ -20,10 +22,9 @@ class FormatResponseMiddleware {
                 lazyBody.content = 'error.tooManyRequests'
             }
 
-            response[lazyBody.method](await formatResponse(lazyBody.content, locale))
+            response[lazyBody.method](await formatResponse(lazyBody.content, isMobile, locale))
         }
     }
 }
-
 
 module.exports = FormatResponseMiddleware

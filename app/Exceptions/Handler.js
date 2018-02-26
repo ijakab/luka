@@ -12,7 +12,7 @@ const formatResponse = use('App/Helpers/FormatResponse')
  */
 class ExceptionHandler extends BaseExceptionHandler {
 
-    async handle(error, {response, locale}) {
+    async handle(error, {request, response, locale}) {
 
         // ****************************************** NOTE ******************************************
         // This guy uses similar logic as global middleware HandleResponse.
@@ -41,9 +41,9 @@ class ExceptionHandler extends BaseExceptionHandler {
         }
 
         const status = error.status || error.statusCode || 500
+        const isMobile = request.header('x-is-mobile')
 
-
-        response.status(status).send(await formatResponse(error, locale))
+        response.status(status).send(await formatResponse(error, isMobile, locale))
 
     }
 
