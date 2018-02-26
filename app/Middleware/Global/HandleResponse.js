@@ -1,5 +1,9 @@
 'use strict'
 
+// ****************************************** NOTE ******************************************
+// If you are changing this file, be sure to check app/Exceptions/Handler.js too...
+// ****************************************** **** ******************************************
+
 const formatResponse = use('App/Helpers/FormatResponse')
 
 class FormatResponseMiddleware {
@@ -13,7 +17,6 @@ class FormatResponseMiddleware {
         const lazyBody = response._lazyBody
 
         const isMobile = request.header('x-is-mobile')
-
 
         if (lazyBody.method !== 'redirect') {
 
