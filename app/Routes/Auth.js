@@ -126,7 +126,8 @@ module.exports = Route.group(() => {
      * If only link to this oAuth site is needed, make sure to pass ?onlyLink=true as GET query param
      *
      * @apiParam {routeParam} network Name of social network you are using (facebook, google, linkedin)
-     * @apiParam {string} [onlyLink=false] If true, server will return default response with oAuth url as url key
+     * @apiParam {string} [linkOnly=false] If true, server will return default response with oAuth url as url key
+     * @apiParam {string} [redirectUrl=null] If demanding linkOnly you can pass redirect url
      *
      */
     Route.get('/:network/redirect', 'AuthController.socialRedirect')

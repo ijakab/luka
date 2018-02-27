@@ -105,9 +105,17 @@ class AuthController {
 
     async socialRedirect({request, response, params, ally}) {
 
-        if (request.input('linkOnly')) return response.ok({
-            url: await ally.driver(params.network).getRedirectUrl()
-        })
+        if (request.input('linkOnly')) {
+
+            // let's replace auth url if needed
+            if (request.input('redirectUrl')) ally.driver(params.network)._redirectUri = request.input('redirectUrl')
+
+            let socialAuthUrl = await ally.driver(params.network).getRedirectUrl()
+
+            return response.ok({
+                url: socialAuthUrl
+            })
+        }
 
         await ally.driver(params.network).redirect()
     }
