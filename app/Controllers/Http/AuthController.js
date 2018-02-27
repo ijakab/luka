@@ -6,6 +6,7 @@ const Account = use('App/Models/Account')
 const {validate, sanitize, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
+const Config = use('Config')
 
 const validationRule = use('App/Helpers/ValidationRule')
 
@@ -108,7 +109,9 @@ class AuthController {
         if (request.input('linkOnly')) {
 
             // let's replace auth url if needed
-            if (request.input('redirectUrl')) ally.driver(params.network)._redirectUri = request.input('redirectUrl')
+            if (request.input('redirectUrl')) {
+                Config.set(`services.ally.${params.network}.redirectUri`, request.input('redirectUrl'))
+            }
 
             let socialAuthUrl = await ally.driver(params.network).getRedirectUrl()
 
