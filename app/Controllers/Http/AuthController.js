@@ -109,11 +109,17 @@ class AuthController {
         if (request.input('linkOnly')) {
 
             // let's replace auth url if needed
-            if (request.input('redirectUrl')) {
-                Config.set(`services.ally.${params.network}.redirectUri`, request.input('redirectUrl'))
+            const newUrl = request.input('redirectUrl')
+            let oldUrl
+            if (newUrl) {
+                oldUrl = Config.get(`services.ally.${params.network}.redirectUri`)
+                Config.set(`services.ally.${params.network}.redirectUri`, newUrl)
             }
 
             let socialAuthUrl = await ally.driver(params.network).getRedirectUrl()
+
+            // rollback config value if needed
+            if (newUrl && oldUrl) Config.set(`services.ally.${params.network}.redirectUri`, oldUrl)
 
             return response.ok({
                 url: socialAuthUrl
