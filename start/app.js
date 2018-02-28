@@ -22,7 +22,8 @@ const providers = [
     '@adonisjs/mail/providers/MailProvider',
     '@adonisjs/ally/providers/AllyProvider',
     'adonis-cache/providers/CacheProvider',
-    'adonis-throttle-requests/providers/ThrottleRequestsProvider'
+    'adonis-throttle-requests/providers/ThrottleRequestsProvider',
+    '@adonisjs/lucid-slugify/providers/SlugifyProvider'
 ]
 
 /*

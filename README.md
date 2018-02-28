@@ -61,25 +61,7 @@ Please check the logic inside *start/routes.js* and *app/Routes* to better under
 
 ### Slugify trait
 
-To use slug trait simply add a trait inside model you want:
-
-```javascript
-static boot() {
-  super.boot()
-  this.addTrait('Slugify', {column: 'title'})
-}
-```
-
-`Column option is required!` - just set column which you want slugified.
-
-`Also please add slug column to your table inside migrations!` You can change this column via options also, by setting `dbKey` option if for some reason you don't want to name slug column *slug*.
-
-
-By default it uses rfc3986 standard for slugs but you can pass any options to second param of addTrait method. 
-You can even use sufix and prefix, etc. 
-
-For more info check source code of this trait: **app/Models/Traits/Slugify.js**
-
+To use slugs in models check out this documentation: https://github.com/adonisjs/adonis-lucid-slugify
 
 ### Dates format in responses
 
