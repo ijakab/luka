@@ -117,7 +117,7 @@ class AuthController {
         const validation = await validate(allParams, {
             token: 'required_without_any:accessToken',
             accessToken: 'required_without_any:token',
-            username: User.roles.username // not required!
+            username: User.rules.username // not required!
         })
 
         if (validation.fails()) return response.badRequest()
