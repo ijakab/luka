@@ -6,7 +6,6 @@ const Account = use('App/Models/Account')
 const {validate, sanitize, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
-const Config = use('Config')
 
 const validationRule = use('App/Helpers/ValidationRule')
 
@@ -106,26 +105,10 @@ class AuthController {
 
     async socialRedirect({request, response, params, ally}) {
 
-        if (request.input('linkOnly')) {
-
-            // let's replace auth url if needed
-            const newUrl = request.input('redirectUrl')
-            let oldUrl
-            if (newUrl) {
-                oldUrl = Config.get(`services.ally.${params.network}.redirectUri`)
-                Config.set(`services.ally.${params.network}.redirectUri`, newUrl)
-            }
-
-            let socialAuthUrl = await ally.driver(params.network).getRedirectUrl()
-
-            // rollback config value if needed
-            if (newUrl && oldUrl) Config.set(`services.ally.${params.network}.redirectUri`, oldUrl)
-
-            return response.ok({
-                url: socialAuthUrl
-            })
-        }
-
+        if (request.input('linkOnly')) return response.ok({
+            url: await ally.driver(params.network).getRedirectUrl()
+        })
+        
         await ally.driver(params.network).redirect()
     }
 
