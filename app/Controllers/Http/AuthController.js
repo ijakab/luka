@@ -7,8 +7,6 @@ const {validate, sanitize, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
 
-const validationRule = use('App/Helpers/ValidationRule')
-
 class AuthController {
 
     async register({request, response, auth, locale}) {
@@ -20,11 +18,11 @@ class AuthController {
         // email and username are not under unique:users rule because of auto merge account rule
         const validation = await validate(allParams, {
             fullName: 'required',
-            username: validationRule('username', 'required'),
+            username: `${User.rules.username}|required`,
             email: 'required|email',
-            password: validationRule('password', 'required'),
+            password: `${User.rules.password}|required`,
             passwordRepeat: 'required|same:password',
-            language: validationRule('language')
+            language: User.rules.language
         })
 
         if (validation.fails()) return response.badRequest()
@@ -78,9 +76,9 @@ class AuthController {
         })
 
         const validation = await validate(allParams, {
-            username: validationRule('username', 'required_without_any:email'),
+            username: `${User.rules.username}|required_without_any:email`,
             email: 'email|required_without_any:username',
-            password: validationRule('password', 'required_with_any:username,email')
+            password: `${User.rules.password}|required_with_any:username,email`
         })
 
         if (validation.fails()) return response.badRequest()
@@ -119,7 +117,7 @@ class AuthController {
         const validation = await validate(allParams, {
             token: 'required_without_any:accessToken',
             accessToken: 'required_without_any:token',
-            username: validationRule('username') // not required!
+            username: User.roles.username // not required!
         })
 
         if (validation.fails()) return response.badRequest()
@@ -333,7 +331,7 @@ class AuthController {
         })
 
         const validation = await validate(allParams, {
-            username: validationRule('username', 'required_without_any:email'),
+            username: `${User.rules.username}|required_without_any:email`,
             email: 'email|required_without_any:username',
         })
 
@@ -364,7 +362,7 @@ class AuthController {
         if (!token.passwordReset) return response.unauthorized()
 
         const validation = await validate(allParams, {
-            password: validationRule('password', 'required'),
+            password: `${User.rules.password}|required`,
             passwordRepeat: 'required|same:password'
         })
 
