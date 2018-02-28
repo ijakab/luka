@@ -44,7 +44,7 @@
                     var username = prompt('Enter your username')
 
                     $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
-                        accessToken: data.data[0].accessToken,
+                        accessToken: data.data.accessToken,
                         username: username
                     }, function (data) {
                         alert('check console!')
