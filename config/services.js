@@ -16,21 +16,21 @@ module.exports = {
         facebook: {
             clientId: Env.get('FB_CLIENT_ID'),
             clientSecret: Env.get('FB_CLIENT_SECRET'),
-            redirectUri: Env.get('FB_REDIRECT_URL', `${Env.get('APP_URL')}/?socialAuthSource=facebook`) // put your frontend route here which will handle login with returned token from oauth process
+            redirectUri: Env.get('FB_REDIRECT_URL') // put your frontend route here which will handle login with returned token from oauth process
         },
 
 
         google: {
             clientId: Env.get('GOOGLE_CLIENT_ID'),
             clientSecret: Env.get('GOOGLE_CLIENT_SECRET'),
-            redirectUri: Env.get('GOOGLE_REDIRECT_URL', `${Env.get('APP_URL')}/?socialAuthSource=google`) // put your frontend route here which will handle login with returned token from oauth process
+            redirectUri: Env.get('GOOGLE_REDIRECT_URL') // put your frontend route here which will handle login with returned token from oauth process
         },
 
 
         linkedin: {
             clientId: Env.get('LINKEDIN_ID'),
             clientSecret: Env.get('LINKEDIN_SECRET'),
-            redirectUri: Env.get('LINKEDIN_REDIRECT_URL', `${Env.get('APP_URL')}/?socialAuthSource=linkedin`) // put your frontend route here which will handle login with returned token from oauth process
+            redirectUri: Env.get('LINKEDIN_REDIRECT_URL') // put your frontend route here which will handle login with returned token from oauth process
         }
     }
 }
