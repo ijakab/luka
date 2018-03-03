@@ -17,7 +17,8 @@ class AuthController {
 
         // email and username are not under unique:users rule because of auto merge account rule
         const validation = await validate(allParams, {
-            fullName: 'required',
+            firstname: 'required',
+            lastname: 'required',
             username: `${User.rules.username}|required`,
             email: 'required|email',
             password: `${User.rules.password}|required`,
@@ -47,7 +48,8 @@ class AuthController {
 
             user = await User.create({
                 username: allParams.username,
-                fullName: allParams.fullName,
+                firstname: allParams.firstname,
+                lastname: allParams.lastname,
                 email: allParams.email,
                 language: allParams.language || locale
             })
@@ -106,7 +108,7 @@ class AuthController {
         if (request.input('linkOnly')) return response.ok({
             url: await ally.driver(params.network).getRedirectUrl()
         })
-        
+
         await ally.driver(params.network).redirect()
     }
 
@@ -139,10 +141,13 @@ class AuthController {
             user = await account.user().fetch()
         } else {
             // social user did't exist at all... we will create new user or connect accounts for him
+            const fullname = socialUser.getName().split(' ')
+
             const userObject = sanitize({
                 socialId: socialUser.getId(),
                 network: params.network,
-                fullName: socialUser.getName(),
+                firstname: fullname.shift(),
+                lastname: fullname.join(' '),
                 email: socialUser.getEmail(),
                 avatar: socialUser.getAvatar()
             }, {
@@ -190,7 +195,8 @@ class AuthController {
 
                 user = await User.create({
                     username: allParams.username,
-                    fullName: userObject.fullName,
+                    firstname: userObject.firstname,
+                    lastname: userObject.lastname,
                     email: userObject.email,
                     avatar: avatar,
                     language: locale

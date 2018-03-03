@@ -44,7 +44,8 @@ test('Should NOT register same user', async ({client}) => {
 test('Should NOT register user with invalid or same email (also using .+ for gmail)', async ({client}) => {
 
     const emailTester = {
-        fullName: 'Email tester',
+        firstname: 'Email',
+        lastname: 'Tester',
         username: 'validUsername',
         password: 'testPass123',
         passwordRepeat: 'testPass123'
@@ -81,7 +82,8 @@ test('Should NOT register user with invalid or same email (also using .+ for gma
 test('Should NOT register user with special chars inside username', async ({client}) => {
 
     const usernameTester = {
-        fullName: 'Username tester',
+        firstname: 'Username',
+        lastname: 'Tester',
         email: 'username_tester@gmail.com',
         password: 'testPass123',
         passwordRepeat: 'testPass123'

@@ -15,7 +15,8 @@ class UserSchema extends Schema {
             // but, there can be only one true email :) ...other are inside account model
             table.string('email', 254).notNullable().unique()
 
-            table.string('fullName', 80).notNullable()
+            table.string('firstname', 50).notNullable()
+            table.string('lastname', 80).notNullable()
             table.string('language', 2).defaultTo(Env.get('APP_LOCALE', 'en')).notNullable()
             table.date('dob')
             table.string('avatar', 80)

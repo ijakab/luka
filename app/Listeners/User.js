@@ -27,7 +27,7 @@ module.exports = {
             // edit your local params for email as you wish
             locale: user.language,
             user: {
-                fullName: user.fullName
+                firstname: user.firstname
             },
             validateUrl: `${VALIDATE_EMAIL_URL}?token=${mailToken}`
         })
@@ -42,7 +42,7 @@ module.exports = {
             // edit your local params for email as you wish
             locale: user.language,
             user: {
-                fullName: user.fullName
+                firstname: user.firstname
             }
         })
 
@@ -66,7 +66,7 @@ module.exports = {
             // edit your local params for email as you wish
             locale: user.language,
             user: {
-                fullName: user.fullName
+                firstname: user.firstname
             },
             validateUrl: `${VALIDATE_EMAIL_URL}?token=${mailToken}`
         })
@@ -92,7 +92,7 @@ module.exports = {
             // edit your local params for email as you wish
             locale: user.language,
             user: {
-                fullName: user.fullName
+                firstname: user.firstname
             },
             resetUrl: `${RESET_PASSWORD_EMAIL_URL}?token=${mailToken}`
         })

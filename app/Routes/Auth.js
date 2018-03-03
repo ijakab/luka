@@ -11,7 +11,8 @@ module.exports = Route.group(() => {
      * @apiDescription After register user user will get email for email confirmation.
      * If user already logged in using social networks before and email is the same, accounts will be connected automatically.
      *
-     * @apiParam {string} fullName Full name of a user
+     * @apiParam {string} firstname Name of user
+     * @apiParam {string} lastname Surname of user
      * @apiParam {string} username Unique username (rule: string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$)
      * @apiParam {string} email Unique email
      * @apiParam {string} password Password for this user (rule: min:6)
