@@ -4,6 +4,7 @@
 
 <body>
 <a href="/api/auth/facebook/redirect">FACEBOOK LOGIN</a>
+<a href="/api/auth/twitter/redirect">TWITTER LOGIN</a>
 <a href="/api/auth/google/redirect">GOOGLE LOGIN</a>
 <a href="/api/auth/linkedin/redirect">LINKEDIN LOGIN</a>
 <a href="/api/auth/unknown/redirect">UNKNOWN LOGIN</a>
@@ -39,7 +40,7 @@
 
 
                 // on 202 we need to provide username and repeat same request
-                if(xhr.status === 202) {
+                if (xhr.status === 202) {
 
                     var username = prompt('Enter your username')
 

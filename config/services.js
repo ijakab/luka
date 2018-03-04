@@ -20,6 +20,13 @@ module.exports = {
         },
 
 
+        twitter: {
+            clientId: Env.get('TWITTER_CLIENT_ID'),
+            clientSecret: Env.get('TWITTER_CLIENT_SECRET'),
+            redirectUri: Env.get('TWITTER_REDIRECT_URL') // put your frontend route here which will handle login with returned token from oauth process
+        },
+
+
         google: {
             clientId: Env.get('GOOGLE_CLIENT_ID'),
             clientSecret: Env.get('GOOGLE_CLIENT_SECRET'),
