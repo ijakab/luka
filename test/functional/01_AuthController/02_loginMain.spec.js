@@ -113,13 +113,13 @@ test('Should not allow password reset if invalid token', async ({client, sleep})
 
     const noTokenInPayload = await client.post('/api/auth/resetPassword').send({
         password: 'newShinyPassword123',
-        passwordRepeat: 'newShinyPassword123'
+        password_confirmation: 'newShinyPassword123'
     }).end()
 
     const totallyWrongResponse = await client.post('/api/auth/resetPassword').send({
         token: 'WRONG TOKEN!',
         password: 'newShinyPassword123',
-        passwordRepeat: 'newShinyPassword123'
+        password_confirmation: 'newShinyPassword123'
     }).end()
 
     // get real user from db
@@ -136,7 +136,7 @@ test('Should not allow password reset if invalid token', async ({client, sleep})
     const validJwtButExpired = await client.post('/api/auth/resetPassword').send({
         token: expiredToken,
         password: 'newShinyPassword123',
-        passwordRepeat: 'newShinyPassword123'
+        password_confirmation: 'newShinyPassword123'
     }).end()
 
 
@@ -147,7 +147,7 @@ test('Should not allow password reset if invalid token', async ({client, sleep})
             expiresIn: '1 day'
         }),
         password: 'newShinyPassword123',
-        passwordRepeat: 'newShinyPassword123'
+        password_confirmation: 'newShinyPassword123'
     }).end()
 
 
@@ -176,14 +176,14 @@ test('Should not allow password reset if password is not the same or too few cha
     const passwordNotSame = await client.post('/api/auth/resetPassword').send({
         token: usernameEmailToken,
         password: 'newShinyPassword123',
-        passwordRepeat: 'newShinyPassword123Whooops!'
+        password_confirmation: 'newShinyPassword123Whooops!'
     }).end()
     passwordNotSame.assertStatus(400)
 
     const shortPass = await client.post('/api/auth/resetPassword').send({
         token: usernameEmailToken,
         password: '123',
-        passwordRepeat: '123'
+        password_confirmation: '123'
     }).end()
     shortPass.assertStatus(400)
 
@@ -194,7 +194,7 @@ test('Should reset user password to a new password', async ({client}) => {
     const response = await client.post('/api/auth/resetPassword').send({
         token: usernameEmailToken,
         password: 'Pass123',
-        passwordRepeat: 'Pass123'
+        password_confirmation: 'Pass123'
     }).end()
     response.assertStatus(200)
 

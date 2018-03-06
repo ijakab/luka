@@ -21,8 +21,7 @@ class AuthController {
             lastname: 'required',
             username: `${User.rules.username}|required`,
             email: 'required|email',
-            password: `${User.rules.password}|required`,
-            passwordRepeat: 'required|same:password',
+            password: `${User.rules.password}|required|confirmed`,
             language: User.rules.language
         })
 
@@ -360,7 +359,7 @@ class AuthController {
     }
 
 
-    async resetPassword({request, response, token}) {
+    async resetPassword({request, response, token, auth}) {
 
         const allParams = request.post()
 
@@ -368,8 +367,7 @@ class AuthController {
         if (!token.passwordReset) return response.unauthorized()
 
         const validation = await validate(allParams, {
-            password: `${User.rules.password}|required`,
-            passwordRepeat: 'required|same:password'
+            password: `${User.rules.password}|required|confirmed`
         })
 
         if (validation.fails()) return response.badRequest()
@@ -383,7 +381,11 @@ class AuthController {
         mainAccount.password = allParams.password
         await mainAccount.save()
 
-        response.ok('auth.passwordReseted')
+
+        // generate new token and refresh token after password reset
+        const newToken = await this._generateUserTokens(auth, await mainAccount.user().fetch())
+
+        response.ok({token: newToken.token, refreshToken: newToken.refreshToken, _message: 'auth.passwordReseted'})
     }
 
 

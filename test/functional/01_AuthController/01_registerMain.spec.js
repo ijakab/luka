@@ -48,7 +48,7 @@ test('Should NOT register user with invalid or same email (also using .+ for gma
         lastname: 'Tester',
         username: 'validUsername',
         password: 'testPass123',
-        passwordRepeat: 'testPass123'
+        password_confirmation: 'testPass123'
     }
 
     const invalidEmails = ['nomonkey.gmail.com', 'ilooksovalid@gmail..com', 'ihaveacomma@gmail,com']
@@ -86,7 +86,7 @@ test('Should NOT register user with special chars inside username', async ({clie
         lastname: 'Tester',
         email: 'username_tester@gmail.com',
         password: 'testPass123',
-        passwordRepeat: 'testPass123'
+        password_confirmation: 'testPass123'
     }
 
     const usernames = ['$$$richy$$$', 'I have space chars', 'NO', 'My-username-is-waaaaaaay-to-loooong']

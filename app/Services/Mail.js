@@ -25,7 +25,7 @@ module.exports = {
         if (!/@/.test(_.first(to))) {
             to = await User.query().select('email').whereIn('id', to).fetch()
 
-            to = _.map(to.toJSON(), 'email')
+            to = _.map(to.rows, 'email')
         }
 
         // get subject from data, or try to get subject from translate service
@@ -68,7 +68,7 @@ module.exports = {
 
 
         // separate users by languages
-        users = _.groupBy(users.toJSON(), 'language')
+        users = _.groupBy(users.rows, 'language')
 
         // for each language, change locale, and send
         for (let lang in users) {

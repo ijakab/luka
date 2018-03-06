@@ -16,7 +16,7 @@ module.exports = Route.group(() => {
      * @apiParam {string} username Unique username (rule: string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$)
      * @apiParam {string} email Unique email
      * @apiParam {string} password Password for this user (rule: min:6)
-     * @apiParam {string} passwordRepeat Repeated password
+     * @apiParam {string} password_confirmation Repeated password
      * @apiParam {string} [language=en] Language (rule: string|min:2|max:2)
      *
      */
@@ -91,11 +91,12 @@ module.exports = Route.group(() => {
      * @api {post} /api/auth/resetPassword Reset password
      * @apiGroup Auth
      *
-     * @apiDescription Route where you send password reset token together with new password
+     * @apiDescription Route where you send password reset token got inside email together with new password.
+     * As a response you will get new access and refresh token. All other refresh tokens will be invalidated!
      *
      * @apiParam {string} token JWT token you got inside password reset email
      * @apiParam {string} password New password for this user (rule: min:6)
-     * @apiParam {string} passwordRepeat Repeated password
+     * @apiParam {string} password_confirmation Repeated password
      *
      */
     // uses check token policy, because it parses custom JWT token created specifically for email

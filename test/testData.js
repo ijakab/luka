@@ -7,7 +7,7 @@ module.exports = {
         lastname: 'Test',
         email: 'test@gmail.com',
         password: 'testPass123', // later on in test it will be changed to Pass123
-        passwordRepeat: 'testPass123'
+        password_confirmation: 'testPass123'
     },
 
     validation: {
