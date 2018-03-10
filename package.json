@@ -30,8 +30,7 @@
     "@adonisjs/vow": "^1.0.15",
     "adonis-cache": "^0.3.1",
     "adonis-throttle-requests": "^1.0.1",
-    "mysql": "^2.15.0",
-    "slug": "^0.9.1"
+    "mysql": "^2.15.0"
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
