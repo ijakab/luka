@@ -152,7 +152,7 @@ test('Should not allow password reset if invalid token', async ({client, sleep})
 
 
     // also validate response messages so we are sure token errors were thrown
-    validJwtButExpired.assertStatus(400)
+    validJwtButExpired.assertStatus(401)
     validJwtButExpired.assertJSONSubset({
         debug: {
             untranslatedMsg: 'error.tokenExpired'

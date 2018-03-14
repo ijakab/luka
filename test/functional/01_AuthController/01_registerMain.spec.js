@@ -146,7 +146,7 @@ test('Should not validate email of user when wrong token is sent', async ({clien
 
 
     // also validate response messages so we are sure token errors were thrown
-    validJwtButExpired.assertStatus(400)
+    validJwtButExpired.assertStatus(401)
     validJwtButExpired.assertJSONSubset({
         debug: {
             untranslatedMsg: 'error.tokenExpired'
