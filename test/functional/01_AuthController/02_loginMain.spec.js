@@ -58,7 +58,7 @@ test('Should login user using username or email', async ({client, validate}) => 
     responseUsername.assertStatus(200)
 
     const responseEmail = await client.post('/api/auth/login').send({
-        email: testUser.email,
+        username: testUser.email,
         password: testUser.password
     }).end()
 
@@ -93,7 +93,7 @@ test('Should get password reset token email using email or username', async ({cl
 
     // check when sending password forgot with email
     const responseEmail = await client.post('/api/auth/forgotPassword').send({
-        email: testUser.email
+        username: testUser.email
     }).end()
     responseEmail.assertStatus(200)
 

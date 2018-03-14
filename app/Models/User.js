@@ -7,7 +7,7 @@ class User extends Model {
     // --- VALIDATION
     static get rules() {
         return {
-            username: 'string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$', // allow alpha numeric + _- from 3 to 20 chars
+            username: 'string|min:4|max:20|regex:^[0-9a-zA-Z-_]+$', // allow alpha numeric + _- from 4 to 20 chars
             password: 'min:6',
             language: 'string|min:2|max:2'
         }

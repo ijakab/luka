@@ -3,7 +3,7 @@
 const User = use('App/Models/User')
 const Account = use('App/Models/Account')
 
-const {validate, sanitize, is} = use('Validator')
+const {validate, sanitize, sanitizor, is} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
 
@@ -72,19 +72,16 @@ class AuthController {
 
     async login({request, response, auth}) {
 
-        const allParams = sanitize(request.post(), {
-            email: 'normalize_email'
-        })
+        const allParams = request.only(['username', 'password'])
 
         const validation = await validate(allParams, {
-            username: `${User.rules.username}|required_without_any:email`,
-            email: 'email|required_without_any:username',
-            password: `${User.rules.password}|required_with_any:username,email`
+            username: 'string|min:4|required', // username can be email or username
+            password: `${User.rules.password}|required`
         })
 
         if (validation.fails()) return response.badRequest()
 
-        const {user, mainAccount} = await this._findLoginUser(allParams)
+        const {user, mainAccount} = await this._findLoginUser(allParams.username) // we are passing username which can be both username or email
 
         // if we don't have user in db, respond with badRequest invalid username or password instead of 404
         if (!mainAccount || !user) return response.badRequest('auth.invalidPasswordOrUsername')
@@ -331,19 +328,16 @@ class AuthController {
 
     async forgotPassword({request, response}) {
 
-        const allParams = sanitize(request.post(), {
-            email: 'normalize_email'
-        })
+        const allParams = request.only(['username'])
 
         const validation = await validate(allParams, {
-            username: `${User.rules.username}|required_without_any:email`,
-            email: 'email|required_without_any:username',
+            username: `min:4|required`
         })
 
         if (validation.fails()) return response.badRequest()
 
         // find user and his main account
-        const {user, mainAccount} = await this._findLoginUser(allParams)
+        const {user, mainAccount} = await this._findLoginUser(allParams.username) // username can be both username or email
 
         if (!user) return response.notFound('auth.emailOrUsernameNotFound')
         if (!mainAccount) return response.notFound('auth.mainAccountNotFound')
@@ -399,15 +393,21 @@ class AuthController {
 
     // --- PRIVATE
 
-    async _findLoginUser(allParams) {
+    async _findLoginUser(usernameOrEmail) {
         // find user by username or main account email
         let user, mainAccount
 
-        if (allParams.username) {
-            user = await User.findBy('username', allParams.username)
-            mainAccount = user && await user.fetchMainAccount()
+        // first let's try fetching user via username
+        user = await User.findBy('username', usernameOrEmail)
+
+        if (user) {
+            // we got user, lets fetch his main account
+            mainAccount = await user.fetchMainAccount()
         } else {
-            mainAccount = await Account.query().where({email: allParams.email, type: 'main'}).first()
+            // else let's try via main account (sanitize email before)
+            usernameOrEmail = sanitizor.normalizeEmail(usernameOrEmail)
+
+            mainAccount = await Account.query().where({email: usernameOrEmail, type: 'main'}).first()
             user = mainAccount && await mainAccount.user().fetch()
         }
 

@@ -29,8 +29,7 @@ module.exports = Route.group(() => {
      *
      * @apiDescription Login route. Call this to fetch JWT access token together with refresh token.
      *
-     * @apiParam {string} [username] Send username or email
-     * @apiParam {string} [email] Send username or email
+     * @apiParam {string} username Send username or email as username
      * @apiParam {string} password Password for this username/email
      *
      */
@@ -80,8 +79,7 @@ module.exports = Route.group(() => {
      *
      * @apiDescription Route that sends email with password reset link.
      *
-     * @apiParam {string} [email] Email of user who wants to reset password
-     * @apiParam {string} [username] Username of user who wants to reset password
+     * @apiParam {string} [username] Username or email of user who wants to reset password
      *
      */
     Route.post('/forgotPassword', 'AuthController.forgotPassword')

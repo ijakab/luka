@@ -89,7 +89,7 @@ test('Should NOT register user with special chars inside username', async ({clie
         password_confirmation: 'testPass123'
     }
 
-    const usernames = ['$$$richy$$$', 'I have space chars', 'NO', 'My-username-is-waaaaaaay-to-loooong']
+    const usernames = ['$$$richy$$$', 'I have space chars', 'NOO', 'My-username-is-waaaaaaay-to-loooong']
 
     await Promise.all(usernames.map(async (username) => {
 
