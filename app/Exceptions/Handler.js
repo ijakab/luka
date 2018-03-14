@@ -30,7 +30,7 @@ class ExceptionHandler extends BaseExceptionHandler {
             case 'TokenExpiredError':
             case 'ExpiredJwtToken':
                 error.message = 'error.tokenExpired'
-                error.status = 400
+                error.status = 401
                 break
             case 'InvalidJwtToken':
             case 'JsonWebTokenError':
