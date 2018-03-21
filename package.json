@@ -8,7 +8,7 @@
     "init": "node ace migration:run && node ace seed && npm run docs",
     "refresh": "node ace migration:refresh && node ace seed",
     "docs": "rimraf public/docs && apidoc -i app/ -o public/docs",
-    "test": "export ENV_PATH=.env.test|| set ENV_PATH=.env.test&& (node ace migration:run && node ace seed && node ace test --bail)"
+    "test": "export ENV_PATH=.env.test|| set ENV_PATH=.env.test&& (node ace migration:run && node ace seed && nyc node ace test --bail)"
   },
   "author": "hlozancic",
   "license": "UNLICENSED",
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
+    "nyc": "^11.6.0",
     "rimraf": "^2.6.2",
     "sqlite3": "^4.0.0"
   },
@@ -50,5 +51,15 @@
   "autoload": {
     "App": "./app",
     "CustomTest": "./test/Traits"
+  },
+  "nyc": {
+    "exclude": [
+      "./*.*",
+      "database",
+      "config",
+      "public",
+      "start",
+      "test"
+    ]
   }
 }

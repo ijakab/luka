@@ -1,8 +1,9 @@
 # exclude docs, we are generating them via npm run docs
 public/docs
 
-# The development and test sqlite file
+# The development and test
 database/*.sqlite
+.nyc_output
 
 # Node modules
 node_modules
