@@ -112,6 +112,28 @@ module.exports = Route.group(() => {
      */
     Route.get('/accounts', 'AuthController.accounts').middleware(['getUser'])
 
+    /**
+     * @api {post} /api/auth/checkUsername Check username
+     * @apiGroup Auth
+     *
+     * @apiDescription Checks if username is existing
+     *
+     * @apiParam {string} username Username to check
+     *
+     */
+    Route.post('/checkUsername', 'AuthController.checkUsername')
+
+    /**
+     * @api {post} /api/auth/checkEmail Check email
+     * @apiGroup Auth
+     *
+     * @apiDescription Checks if email is existing
+     *
+     * @apiParam {string} email Email to check
+     *
+     */
+    Route.post('/checkEmail', 'AuthController.checkEmail')
+
 
     // ****************************************** NOTE ******************************************
     // KEEP THIS GUYS AT THE BOTTOM!

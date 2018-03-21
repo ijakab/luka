@@ -9,6 +9,26 @@ const Event = use('Event')
 
 class AuthController {
 
+    async checkUsername({request, response}) {
+
+        const existingUsername = await User.query().where('username', request.input('username')).getCount()
+
+        if (!existingUsername) return response.ok()
+        response.badRequest('auth.usernameExists')
+    }
+
+    async checkEmail({request, response}) {
+
+        const existingMainAccount = await Account.query().where({
+            email: sanitizor.normalizeEmail(request.input('email')),
+            type: 'main'
+        }).getCount()
+
+        if (!existingMainAccount) return response.ok()
+
+        response.badRequest('auth.emailExists')
+    }
+
     async register({request, response, auth, locale}) {
 
         const allParams = sanitize(request.post(), {
