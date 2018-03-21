@@ -86,7 +86,7 @@ class AuthController {
         // fire an event that new user was created... we need to send welcome email, etc.
         Event.fire('user::register', {user, mainAccount})
 
-        response.ok('auth.userRegistered')
+        response.ok({user, _message: 'auth.userRegistered'})
     }
 
 
