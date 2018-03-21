@@ -72,9 +72,7 @@ test('Should NOT register user with invalid or same email (also using .+ for gma
         const response = await client.post('/api/auth/register').send(userPayload).end()
         response.assertStatus(400)
         response.assertJSONSubset({
-            debug: {
-                untranslatedMsg: 'auth.emailExists'
-            }
+            code: 'auth.emailExists'
         })
     }))
 })
@@ -148,18 +146,14 @@ test('Should not validate email of user when wrong token is sent', async ({clien
     // also validate response messages so we are sure token errors were thrown
     validJwtButExpired.assertStatus(401)
     validJwtButExpired.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'error.tokenExpired'
-        }
+        code: 'error.tokenExpired'
     })
 
     const otherResponses = [noTokenInPayload, totallyWrongResponse, validJwtButNotValidToken]
     otherResponses.forEach((res) => {
         res.assertStatus(400)
         res.assertJSONSubset({
-            debug: {
-                untranslatedMsg: 'error.invalidToken'
-            }
+            code: 'error.invalidToken'
         })
     })
 
@@ -193,9 +187,7 @@ test('Should not allow password reset while account is not activated', async ({c
     response.assertStatus(403)
 
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.mailNotValidated'
-        }
+        code: 'auth.mailNotValidated'
     })
 
 })
@@ -220,9 +212,7 @@ test('It should respond that email is already validated', async ({client}) => {
     const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
     response.assertStatus(400)
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.emailAlreadyValidated'
-        }
+        code: 'auth.emailAlreadyValidated'
     })
 
 
@@ -233,9 +223,7 @@ test('Resend validation should fail with 404 if wrong email', async ({client}) =
     const response = await client.post('/api/auth/resendValidation').send({resendEmail: 'somestrangeguy@gmail.com'}).end()
     response.assertStatus(404)
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.emailOrUsernameNotFound'
-        }
+        code: 'auth.emailOrUsernameNotFound'
     })
 
 })
@@ -245,9 +233,7 @@ test('Resend validation should fail with 400 if validated email', async ({client
     const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
     response.assertStatus(400)
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.emailAlreadyValidated'
-        }
+        code: 'auth.emailAlreadyValidated'
     })
 
 })

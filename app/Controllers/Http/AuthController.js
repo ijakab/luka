@@ -300,7 +300,7 @@ class AuthController {
     }
 
 
-    async validateEmail({response, token}) {
+    async validateEmail({response, auth, token}) {
 
         // first check if this valid token has account info inside
         if (!token.mailValidation) return response.unauthorized()
@@ -319,10 +319,14 @@ class AuthController {
         account.validated = true
         await account.save()
 
-        // user just validated his account... send welcome mail
-        Event.fire('user::validated', {user: await account.user().fetch()})
+        const user = await account.user().fetch()
+        const newToken = await this._generateUserTokens(auth, user)
 
-        response.ok('auth.emailValidated')
+        // user just validated his account... send welcome mail
+        Event.fire('user::validated', {user})
+
+        // respond with all data as if user has just logged in
+        response.ok({user, token: newToken.token, refreshToken: newToken.refreshToken, _message: 'auth.emailValidated'})
     }
 
 
@@ -395,11 +399,17 @@ class AuthController {
         mainAccount.password = allParams.password
         await mainAccount.save()
 
+        const user = await mainAccount.user().fetch()
 
         // generate new token and refresh token after password reset
-        const newToken = await this._generateUserTokens(auth, await mainAccount.user().fetch())
+        const newToken = await this._generateUserTokens(auth, user)
 
-        response.ok({token: newToken.token, refreshToken: newToken.refreshToken, _message: 'auth.passwordReseted'})
+        response.ok({
+            user,
+            token: newToken.token,
+            refreshToken: newToken.refreshToken,
+            _message: 'auth.passwordReseted'
+        })
     }
 
 

@@ -25,9 +25,7 @@ test('Should respond with 400 invalidPasswordOrUsername if unknown user on login
 
     response.assertStatus(400)
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.invalidPasswordOrUsername'
-        }
+        code: 'auth.invalidPasswordOrUsername'
     })
 
 })
@@ -41,9 +39,7 @@ test('Should not login user with wrong password', async ({client}) => {
 
     response.assertStatus(400)
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.invalidPasswordOrUsername'
-        }
+        code: 'auth.invalidPasswordOrUsername'
     })
 
 })
@@ -154,18 +150,14 @@ test('Should not allow password reset if invalid token', async ({client, sleep})
     // also validate response messages so we are sure token errors were thrown
     validJwtButExpired.assertStatus(401)
     validJwtButExpired.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'error.tokenExpired'
-        }
+        code: 'error.tokenExpired'
     })
 
     const otherResponses = [noTokenInPayload, totallyWrongResponse, validJwtButNotValidToken]
     otherResponses.forEach((res) => {
         res.assertStatus(400)
         res.assertJSONSubset({
-            debug: {
-                untranslatedMsg: 'error.invalidToken'
-            }
+            code: 'error.invalidToken'
         })
     })
 
@@ -199,9 +191,7 @@ test('Should reset user password to a new password', async ({client}) => {
     response.assertStatus(200)
 
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.passwordReseted'
-        }
+        code: 'auth.passwordReseted'
     })
 
 })
