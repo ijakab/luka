@@ -39,7 +39,7 @@ module.exports = async function (existingResponse, isMobile, locale) {
     }
 
     // create payload
-    let payload = {data, message}
+    let payload = {data, message, code: untranslatedMsg}
 
     // show errors and useful info when developing
     if (node_env !== 'production' || debug) {
@@ -47,6 +47,7 @@ module.exports = async function (existingResponse, isMobile, locale) {
         payload.debug = {untranslatedMsg}
 
         if (existingResponse instanceof Error) {
+            payload.debug = {}
             payload.debug.error = {details: existingResponse, stack: existingResponse.stack}
         }
     }
