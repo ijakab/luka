@@ -161,7 +161,27 @@ test('Should not validate email of user when wrong token is sent', async ({clien
 
 test('It should resend validation for email of user', async ({client, getEmail, assert}) => {
 
-    const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
+    const response = await client.post('/api/auth/resendValidation').send({username: testUser.email}).end()
+    response.assertStatus(200)
+
+    // catch sent email using getEmail trait
+    const recentEmail = await getEmail()
+
+    assert.equal(_.first(recentEmail.message.to).address, testUser.email)
+    // check if jwt token is inside email html, and fetch it for later use
+    try {
+        emailToken = recentEmail.message.html.split(/href=.*?token\=(.+)?"/gmi)[1]
+    } catch (err) {
+        throw new Error('Email token was not found using regex pattern inside email sent to user on registration!')
+    }
+
+    assert.exists(emailToken)
+
+})
+
+test('It should resend validation for username of user', async ({client, getEmail, assert}) => {
+
+    const response = await client.post('/api/auth/resendValidation').send({username: testUser.username}).end()
     response.assertStatus(200)
 
     // catch sent email using getEmail trait
@@ -209,31 +229,49 @@ test('Should validate email if token is sent correctly and send welcome eamil', 
 
 test('It should respond that email is already validated', async ({client}) => {
 
-    const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
+    const response = await client.post('/api/auth/resendValidation').send({username: testUser.email}).end()
     response.assertStatus(400)
     response.assertJSONSubset({
         code: 'auth.emailAlreadyValidated'
     })
-
-
 })
 
 test('Resend validation should fail with 404 if wrong email', async ({client}) => {
     // this is to prevent people of using this route to fetch emails in our db
-    const response = await client.post('/api/auth/resendValidation').send({resendEmail: 'somestrangeguy@gmail.com'}).end()
+    const response = await client.post('/api/auth/resendValidation').send({username: 'somestrangeguy@gmail.com'}).end()
     response.assertStatus(404)
     response.assertJSONSubset({
         code: 'auth.emailOrUsernameNotFound'
     })
+})
 
+test('Resend validation should fail with 404 if wrong username', async ({client}) => {
+    // this is to prevent people of using this route to fetch emails in our db
+    const response = await client.post('/api/auth/resendValidation').send({username: 'whoami'}).end()
+    response.assertStatus(404)
+    response.assertJSONSubset({
+        debug: {
+            untranslatedMsg: 'auth.emailOrUsernameNotFound'
+        }
+    })
 })
 
 test('Resend validation should fail with 400 if validated email', async ({client}) => {
     // this is to prevent people of using this route to fetch emails in our db
-    const response = await client.post('/api/auth/resendValidation').send({resendEmail: testUser.email}).end()
+    const response = await client.post('/api/auth/resendValidation').send({username: testUser.email}).end()
     response.assertStatus(400)
     response.assertJSONSubset({
         code: 'auth.emailAlreadyValidated'
     })
+})
 
+test('Resend validation should fail with 400 if validated username', async ({client}) => {
+    // this is to prevent people of using this route to fetch emails in our db
+    const response = await client.post('/api/auth/resendValidation').send({username: testUser.username}).end()
+    response.assertStatus(400)
+    response.assertJSONSubset({
+        debug: {
+            untranslatedMsg: 'auth.emailAlreadyValidated'
+        }
+    })
 })

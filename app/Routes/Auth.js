@@ -67,7 +67,7 @@ module.exports = Route.group(() => {
      *
      * @apiDescription If for some reason email validation should be resent. Hit this route.
      *
-     * @apiParam {string} resendEmail Email of user you wish to resend validation to
+     * @apiParam {string} username Email or username of user you wish to resend validation to
      *
      */
     Route.post('/resendValidation', 'AuthController.resendValidation')

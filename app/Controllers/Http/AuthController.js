@@ -332,19 +332,23 @@ class AuthController {
 
     async resendValidation({request, response}) {
 
-        const resendEmail = request.input('resendEmail')
+        const allParams = request.only(['username'])
 
-        // check if correct email format was sent
-        if (!is.email(resendEmail)) return response.badRequest()
+        const validation = await validate(allParams, {
+            username: `min:4|required`
+        })
 
-        // find main account for this email
-        const mainAccount = await Account.query().where({'email': resendEmail, type: 'main'}).first()
+        if (validation.fails()) return response.badRequest()
 
-        if (!mainAccount) return response.notFound('auth.emailOrUsernameNotFound')
+        // find user and his main account
+        const {user, mainAccount} = await this._findLoginUser(allParams.username) // username can be both username or email
+
+        if (!user) return response.notFound('auth.emailOrUsernameNotFound')
+        if (!mainAccount) return response.notFound('auth.mainAccountNotFound')
         if (mainAccount.validated) return response.badRequest('auth.emailAlreadyValidated')
 
         // send validation email in async way
-        Event.fire('user::resendValidation', {mainAccount})
+        Event.fire('user::resendValidation', {user, mainAccount})
 
         response.ok('auth.emailValidationResent')
     }
