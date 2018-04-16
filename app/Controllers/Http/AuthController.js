@@ -149,7 +149,7 @@ class AuthController {
         const socialUser = await ally.driver(params.network).getUser()
 
         // first try finding this user
-        let account = await Account.query().where({socialId: socialUser.getId(), type: params.network}).first()
+        let account = await Account.query().where({social_id: socialUser.getId(), type: params.network}).first()
         let user // we will fill this void by newly created user or found one...
 
         if (account) {
@@ -160,7 +160,7 @@ class AuthController {
             const fullname = socialUser.getName().split(' ')
 
             const userObject = sanitize({
-                socialId: socialUser.getId(),
+                social_id: socialUser.getId(),
                 network: params.network,
                 firstname: fullname.shift(),
                 lastname: fullname.join(' '),
@@ -227,7 +227,7 @@ class AuthController {
             await Account.create({
                 user_id: user.id,
                 type: params.network,
-                socialId: userObject.socialId,
+                social_id: userObject.social_id,
                 email: userObject.email,
                 validated: true // it's always validated if oAuth was success
             })

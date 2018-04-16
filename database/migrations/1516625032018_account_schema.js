@@ -12,7 +12,7 @@ class AccountSchema extends Schema {
             table.boolean('validated').defaultTo(false)
 
             // social id and password are not strictly required because one excludes another
-            table.string('socialId', 60)
+            table.string('social_id', 60)
             table.string('password', 60)
             table.timestamps()
         })
