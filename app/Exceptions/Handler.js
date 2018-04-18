@@ -40,6 +40,12 @@ class ExceptionHandler extends BaseExceptionHandler {
                 break
         }
 
+        switch (error.code) {
+            case 'ER_NO_REFERENCED_ROW':
+            case 'ER_NO_REFERENCED_ROW_2':
+                error.message = 'error.invalidRelation'
+        }
+
         const status = error.status || error.statusCode || 500
         const isMobile = request.header('x-is-mobile')
 

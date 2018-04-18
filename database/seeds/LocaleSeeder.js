@@ -159,6 +159,12 @@ class LocaleSeeder {
             {
                 locale: 'en',
                 group: 'error',
+                item: 'invalidRelation',
+                text: 'Unknown relation'
+            },
+            {
+                locale: 'en',
+                group: 'error',
                 item: 'tooManyRequests',
                 text: 'Too many attempts... Slow down'
             },
