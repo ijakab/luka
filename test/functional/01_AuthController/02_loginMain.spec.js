@@ -231,7 +231,7 @@ test('Should not refresh token if wrong token is sent', async ({client}) => {
     const noTokenInPayload = await client.post('/api/auth/refreshToken').send({}).end()
     noTokenInPayload.assertStatus(400)
 
-    const totallyWrongResponse = await client.post('/api/auth/refreshToken').send({token: 'WRONG TOKEN!'}).end()
+    const totallyWrongResponse = await client.post('/api/auth/refreshToken').send({refreshToken: 'WRONG TOKEN!'}).end()
     totallyWrongResponse.assertStatus(400)
 
 })
@@ -239,7 +239,7 @@ test('Should not refresh token if wrong token is sent', async ({client}) => {
 test('Should refresh token if good token is sent', async ({client}) => {
 
     const response = await client.post('/api/auth/refreshToken').send({
-        token: testData.refreshToken
+        refreshToken: testData.refreshToken
     }).end()
 
     response.assertStatus(200)

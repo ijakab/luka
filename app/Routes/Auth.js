@@ -42,7 +42,7 @@ module.exports = Route.group(() => {
      *
      * @apiDescription Refresh your expired JWT token.
      *
-     * @apiParam {string} token JWT refresh token
+     * @apiParam {string} refreshToken JWT refresh token
      *
      */
     Route.post('/refreshToken', 'AuthController.refreshToken')

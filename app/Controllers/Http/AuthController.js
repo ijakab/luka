@@ -242,7 +242,7 @@ class AuthController {
 
     async refreshToken({request, response, auth}) {
 
-        const refreshToken = request.input('token')
+        const refreshToken = request.input('refreshToken')
 
         if (!refreshToken) return response.badRequest()
 
