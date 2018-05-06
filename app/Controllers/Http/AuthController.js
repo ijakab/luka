@@ -130,11 +130,11 @@ class AuthController {
 
     async socialLogin({request, response, params, ally, auth, locale}) {
 
-        const allParams = request.only(['token', 'accessToken', 'username'])
+        const allParams = request.only(['code', 'accessToken', 'username'])
 
         const validation = await validate(allParams, {
-            token: 'required_without_any:accessToken',
-            accessToken: 'required_without_any:token',
+            code: 'required_without_any:accessToken',
+            accessToken: 'required_without_any:code',
             username: User.rules.username // not required!
         })
 
@@ -144,7 +144,7 @@ class AuthController {
         // todo accessToken is still not working...
         // todo check here: https://github.com/adonisjs/adonis-ally/issues/29
         // todo and here: https://forum.adonisjs.com/t/adonis-ally-and-ios-facebook-login/736
-        ally._request._qs = {code: allParams.token, accessToken: allParams.accessToken}
+        ally._request._qs = {code: allParams.code, accessToken: allParams.accessToken}
 
         const socialUser = await ally.driver(params.network).getUser()
 

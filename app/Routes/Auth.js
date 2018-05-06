@@ -163,11 +163,11 @@ module.exports = Route.group(() => {
      * Before creating new account, API will send response with status 202 (Accepted) and accessToken meaning that everything went well
      * but username is needed to continue user account creation. Client should call this route again this time providing accessToken AND username
      *
-     * Token (often call "code" instead of "token" in social responses) is acquired after /auth/:network/redirect
+     * Code is acquired after /auth/:network/redirect
      * successful call on web or you'll get accessToken immediately if using mobile app social SDKs.
      *
      * @apiParam {routeParam} network Name of social network you are using (facebook, google, linkedin)
-     * @apiParam {string} [token] Token you got after successful oAuth to one of social networks (this or accessToken is required)
+     * @apiParam {string} [code] Token you got after successful oAuth to one of social networks (this or accessToken is required)
      * @apiParam {string} [accessToken] If you are using mobile SDKs for social auth, you immediately get accessToken, so use this instead of token (this or token is required)
      * @apiParam {string} [username] When user is not existing, he will need username. This one is required after response with status 202 (Accepted) (rule: string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$)
      *
