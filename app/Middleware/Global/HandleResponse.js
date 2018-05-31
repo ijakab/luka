@@ -16,14 +16,13 @@ class FormatResponseMiddleware {
         // after everything is finished, handle response logic upstream
         const lazyBody = response._lazyBody
         if (response.implicitEnd && lazyBody.method !== 'redirect') {
-            const isMobile = request.header('x-is-mobile')
 
             // handle error 429 for too many attempts
             if (response.response.statusCode === 429) {
                 lazyBody.content = 'error.tooManyRequests'
             }
 
-            response[lazyBody.method](await formatResponse(lazyBody.content, isMobile, locale))
+            response[lazyBody.method](await formatResponse(lazyBody.content, locale))
         }
     }
 }

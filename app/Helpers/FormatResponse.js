@@ -7,7 +7,7 @@ const node_env = Env.get('NODE_ENV', 'development')
 const translate = use('App/Helpers/Translate')
 
 
-module.exports = async function (existingResponse, isMobile, locale) {
+module.exports = async function (existingResponse, locale) {
 
     // format it to json if needed
     let data = (existingResponse && existingResponse.toJSON) ? existingResponse.toJSON() : (existingResponse || '')
@@ -22,7 +22,7 @@ module.exports = async function (existingResponse, isMobile, locale) {
     // check if we are dealing with validation.messages()
     if (Array.isArray(data) && data.length && data[0].field && data[0].validation) {
         message = message || `validation.${data[0].field}.${data[0].validation}`
-        data = isMobile ? [] : {} // reset data to empty response
+        data = {} // reset data to empty response
     } else {
         // fetch message as a string always
         message = message || ((data && typeof data === 'string') ? data : (typeof data === 'object' ? (data.message || data[0] && data[0].message || '') : ''))
@@ -32,11 +32,7 @@ module.exports = async function (existingResponse, isMobile, locale) {
     const untranslatedMsg = message
     message = translate(locale, message)
 
-    if (isMobile) {
-        data = (typeof data === 'string' || data instanceof Error) ? [] : (Array.isArray(data) ? data : (Object.keys(data).length ? [data] : []))
-    } else {
-        data = (typeof data === 'string' || data instanceof Error) ? {} : (Array.isArray(data) ? data : (Object.keys(data).length ? data : {}))
-    }
+    data = (typeof data === 'string' || data instanceof Error) ? {} : (Array.isArray(data) ? data : (Object.keys(data).length ? data : {}))
 
     // create payload
     let payload = {data, message, code: untranslatedMsg}

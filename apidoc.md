@@ -3,9 +3,7 @@
 
 All responses are sent as **JSON**. <br>
 Also, response always contain **data** and **message** key. <br>
-There are two options:<br>
-**WITH x-is-mobile** header - _data_ is always an **array**, while message is always a **string**.<br>
-**WITHOUT x-is-mobile** header - _data_ is **array** or **object**, while message is always a **string**.
+_data_ is **array** or **object**, while message is always a **string**.
 
 ### x-is-mobile header
 Set it to `android` or `ios` if you want to wrap all responses to data array

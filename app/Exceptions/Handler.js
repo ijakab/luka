@@ -47,9 +47,8 @@ class ExceptionHandler extends BaseExceptionHandler {
         }
 
         const status = error.status || error.statusCode || 500
-        const isMobile = request.header('x-is-mobile')
 
-        response.status(status).send(await formatResponse(error, isMobile, locale))
+        response.status(status).send(await formatResponse(error, locale))
 
     }
 
