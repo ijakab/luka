@@ -141,12 +141,14 @@ class AuthController {
         if (validation.fails()) return response.badRequest()
 
         // wire up post as get... so ally can recognize social code
-        // todo accessToken is still not working...
-        // todo check here: https://github.com/adonisjs/adonis-ally/issues/29
-        // todo and here: https://forum.adonisjs.com/t/adonis-ally-and-ios-facebook-login/736
         ally._request._qs = {code: allParams.code, accessToken: allParams.accessToken}
 
-        const socialUser = await ally.driver(params.network).getUser()
+        let socialUser
+        if(allParams.accessToken) {
+            socialUser = await ally.driver(params.network).getUserByToken(allParams.accessToken)
+        } else {
+            socialUser = await ally.driver(params.network).getUser()
+        }
 
         // first try finding this user
         let account = await Account.query().where({social_id: socialUser.getId(), type: params.network}).first()
