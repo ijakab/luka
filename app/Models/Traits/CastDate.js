@@ -6,15 +6,15 @@
 class CastDate {
     register(Model, customOptions = {}) {
         const defaultOptions = {
-            format: 'x', // milliseconds (unix timestamp)
-            castNumber: true
+            format: 'x' // milliseconds (unix timestamp)
         }
 
         const options = Object.assign(defaultOptions, customOptions)
 
 
         Model.castDates = function (field, value) {
-            return options.castNumber ? Number(value.format(options.format)) : value.format(options.format)
+            // if unix timestamp... cast number
+            return options.format === 'x' ? Number(value.format(options.format)) : value.format(options.format)
         }
 
     }
