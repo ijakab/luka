@@ -16,6 +16,14 @@ const testUser = testData.testUser
 
 let emailToken
 
+test('Should NOT register user without accepted terms', async ({client}) => {
+    const response = await client.post('/api/auth/register').send({...testUser, terms_accepted: false}).end()
+    response.assertStatus(400)
+    response.assertJSONSubset({
+        code: 'auth.acceptTerms'
+    })
+})
+
 test('Register user and check email', async ({client, validate, getEmail, assert}) => {
 
     const response = await client.post('/api/auth/register').send(testUser).end()
@@ -48,7 +56,8 @@ test('Should NOT register user with invalid or same email (also using .+ for gma
         lastname: 'Tester',
         username: 'validUsername',
         password: 'testPass123',
-        password_confirmation: 'testPass123'
+        password_confirmation: 'testPass123',
+        terms_accepted: true
     }
 
     const invalidEmails = ['nomonkey.gmail.com', 'ilooksovalid@gmail..com', 'ihaveacomma@gmail,com']
@@ -84,7 +93,8 @@ test('Should NOT register user with special chars inside username', async ({clie
         lastname: 'Tester',
         email: 'username_tester@gmail.com',
         password: 'testPass123',
-        password_confirmation: 'testPass123'
+        password_confirmation: 'testPass123',
+        terms_accepted: true
     }
 
     const usernames = ['$$$richy$$$', 'I have space chars', 'NOO', 'My-username-is-waaaaaaay-to-loooong']
