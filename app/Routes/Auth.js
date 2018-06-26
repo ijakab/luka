@@ -17,6 +17,7 @@ module.exports = Route.group(() => {
      * @apiParam {string} email Unique email
      * @apiParam {string} password Password for this user (rule: min:6)
      * @apiParam {string} password_confirmation Repeated password
+     * @apiParam {boolean} terms_accepted Need to be sent as true...
      * @apiParam {string} [language=en] Language (rule: string|min:2|max:2)
      *
      */
@@ -170,6 +171,7 @@ module.exports = Route.group(() => {
      * @apiParam {string} [code] Token you got after successful oAuth to one of social networks (this or accessToken is required)
      * @apiParam {string} [accessToken] If you are using mobile SDKs for social auth, you immediately get accessToken, so use this instead of token (this or token is required)
      * @apiParam {string} [username] When user is not existing, he will need username. This one is required after response with status 202 (Accepted) (rule: string|min:3|max:20|regex:^[0-9a-zA-Z-_]+$)
+     * @apiParam {boolean} [terms_accepted] Need to be sent as true...
      *
      */
     Route.post('/:network', 'AuthController.socialLogin')

@@ -3,9 +3,11 @@
 const User = use('App/Models/User')
 const Account = use('App/Models/Account')
 
-const {validate, sanitize, sanitizor, is} = use('Validator')
+const {validate, sanitize, sanitizor} = use('Validator')
 const Hash = use('Hash')
 const Event = use('Event')
+
+const Helper = use('App/Helpers/Common')
 
 class AuthController {
 
@@ -42,9 +44,11 @@ class AuthController {
             username: `${User.rules.username}|required`,
             email: 'required|email',
             password: `${User.rules.password}|required|confirmed`,
-            language: User.rules.language
+            language: User.rules.language,
+            terms_accepted: 'required|boolean'
         })
 
+        if (!allParams.terms_accepted) return response.badRequest('auth.acceptTerms')
         if (validation.fails()) return response.badRequest()
 
         // first we check if this email already has MAIN account type
@@ -70,7 +74,9 @@ class AuthController {
                 firstname: allParams.firstname,
                 lastname: allParams.lastname,
                 email: allParams.email,
-                language: allParams.language || locale
+                language: allParams.language || locale,
+                terms_accepted: new Date(),
+                terms_ip: Helper.getIp(request)
             })
         }
 
@@ -130,12 +136,13 @@ class AuthController {
 
     async socialLogin({request, response, params, ally, auth, locale}) {
 
-        const allParams = request.only(['code', 'accessToken', 'username'])
+        const allParams = request.only(['code', 'accessToken', 'username', 'terms_accepted'])
 
         const validation = await validate(allParams, {
             code: 'required_without_any:accessToken',
             accessToken: 'required_without_any:code',
-            username: User.rules.username // not required!
+            username: User.rules.username, // not required!
+            terms_accepted: 'boolean' // not required!
         })
 
         if (validation.fails()) return response.badRequest()
@@ -195,6 +202,8 @@ class AuthController {
                     _message: 'auth.socialLoginProvideUsername'
                 })
 
+                if (!allParams.terms_accepted) return response.badRequest('auth.acceptTerms')
+
                 // check if this username is taken
                 const existingUsername = await User.query().where('username', allParams.username).getCount()
                 if (existingUsername) return response.badRequest('auth.usernameExists')
@@ -217,7 +226,9 @@ class AuthController {
                     lastname: userObject.lastname,
                     email: userObject.email,
                     avatar: avatar,
-                    language: locale
+                    language: locale,
+                    terms_accepted: new Date(),
+                    terms_ip: Helper.getIp(request)
                 })
 
                 // we just created new social user, they are automatically validated (no need for email validation)

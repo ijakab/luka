@@ -20,6 +20,10 @@ class UserSchema extends Schema {
             table.string('language', 2).defaultTo(Env.get('APP_LOCALE', 'en')).notNullable()
             table.date('dob')
             table.string('avatar', 80)
+
+            table.timestamp('terms_accepted')
+            table.string('terms_ip', 45)
+
             table.timestamps()
         })
     }
