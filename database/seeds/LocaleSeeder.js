@@ -5,182 +5,134 @@ const Locale = use('App/Models/Locale')
 class LocaleSeeder {
     async run() {
 
-        await Locale.createMany([
+        const translations = {
+            // USER CONTROLLER
+            'user.invalidCurrentPassword': {
+                en: 'Your current password is not correct!'
+            },
             // --- AUTH CONTROLLER --- //
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'emailExists',
-                text: 'Email already exists'
+            'auth.emailExists': {
+                en: 'Email already exists'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'usernameExists',
-                text: 'Username already exists'
+            'auth.acceptTerms': {
+                en: 'Please accept terms'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'emailOrUsernameNotFound',
-                text: 'User with this email or username is not existing'
+            'auth.usernameExists': {
+                en: 'Username already exists'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'mainAccountNotFound',
-                text: 'User is not registered with his main account (try social media login)'
+            'auth.emailOrUsernameNotFound': {
+                en: 'User with this email or username is not existing'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'invalidPasswordOrUsername',
-                text: 'Invalid password or username'
+            'auth.mainAccountNotFound': {
+                en: 'User is not registered with his main account (try social media login)'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'userRegistered',
-                text: 'Successfully registered! Please validate your email.'
+            'auth.invalidPasswordOrUsername': {
+                en: 'Invalid password or username'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'mailNotValidated',
-                text: 'Please validate your email.'
+            'auth.userRegistered': {
+                en: 'Successfully registered! Please validate your email.'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'emailValidated',
-                text: 'Email successfully validated!'
+            'auth.mailNotValidated': {
+                en: 'Please validate your email.'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'emailAlreadyValidated',
-                text: 'Email is already validated!'
+            'auth.emailValidated': {
+                en: 'Email successfully validated!'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'emailValidationResent',
-                text: 'Email validation resent!'
+            'auth.emailAlreadyValidated': {
+                en: 'Email is already validated!'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'forgotPasswordTokenSent',
-                text: 'Reset password email sent!'
+            'auth.emailValidationResent': {
+                en: 'Email validation resent!'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'passwordReseted',
-                text: 'Password was changed successfully!'
+            'auth.forgotPasswordTokenSent': {
+                en: 'Reset password email sent!'
             },
-            {
-                locale: 'en',
-                group: 'auth',
-                item: 'socialLoginProvideUsername',
-                text: 'Please provide your username'
+            'auth.passwordReseted': {
+                en: 'Password was changed successfully!'
+            },
+            'auth.socialLoginProvideUsername': {
+                en: 'Please provide your username'
             },
             // --- REGISTRATION EMAIL --- //
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'registration.subject',
-                text: 'Email validation'
+            'email.registration.subject': {
+                en: 'Email validation'
             },
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'registration.welcome',
-                text: 'Welcome'
+            'email.registration.welcome': {
+                en: 'Welcome'
             },
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'registration.validationLink.description',
-                text: 'Please click here to validate your email address:'
+            'email.registration.validationLink.description': {
+                en: 'Please click here to validate your email address:'
             },
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'registration.validationLink.title',
-                text: 'VALIDATE EMAIL'
+            'email.registration.validationLink.title': {
+                en: 'VALIDATE EMAIL'
             },
             // --- RESEND VALIDATION EMAIL --- //
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'resendValidation.subject',
-                text: 'Email validation - resend'
+            'email.resendValidation.subject': {
+                en: 'Email validation - resend'
             },
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'resendValidation.hi',
-                text: 'Hi'
+            'email.resendValidation.hi': {
+                en: 'Hi'
             },
             // --- WELCOME USER PASSWORD EMAIL --- //
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'welcomeUser.subject',
-                text: 'Welcome!'
+            'email.welcomeUser.subject': {
+                en: 'Welcome!'
             },
             // --- FORGOT PASSWORD EMAIL --- //
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'forgotPassword.subject',
-                text: 'Password reset'
+            'email.forgotPassword.subject': {
+                en: 'Password reset'
             },
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'forgotPassword.resetLink.description',
-                text: 'If you demanded password reset for your account, please reset your password here:'
+            'email.forgotPassword.resetLink.description': {
+                en: 'If you demanded password reset for your account, please reset your password here:'
             },
-            {
-                locale: 'en',
-                group: 'email',
-                item: 'forgotPassword.resetLink.title',
-                text: 'RESET PASSWORD'
+            'email.forgotPassword.resetLink.title': {
+                en: 'RESET PASSWORD'
             },
             // --- ERRORS --- //
-            {
-                locale: 'en',
-                group: 'error',
-                item: 'notFound',
-                text: 'Record not found'
+            'error.notFound': {
+                en: 'Record not found'
             },
-            {
-                locale: 'en',
-                group: 'error',
-                item: 'invalidRelation',
-                text: 'Unknown relation'
+            'error.invalidRelation': {
+                en: 'Unknown relation'
             },
-            {
-                locale: 'en',
-                group: 'error',
-                item: 'tooManyRequests',
-                text: 'Too many attempts... Slow down'
+            'error.tooManyRequests': {
+                en: 'Too many attempts... Slow down'
             },
-            {
-                locale: 'en',
-                group: 'error',
-                item: 'tokenExpired',
-                text: 'Token has expired'
+            'error.tokenExpired': {
+                en: 'Token has expired'
             },
-            {
-                locale: 'en',
-                group: 'error',
-                item: 'invalidToken',
-                text: 'Token is invalid'
+            'error.invalidToken': {
+                en: 'Token is invalid'
             }
-        ])
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        let mappedTranslations = []
+
+        for (let key in translations) {
+
+            const splittedKey = key.split('.')
+
+            const group = splittedKey.shift()
+            const item = splittedKey.join('.')
+
+            for (let locale of Object.keys(translations[key])) {
+                mappedTranslations.push({
+                    locale,
+                    group,
+                    item,
+                    text: translations[key][locale]
+                })
+            }
+
+        }
+
+        await Locale.createMany(mappedTranslations)
 
     }
 }
