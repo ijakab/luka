@@ -1,6 +1,6 @@
 {
   "name": "Adonis-Starter",
-  "version": "0.9.5",
+  "version": "0.9.7",
   "description": "Adonis starter",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@adonisjs/ace": "^5.0.1",
+    "@adonisjs/ace": "^5.0.2",
     "@adonisjs/ally": "^2.0.4",
     "@adonisjs/antl": "^2.0.6",
     "@adonisjs/auth": "^3.0.5",
@@ -24,11 +24,11 @@
     "@adonisjs/framework": "^5.0.7",
     "@adonisjs/ignitor": "^2.0.6",
     "@adonisjs/lucid": "^5.0.4",
-    "@adonisjs/lucid-slugify": "^1.0.2",
+    "@adonisjs/lucid-slugify": "^1.0.3",
     "@adonisjs/mail": "^3.0.6",
     "@adonisjs/validator": "^5.0.3",
     "@adonisjs/vow": "^1.0.15",
-    "adonis-cache": "^0.3.1",
+    "adonis-cache": "^0.3.2",
     "adonis-throttle-requests": "^1.0.2",
     "mysql": "^2.15.0"
   },
@@ -36,7 +36,7 @@
     "apidoc": "^0.17.6",
     "nyc": "^12.0.2",
     "rimraf": "^2.6.2",
-    "sqlite3": "^4.0.0"
+    "sqlite3": "^4.0.1"
   },
   "apidoc": {
     "description": "",
