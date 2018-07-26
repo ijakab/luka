@@ -62,7 +62,7 @@ test('Should NOT register user with invalid or same email (also using .+ for gma
 
     const invalidEmails = ['nomonkey.gmail.com', 'ilooksovalid@gmail..com', 'ihaveacomma@gmail,com']
     // valid email is test@gmail.com
-    const validExistingEmails = ['t.e.s.t@gmail.com', 'test+04@gmail.com'] // check . and + syntax as same email if gmail account
+    const validExistingEmails = ['t.e.s.t.e.r@gmail.com', 'tester+04@gmail.com'] // check . and + syntax as same email if gmail account
 
     await Promise.all(invalidEmails.map(async (email) => {
 

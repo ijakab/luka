@@ -5,7 +5,7 @@ module.exports = {
         username: 'oO-tester-_-',
         firstname: 'Tester',
         lastname: 'Test',
-        email: 'test@gmail.com',
+        email: 'tester@gmail.com',
         password: 'testPass123', // later on in test it will be changed to Pass123
         password_confirmation: 'testPass123',
         terms_accepted: true
