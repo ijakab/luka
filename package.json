@@ -14,7 +14,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@adonisjs/ace": "^5.0.3",
+    "@adonisjs/ace": "^5.0.5",
     "@adonisjs/ally": "^2.0.5",
     "@adonisjs/antl": "^2.0.6",
     "@adonisjs/auth": "^3.0.6",
@@ -23,7 +23,7 @@
     "@adonisjs/fold": "^4.0.9",
     "@adonisjs/framework": "^5.0.8",
     "@adonisjs/ignitor": "^2.0.7",
-    "@adonisjs/lucid": "^6.0.1",
+    "@adonisjs/lucid": "^6.1.2",
     "@adonisjs/lucid-slugify": "^1.0.3",
     "@adonisjs/mail": "^3.0.8",
     "@adonisjs/validator": "^5.0.3",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "apidoc": "^0.17.6",
-    "nyc": "^12.0.2",
+    "nyc": "^13.0.1",
     "rimraf": "^2.6.2",
     "sqlite3": "^4.0.2"
   },

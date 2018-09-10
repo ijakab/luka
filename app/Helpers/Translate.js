@@ -42,7 +42,7 @@ module.exports = function (locale = '', message = '', options) {
 function handleMissingTranslation(err, locale, message) {
 
     // message translation is not existing in db or params were not sent correctly
-    if (node_env !== 'test') Logger.warning('Message "%s" is missing translation for locale %s!\n%s', message, locale.toUpperCase(), err.message)
+    Logger.warning('Message "%s" is missing translation for locale %s!\n%s', message, locale.toUpperCase(), err.message)
 
     // save untranslated string to db...
     let details = message.split('.')
