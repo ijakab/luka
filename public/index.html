@@ -35,7 +35,7 @@
             alert('OAUTH REDIRECT CALLBACK DETECTED')
 
             $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
-                token: GetURLParameter('code')
+                code: GetURLParameter('code')
             }, function (data, message, xhr) {
 
 
@@ -46,7 +46,8 @@
 
                     $.post('/api/auth/' + GetURLParameter('socialAuthSource'), {
                         accessToken: data.data.accessToken,
-                        username: username
+                        username: username,
+                        terms_accepted: true // make user set this explicitly...
                     }, function (data) {
                         alert('check console!')
                         console.log('AUTHENTICATED WITH: ' + GetURLParameter('socialAuthSource'))
