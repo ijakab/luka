@@ -1,9 +1,11 @@
 'use strict'
 
+const UserTransformer = use('App/Transformers/User')
+
 class UserController {
 
-    async me({response, user}) {
-        response.ok(user)
+    async me({response, user, transform}) {
+        response.ok(await transform.item(user, UserTransformer))
     }
 
 }

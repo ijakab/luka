@@ -1,7 +1,9 @@
 'use strict'
 
 const User = use('App/Models/User')
+const UserTransformer = use('App/Transformers/User')
 const Account = use('App/Models/Account')
+const AccountTransformer = use('App/Transformers/Account')
 
 const {validate, sanitize, sanitizor} = use('Validator')
 const Hash = use('Hash')
@@ -16,6 +18,7 @@ class AuthController {
         const existingUsername = await User.query().where('username', request.input('username')).getCount()
 
         if (!existingUsername) return response.ok()
+
         response.badRequest('auth.usernameExists')
     }
 
@@ -31,7 +34,7 @@ class AuthController {
         response.badRequest('auth.emailExists')
     }
 
-    async register({request, response, auth, locale}) {
+    async register({request, response, auth, locale, transform}) {
 
         const allParams = sanitize(request.post(), {
             email: 'normalize_email'
@@ -92,11 +95,14 @@ class AuthController {
         // fire an event that new user was created... we need to send welcome email, etc.
         Event.fire('user::register', {user, mainAccount})
 
-        response.ok({user, _message: 'auth.userRegistered'})
+        response.ok({
+            user: await transform.item(user, UserTransformer),
+            _message: 'auth.userRegistered'
+        })
     }
 
 
-    async login({request, response, auth}) {
+    async login({request, response, auth, transform}) {
 
         const allParams = request.only(['username', 'password'])
 
@@ -122,7 +128,11 @@ class AuthController {
         // generate tokens
         const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
 
-        response.ok({user, token: token.token, refreshToken: token.refreshToken})
+        response.ok({
+            user: await transform.item(user, UserTransformer),
+            token: token.token,
+            refreshToken: token.refreshToken
+        })
     }
 
     async socialRedirect({request, response, params, ally}) {
@@ -134,7 +144,7 @@ class AuthController {
         await ally.driver(params.network).redirect()
     }
 
-    async socialLogin({request, response, params, ally, auth, locale}) {
+    async socialLogin({request, response, params, ally, auth, locale, transform}) {
 
         const allParams = request.only(['code', 'accessToken', 'username', 'terms_accepted'])
 
@@ -151,7 +161,7 @@ class AuthController {
         ally._request._qs = {code: allParams.code, accessToken: allParams.accessToken}
 
         let socialUser
-        if(allParams.accessToken) {
+        if (allParams.accessToken) {
             socialUser = await ally.driver(params.network).getUserByToken(allParams.accessToken)
         } else {
             socialUser = await ally.driver(params.network).getUser()
@@ -250,7 +260,11 @@ class AuthController {
         const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
 
 
-        response.ok({user, token: token.token, refreshToken: token.refreshToken})
+        response.ok({
+            user: await transform.item(user, UserTransformer),
+            token: token.token,
+            refreshToken: token.refreshToken
+        })
     }
 
     async refreshToken({request, response, auth}) {
@@ -313,7 +327,7 @@ class AuthController {
     }
 
 
-    async validateEmail({response, auth, token}) {
+    async validateEmail({response, auth, token, transform}) {
 
         // first check if this valid token has account info inside
         if (!token.mailValidation) return response.unauthorized()
@@ -339,7 +353,12 @@ class AuthController {
         Event.fire('user::validated', {user})
 
         // respond with all data as if user has just logged in
-        response.ok({user, token: newToken.token, refreshToken: newToken.refreshToken, _message: 'auth.emailValidated'})
+        response.ok({
+            user: await transform.item(user, UserTransformer),
+            token: newToken.token,
+            refreshToken: newToken.refreshToken,
+            _message: 'auth.emailValidated'
+        })
     }
 
 
@@ -394,7 +413,7 @@ class AuthController {
     }
 
 
-    async resetPassword({request, response, token, auth}) {
+    async resetPassword({request, response, token, auth, transform}) {
 
         const allParams = request.post()
 
@@ -422,7 +441,7 @@ class AuthController {
         const newToken = await this._generateUserTokens(auth, user)
 
         response.ok({
-            user,
+            user: await transform.item(user, UserTransformer),
             token: newToken.token,
             refreshToken: newToken.refreshToken,
             _message: 'auth.passwordReseted'
@@ -434,7 +453,7 @@ class AuthController {
 
         const accounts = await user.accounts().fetch()
 
-        response.ok(accounts)
+        response.ok(await transform.collection(accounts, AccountTransformer))
     }
 
 

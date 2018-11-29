@@ -21,7 +21,7 @@ class UserSchema extends Schema {
             table.date('dob')
             table.string('avatar', 80)
 
-            table.timestamp('terms_accepted')
+            table.dateTime('terms_accepted')
             table.string('terms_ip', 45)
 
             table.timestamps()

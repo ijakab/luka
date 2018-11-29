@@ -23,7 +23,8 @@ const providers = [
     '@adonisjs/ally/providers/AllyProvider',
     'adonis-cache/providers/CacheProvider',
     'adonis-throttle-requests/providers/ThrottleRequestsProvider',
-    '@adonisjs/lucid-slugify/providers/SlugifyProvider'
+    '@adonisjs/lucid-slugify/providers/SlugifyProvider',
+    'adonis-bumblebee/providers/BumblebeeProvider'
 ]
 
 /*
@@ -38,7 +39,8 @@ const providers = [
 const aceProviders = [
     'adonis-cache/providers/CommandsProvider',
     '@adonisjs/lucid/providers/MigrationsProvider',
-    '@adonisjs/vow/providers/VowProvider'
+    '@adonisjs/vow/providers/VowProvider',
+    'adonis-bumblebee/providers/CommandsProvider'
 ]
 
 /*

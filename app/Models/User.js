@@ -20,7 +20,7 @@ class User extends Model {
     }
 
     static get dates() {
-        return super.dates.concat(['dob'])
+        return super.dates.concat(['dob', 'terms_accepted'])
     }
 
     // --- RELATIONS
