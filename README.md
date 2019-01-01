@@ -115,7 +115,7 @@ Usage of this is simple. For example:
 
 If translation is not found for required locale in database table locales... string will be inserted as untranslated string to locales table (check database columns for table locales).
 
-**IMPORTANT** - translator logic can be used across entire project, not only responses. Just use import `const translateService = use('App/Services/Translate')` and use it wherever you want. 
+**IMPORTANT** - translator logic can be used across entire project, not only responses. Just use import `const translateService = use('App/Helpers/Translate')` and use it wherever you want. 
 
 Best example is inside **app/Services/Mail.js** and inside email templates (**resource/views/email/\*.edge**). 
 

@@ -7,7 +7,6 @@ const Logger = use('Logger')
 const Locale = use('App/Models/Locale')
 
 const defaultLocale = Env.get('APP_LOCALE', 'en')
-const node_env = Env.get('NODE_ENV', 'development')
 
 module.exports = function (locale = '', message = '', options) {
 
