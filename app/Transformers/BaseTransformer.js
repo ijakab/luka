@@ -2,9 +2,8 @@
 // we added Logger.warning if N+1 eager load...
 // also we added getAdditional to fetch stuff from context easier...
 
-const TransformerAbstract = use('Adonis/Addons/Bumblebee/TransformerAbstract')
+const TransformerAbstract = use('Bumblebee/Transformer')
 const Logger = use('Logger')
-const {without} = use('lodash')
 
 class BaseTransformer extends TransformerAbstract {
 

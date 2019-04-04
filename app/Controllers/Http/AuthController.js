@@ -1,9 +1,7 @@
 'use strict'
 
 const User = use('App/Models/User')
-const UserTransformer = use('App/Transformers/User')
 const Account = use('App/Models/Account')
-const AccountTransformer = use('App/Transformers/Account')
 
 const {validate, sanitize, sanitizor} = use('Validator')
 const Hash = use('Hash')
@@ -96,7 +94,7 @@ class AuthController {
         Event.fire('user::register', {user, mainAccount})
 
         response.ok({
-            user: await transform.item(user, UserTransformer),
+            user: await transform.item(user, 'User'),
             _message: 'auth.userRegistered'
         })
     }
@@ -129,7 +127,7 @@ class AuthController {
         const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
 
         response.ok({
-            user: await transform.item(user, UserTransformer),
+            user: await transform.item(user, 'User'),
             token: token.token,
             refreshToken: token.refreshToken
         })
@@ -261,7 +259,7 @@ class AuthController {
 
 
         response.ok({
-            user: await transform.item(user, UserTransformer),
+            user: await transform.item(user, 'User'),
             token: token.token,
             refreshToken: token.refreshToken
         })
@@ -354,7 +352,7 @@ class AuthController {
 
         // respond with all data as if user has just logged in
         response.ok({
-            user: await transform.item(user, UserTransformer),
+            user: await transform.item(user, 'User'),
             token: newToken.token,
             refreshToken: newToken.refreshToken,
             _message: 'auth.emailValidated'
@@ -441,7 +439,7 @@ class AuthController {
         const newToken = await this._generateUserTokens(auth, user)
 
         response.ok({
-            user: await transform.item(user, UserTransformer),
+            user: await transform.item(user, 'User'),
             token: newToken.token,
             refreshToken: newToken.refreshToken,
             _message: 'auth.passwordReseted'
@@ -453,7 +451,7 @@ class AuthController {
 
         const accounts = await user.accounts().fetch()
 
-        response.ok(await transform.collection(accounts, AccountTransformer))
+        response.ok(await transform.collection(accounts, 'Account'))
     }
 
 

@@ -31,16 +31,9 @@ class UserTransformer extends TransformerAbstract {
     }
 
     includeAccounts(model) {
-        return this.collection(model.getRelated('accounts'), AccountTransformer)
+        return this.collection(model.getRelated('accounts'), 'Account')
     }
 
 }
 
 module.exports = UserTransformer
-
-// ****************************************** NOTE ******************************************
-// THIS IS VERY IMPORTANT!!! PUT ALL TRANSFORMERS HERE WHEN YOU USE use(transformer......)
-// ****************************************** **** ******************************************
-
-// put all cyclic transformers to bottom // https://stackoverflow.com/questions/10869276/how-to-deal-with-cyclic-dependencies-in-node-js#answer-14098262
-const AccountTransformer = use('App/Transformers/Account')
