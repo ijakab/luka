@@ -1,13 +1,13 @@
 const TransformerAbstract = use('App/Transformers/BaseTransformer')
 
 class UserTransformer extends TransformerAbstract {
-    availableInclude() {
+    static get availableInclude() {
         return [
             'accounts'
         ]
     }
 
-    defaultInclude() {
+    static get defaultInclude() {
         return []
     }
 

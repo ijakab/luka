@@ -1,0 +1,7 @@
+@include('email._layout.header')
+
+<h2>Welcome {{user.firstname}}!</h2>
+
+<p>Please click here to validate your email address: <a href="{{ validateUrl }}">VALIDATE EMAIL</a></p>
+
+@include('email._layout.footer')

@@ -53,39 +53,18 @@ class LocaleSeeder {
             'auth.socialLoginProvideUsername': {
                 en: 'Please provide your username'
             },
-            // --- REGISTRATION EMAIL --- //
+            // --- EMAIL SUBJECTS --- //
             'email.registration.subject': {
                 en: 'Email validation'
             },
-            'email.registration.welcome': {
-                en: 'Welcome'
-            },
-            'email.registration.validationLink.description': {
-                en: 'Please click here to validate your email address:'
-            },
-            'email.registration.validationLink.title': {
-                en: 'VALIDATE EMAIL'
-            },
-            // --- RESEND VALIDATION EMAIL --- //
             'email.resendValidation.subject': {
                 en: 'Email validation - resend'
             },
-            'email.resendValidation.hi': {
-                en: 'Hi'
-            },
-            // --- WELCOME USER PASSWORD EMAIL --- //
             'email.welcomeUser.subject': {
                 en: 'Welcome!'
             },
-            // --- FORGOT PASSWORD EMAIL --- //
             'email.forgotPassword.subject': {
                 en: 'Password reset'
-            },
-            'email.forgotPassword.resetLink.description': {
-                en: 'If you demanded password reset for your account, please reset your password here:'
-            },
-            'email.forgotPassword.resetLink.title': {
-                en: 'RESET PASSWORD'
             },
             // --- ERRORS --- //
             'error.notFound': {

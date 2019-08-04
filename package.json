@@ -1,6 +1,6 @@
 {
   "name": "Adonis-Starter",
-  "version": "0.9.7",
+  "version": "1.0.0",
   "description": "Adonis starter",
   "main": "index.js",
   "scripts": {
@@ -28,16 +28,15 @@
     "@adonisjs/mail": "^3.0.9",
     "@adonisjs/validator": "^5.0.6",
     "@adonisjs/vow": "^1.0.17",
-    "adonis-bumblebee": "^1.5.3",
+    "adonis-bumblebee": "^2.0.0",
     "adonis-cache": "^0.3.2",
     "adonis-throttle-requests": "^1.0.2",
     "mysql": "^2.16.0"
   },
   "devDependencies": {
     "apidoc": "^0.17.7",
-    "nyc": "^13.1.0",
-    "rimraf": "^2.6.2",
-    "sqlite3": "^4.0.4"
+    "nyc": "^14.1.1",
+    "rimraf": "^2.6.2"
   },
   "apidoc": {
     "description": "",

@@ -13,10 +13,18 @@ module.exports = async function (existingResponse, locale) {
     let data = (existingResponse && existingResponse.toJSON) ? existingResponse.toJSON() : (existingResponse || '')
     let message
 
-    // add custom response message option
-    if (typeof data === 'object' && data._message) {
-        message = data._message
-        delete data._message
+    // add custom response message/data option
+    if (typeof data === 'object') {
+
+        if(data._message) {
+            message = data._message
+            delete data._message
+        }
+
+        if(data._data) {
+            data = data._data
+        }
+
     }
 
     // check if we are dealing with validation.messages()

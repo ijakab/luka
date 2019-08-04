@@ -13,10 +13,7 @@ tmp
 
 # Environment variables, never commit this file
 .env
-
-# PM2 configs
-pm2.stage.json
-pm2.prod.json
+.env.testing
 
 # Node.js / NPM default files
 lib-cov

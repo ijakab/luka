@@ -13,7 +13,29 @@ module.exports = {
      | interacting with SQL databases.
      |
      */
-    connection: Env.get('DB_CONNECTION', 'sqlite'),
+    connection: Env.get('DB_CONNECTION', 'mysql'),
+
+    /*
+     |--------------------------------------------------------------------------
+     | MySQL
+     |--------------------------------------------------------------------------
+     |
+     | Here we define connection settings for MySQL database.
+     |
+     | npm i --save mysql
+     |
+     */
+    mysql: {
+        client: 'mysql',
+        connection: {
+            host: Env.get('DB_HOST', 'localhost'),
+            port: Env.get('DB_PORT', 3306),
+            user: Env.get('DB_USER'),
+            password: Env.get('DB_PASSWORD'),
+            database: Env.get('DB_DATABASE')
+        },
+        debug: Env.get('DB_DEBUG', false)
+    },
 
     /*
      |--------------------------------------------------------------------------
@@ -32,29 +54,6 @@ module.exports = {
             filename: Helpers.databasePath(`${Env.get('DB_DATABASE', 'development')}.sqlite`)
         },
         useNullAsDefault: true,
-        debug: Env.get('DB_DEBUG', false)
-    },
-
-
-    /*
-     |--------------------------------------------------------------------------
-     | MySQL
-     |--------------------------------------------------------------------------
-     |
-     | Here we define connection settings for MySQL database.
-     |
-     | npm i --save mysql
-     |
-     */
-    mysql: {
-        client: 'mysql',
-        connection: {
-            host: Env.get('DB_HOST', 'localhost'),
-            port: Env.get('DB_PORT', ''),
-            user: Env.get('DB_USER', 'root'),
-            password: Env.get('DB_PASSWORD', ''),
-            database: Env.get('DB_DATABASE', 'adonis')
-        },
         debug: Env.get('DB_DEBUG', false)
     },
 

@@ -1,0 +1,8 @@
+@include('email._layout.header')
+
+<h2>Hi {{user.firstname}}!</h2>
+
+<p>If you demanded password reset for your account, please reset your password here: <a href="{{ resetUrl }}">RESET PASSWORD</a></p>
+
+@include('email._layout.footer')
+
