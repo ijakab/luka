@@ -14,6 +14,7 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 
 - [x] Cleaned up AdonisJS installation for API usage only
 - [x] Prepared Bumblebee transformer
+- [x] Added few useful validation hooks
 - [x] Throttle request logic to prevent bot spam on public routes (returns status 429)
 - [x] Slug generator trait for models
 - [x] Basic User model with separate Account model
