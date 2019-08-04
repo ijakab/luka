@@ -5,8 +5,6 @@ All responses are sent as **JSON**. <br>
 Also, response always contain **data** and **message** key. <br>
 _data_ is **array** or **object**, while message is always a **string**.
 
-### x-is-mobile header
-Set it to `android` or `ios` if you want to wrap all responses to data array
 
 ## Examples:
 **Single response:**
@@ -21,22 +19,7 @@ Set it to `android` or `ios` if you want to wrap all responses to data array
   "message": "ok"
 }
 ```
-> **Note:** Even when sending single object as response, data is still an array!
-
-**Same response with x-is-mobile header**
-```json
-{
-  "data": [
-    {
-      "token": "eyJhbGciOinR5cCI6IkpXVCJ9.eyJ1aWiOnsiaXNB",
-      "user": {
-        "name": "user 1"
-      }
-    }
-  ],
-  "message": "ok"
-}
-```
+> **Note:** When response is a list... Data will be array containing objects.
 
 **Empty response:**
 ```json
@@ -46,13 +29,6 @@ Set it to `android` or `ios` if you want to wrap all responses to data array
 }
 ```
 
-**Empty response with x-is-mobile header:**
-```json
-{
-  "data": [],
-  "message": "User not found"
-}
-```
 
 ## Authorization
 

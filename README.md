@@ -93,7 +93,7 @@ Usage of this logic is pretty simple... Just call response.METHOD ([allowed resp
 {
   "data": [
     {
-      "whatever": "Data is always present, and it's always an array. Even when returning single item."
+      "whatever": "Data is always present. It can be array or single item."
     }
   ],
   "message": "I'm always here and I'm always string"
@@ -102,9 +102,11 @@ Usage of this logic is pretty simple... Just call response.METHOD ([allowed resp
 
 So for example:
 
-`response.badRequest('Some custom string')` - will send payload with status code 400, containing data key with value of empty array and message will be set to: 'Some custom string'
+`response.badRequest('Some custom string')` - will send payload with status code 400, containing data key with value of empty object and message will be set to: 'Some custom string'
 
-`response.ok(userObjectsFromDb)` - will send payload with status code 200, containing data key with value of user objects, and message will be set to: ''
+`response.ok(userObjectsFromDb)` - will send payload with status code 200, containing data key with array of user objects, and message will be set to: ''
+
+> **IMPORTANT** - if for some reason you want to force your data or message, use `_message` or `_data` key inside your response payload.
 
 ### Translation logic
 
@@ -116,7 +118,7 @@ Usage of this is simple. For example:
 
 If translation is not found for required locale in database table locales... string will be inserted as untranslated string to locales table (check database columns for table locales).
 
-**IMPORTANT** - translator logic can be used across entire project, not only responses. Just use import `const translateService = use('App/Helpers/Translate')` and use it wherever you want. 
+> **IMPORTANT** - translator logic can be used across entire project, not only responses. Just use import `const translateService = use('App/Helpers/Translate')` and use it wherever you want. 
 
 Best example is inside **app/Services/Mail.js** and inside email templates (**resource/views/email/\*.edge**). 
 

@@ -2,7 +2,7 @@
   "name": "Adonis-Starter",
   "version": "1.0.0",
   "description": "Adonis starter",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "init": "node ace migration:run && node ace seed && npm run docs",
