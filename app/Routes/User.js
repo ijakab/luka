@@ -4,7 +4,7 @@ const Route = use('Route')
 module.exports = Route.group(() => {
 
     /**
-     * @api {get} /api/user/me Me
+     * @api {get} /api/users/me Me
      * @apiGroup User
      *
      * @apiPermission JWT
