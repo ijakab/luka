@@ -1,8 +1,15 @@
 'use strict'
 
-const BaseModel = use('App/Models/BaseModel')
+const Model = use('Model')
 
-class Token extends BaseModel {
+class Token extends Model {
+
+    // --- CONFIGURATION
+    static boot() {
+        super.boot()
+        this.addTrait('CastDate')
+    }
+
 }
 
 module.exports = Token

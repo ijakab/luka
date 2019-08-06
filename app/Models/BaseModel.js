@@ -23,21 +23,13 @@ class BaseModel extends Model {
         return []
     }
 
-    // --- CONFIGURATION
-    static boot() {
-        super.boot()
-        this.addTrait('CastDate')
-    }
-
     // --- CUSTOM
+    // gets and sanitizes editable params for you
     static getAllowedParams(params, overrideEditable) {
-        return pick(overrideEditable || this.editable)
+        return sanitize(pick(params, overrideEditable || this.editable), this.sanitize)
     }
 
-    static sanitizeParams(params, overrideSanirization) {
-        return sanitize(params, overrideSanirization || this.sanitize)
-    }
-
+    // validation helper on model...
     static async validateParams(params, overrideRules) {
         return validate(params, overrideRules || this.rules)
     }

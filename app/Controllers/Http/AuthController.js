@@ -34,15 +34,16 @@ class AuthController {
 
     async register({request, response, locale, transform}) {
 
-        const allParams = User.sanitizeParams(request.post())
+        // get all fields, not just editable (overriding default for getAllowedParams method)
+        // + add password field to list of allowed
+        const allParams = User.getAllowedParams(request.post(), [...User.fields, 'password', 'password_confirmation'])
 
         // handle terms logic...
         if (!allParams.terms_accepted) return response.badRequest('auth.acceptTerms')
         allParams.terms_accepted = new Date()
 
-        // validate allParams as it contains password
+        // validate allParams using registrationRules this time... Pass is mandatory!
         const validation = await User.validateParams(allParams, User.registrationRules)
-
         if (validation.fails()) return response.badRequest()
 
         // first we check if this email already has MAIN account type
@@ -79,7 +80,7 @@ class AuthController {
             user_id: user.id,
             type: 'main',
             email: allParams.email,
-            password: allParams.password,
+            password: allParams.password, // will be hashed because of lifecycle hook on model
             validated: false // set validated to false, email needs to be checked for main account...
         })
 
@@ -203,7 +204,6 @@ class AuthController {
                 if (existingUsername) return response.badRequest('auth.usernameExists')
 
 
-                let avatar
                 if (userObject.avatar) {
                     // TODO Read NOTE below
                     // ****************************************** NOTE ******************************************
@@ -211,7 +211,6 @@ class AuthController {
                     // save it locally to your server. Maybe you will have model for files... or whatever, so
                     // please edit this as you wish.
                     // ****************************************** **** ******************************************
-                    avatar = userObject.avatar
                 }
 
                 user = await User.create({
@@ -219,7 +218,6 @@ class AuthController {
                     firstname: userObject.firstname,
                     lastname: userObject.lastname,
                     email: userObject.email,
-                    avatar: avatar,
                     language: locale,
                     terms_accepted: allParams.terms_accepted,
                     terms_ip: Helper.getIp(request)

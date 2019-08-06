@@ -16,7 +16,7 @@ module.exports = {
             user: 'required|object',
             'user.firstname': 'required|string',
             'user.lastname': 'required|string',
-            'user.username': `${User.rules.username}|required`,
+            'user.username': `${User.registrationRules.username}|required`,
             'user.email': 'required|email',
             token: 'required|string',
             refreshToken: 'required|string'

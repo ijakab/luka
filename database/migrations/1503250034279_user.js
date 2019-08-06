@@ -19,7 +19,6 @@ class UserSchema extends Schema {
             table.string('lastname', 80)
             table.string('language', 2).defaultTo(Env.get('APP_LOCALE', 'en')).notNullable()
             table.date('dob')
-            table.string('avatar', 80)
 
             table.dateTime('terms_accepted')
             table.string('terms_ip', 45)
