@@ -1,5 +1,6 @@
 'use strict'
 const Database = use('Database')
+const Hash = use('Hash')
 const User = use('App/Models/User')
 
 class UserController {
@@ -9,47 +10,49 @@ class UserController {
     }
 
     async update({request, response, user}) {
-        const allParams = User.getAllowedParams(request.post())
+        const allParams = request.post() // in all params we will get password if sent..
+        const allowedParams = User.getAllowedParams(allParams) // take all params for db
 
         // merge allowed params before validating
-        user.merge(allParams)
+        user.merge(allowedParams)
 
-        // validate newly merged model before writing to db
-        const validation = await User.validate(user.$attributes)
+        // validate newly merged model before writing to db but add password from alParams too if sent
+        const validation = await User.validateParams({...allParams, ...user.$attributes})
         if (validation.fails()) return response.badRequest()
 
         // only update user if password is not sent...
+        let trx // prepare trx if password was sent...
         if (!allParams.password) {
             await user.save()
         } else {
             // we also need to update password... so start transacting
-            await Database.transaction(async (trx) => {
-                // first let's save our user
-                await user.save(trx)
+            trx = await Database.beginTransaction()
 
-                const mainAccount = await user.fetchMainAccount()
-                if (mainAccount) {
-                    // check current password
-                    if (!allParams.current_password) return response.badRequest()
+            // first let's save our user
+            await user.save(trx)
 
-                    const validPass = await Hash.verify(allParams.current_password, mainAccount.password)
-                    if (!validPass) return response.badRequest('user.invalidCurrentPassword')
-
-                    mainAccount.password = allParams.password
-                    await mainAccount.save(trx)
-                } else {
-                    // we need to create main account
-                    await user.accounts().create({
-                        type: 'main',
-                        email: user.email,
-                        password: allParams.password,
-                        validated: true // this user was already logged in, so his email is validated (social login)
-                    }, trx)
+            const mainAccount = await user.fetchMainAccount()
+            if (mainAccount) {
+                // check current password
+                if (!allParams.current_password || !await Hash.verify(allParams.current_password, mainAccount.password)) {
+                    await trx.rollback()
+                    return response.badRequest('user.invalidCurrentPassword')
                 }
-            })
+
+                mainAccount.password = allParams.password
+                await mainAccount.save(trx)
+            } else {
+                // we need to create main account
+                await user.accounts().create({
+                    type: 'main',
+                    email: user.email,
+                    password: allParams.password,
+                    validated: true // this user was already logged in, so his email is validated (social login)
+                }, trx)
+            }
         }
 
-
+        if (trx) await trx.commit()
         return response.ok()
     }
 

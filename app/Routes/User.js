@@ -31,7 +31,7 @@ module.exports = Route.group(() => {
      * @apiParam {string} [language] Language (rule: string|min:2|max:2)
      *
      */
-    Route.patch('/', 'UserController.update').middleware(['getUser'])
+    Route.patch('/me', 'UserController.update').middleware(['getUser'])
 
 })
 

@@ -44,7 +44,7 @@ class User extends BaseModel {
 
     static get rules() {
         return {
-            firstname: 'string|max:50',
+            firstname: 'required|string|max:50',
             lastname: 'string|max:80',
             dob: 'date',
             // password is not required on update, but it is required on registration
