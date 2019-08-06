@@ -8,7 +8,8 @@
     "init": "node ace migration:run && node ace seed && npm run docs",
     "refresh": "node ace migration:refresh && node ace seed",
     "docs": "rimraf public/docs && apidoc -i app/ -o public/docs",
-    "test": "export NODE_ENV=testing|| set NODE_ENV=testing&& (node ace migration:run && node ace seed && nyc node ace test --bail)"
+    "test": "export NODE_ENV=testing|| set NODE_ENV=testing&& (node ace migration:refresh && node ace seed && node ace test --bail)",
+    "nycTest": "export NODE_ENV=testing|| set NODE_ENV=testing&& (node ace migration:refresh && node ace seed && nyc node ace test --bail)"
   },
   "author": "hlozancic",
   "license": "UNLICENSED",

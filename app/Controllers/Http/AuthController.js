@@ -32,24 +32,17 @@ class AuthController {
         response.badRequest('auth.emailExists')
     }
 
-    async register({request, response, auth, locale, transform}) {
+    async register({request, response, locale, transform}) {
 
-        const allParams = sanitize(request.post(), {
-            email: 'normalize_email'
-        })
+        const allParams = User.sanitizeParams(request.post())
 
-        // email and username are not under unique:users rule because of auto merge account rule
-        const validation = await validate(allParams, {
-            firstname: 'required',
-            lastname: 'required',
-            username: `${User.rules.username}|required`,
-            email: 'required|email',
-            password: `${User.rules.password}|required|confirmed`,
-            language: User.rules.language,
-            terms_accepted: 'required|boolean'
-        })
-
+        // handle terms logic...
         if (!allParams.terms_accepted) return response.badRequest('auth.acceptTerms')
+        allParams.terms_accepted = new Date()
+
+        // validate allParams as it contains password
+        const validation = await User.validateParams(allParams, User.registrationRules)
+
         if (validation.fails()) return response.badRequest()
 
         // first we check if this email already has MAIN account type
@@ -65,18 +58,18 @@ class AuthController {
 
         // if user is not existing, check username and create new user
         if (!user) {
-
             const existingUsername = await User.query().where('username', allParams.username).getCount()
 
             if (existingUsername) return response.badRequest('auth.usernameExists')
 
+            // manually add params (instead of create(allParams))... registration route is important to have specific logic
             user = await User.create({
                 username: allParams.username,
                 firstname: allParams.firstname,
                 lastname: allParams.lastname,
                 email: allParams.email,
                 language: allParams.language || locale,
-                terms_accepted: new Date(),
+                terms_accepted: allParams.terms_accepted,
                 terms_ip: Helper.getIp(request)
             })
         }
@@ -102,24 +95,19 @@ class AuthController {
 
     async login({request, response, auth, transform}) {
 
-        const allParams = request.only(['username', 'password'])
+        const {username, password} = request.only(['username', 'password'])
 
-        const validation = await validate(allParams, {
-            username: 'string|min:4|required', // username can be email or username
-            password: `${User.rules.password}|required`
-        })
+        if (!username || !password) return response.badRequest()
 
-        if (validation.fails()) return response.badRequest()
-
-        const {user, mainAccount} = await this._findLoginUser(allParams.username) // we are passing username which can be both username or email
+        const {user, mainAccount} = await this._findLoginUser(username) // we are passing username which can be both username or email
 
         // if we don't have user in db, respond with badRequest invalid username or password instead of 404
-        if (!mainAccount || !user) return response.badRequest('auth.invalidPasswordOrUsername')
 
+        if (!mainAccount || !user) return response.badRequest('auth.invalidPasswordOrUsername')
         if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')
 
         // check pass
-        const validPass = await Hash.verify(allParams.password, mainAccount.password)
+        const validPass = await Hash.verify(password, mainAccount.password)
 
         if (!validPass) return response.badRequest('auth.invalidPasswordOrUsername')
 
@@ -145,12 +133,12 @@ class AuthController {
     async socialLogin({request, response, params, ally, auth, locale, transform}) {
 
         const allParams = request.only(['code', 'accessToken', 'username', 'terms_accepted'])
+        if (allParams.terms_accepted) allParams.terms_accepted = new Date()
 
         const validation = await validate(allParams, {
             code: 'required_without_any:accessToken',
             accessToken: 'required_without_any:code',
-            username: User.rules.username, // not required!
-            terms_accepted: 'boolean' // not required!
+            username: User.rules.username.replace(/required\|?/, '') // not required necessarily!!
         })
 
         if (validation.fails()) return response.badRequest()
@@ -183,9 +171,7 @@ class AuthController {
                 lastname: fullname.join(' '),
                 email: socialUser.getEmail(),
                 avatar: socialUser.getAvatar()
-            }, {
-                email: 'normalize_email'
-            })
+            }, User.sanitize)
 
             // first, let's try to find this user by email
             account = await Account.findBy('email', userObject.email)
@@ -235,7 +221,7 @@ class AuthController {
                     email: userObject.email,
                     avatar: avatar,
                     language: locale,
-                    terms_accepted: new Date(),
+                    terms_accepted: allParams.terms_accepted,
                     terms_ip: Helper.getIp(request)
                 })
 
@@ -362,16 +348,10 @@ class AuthController {
 
     async resendValidation({request, response}) {
 
-        const allParams = request.only(['username'])
-
-        const validation = await validate(allParams, {
-            username: `min:4|required`
-        })
-
-        if (validation.fails()) return response.badRequest()
+        const {username} = request.only(['username'])
 
         // find user and his main account
-        const {user, mainAccount} = await this._findLoginUser(allParams.username) // username can be both username or email
+        const {user, mainAccount} = await this._findLoginUser(username) // username can be both username or email
 
         if (!user) return response.notFound('auth.emailOrUsernameNotFound')
         if (!mainAccount) return response.notFound('auth.mainAccountNotFound')
@@ -386,16 +366,10 @@ class AuthController {
 
     async forgotPassword({request, response}) {
 
-        const allParams = request.only(['username'])
-
-        const validation = await validate(allParams, {
-            username: `min:4|required`
-        })
-
-        if (validation.fails()) return response.badRequest()
+        const {username} = request.only(['username'])
 
         // find user and his main account
-        const {user, mainAccount} = await this._findLoginUser(allParams.username) // username can be both username or email
+        const {user, mainAccount} = await this._findLoginUser(username) // username can be both username or email
 
         if (!user) return response.notFound('auth.emailOrUsernameNotFound')
         if (!mainAccount) return response.notFound('auth.mainAccountNotFound')
@@ -419,7 +393,7 @@ class AuthController {
         if (!token.passwordReset) return response.unauthorized()
 
         const validation = await validate(allParams, {
-            password: `${User.rules.password}|required|confirmed`
+            password: User.registrationRules.password
         })
 
         if (validation.fails()) return response.badRequest()
@@ -447,7 +421,7 @@ class AuthController {
     }
 
 
-    async accounts({response, user}) {
+    async accounts({response, transform, user}) {
 
         const accounts = await user.accounts().fetch()
 

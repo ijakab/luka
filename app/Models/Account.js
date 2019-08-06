@@ -1,13 +1,11 @@
 'use strict'
 
-const Model = use('Model')
+const BaseModel = use('App/Models/BaseModel')
 
-class Account extends Model {
+class Account extends BaseModel {
 
     static boot() {
         super.boot()
-
-        this.addTrait('CastDate')
         // run before create and before update...
         this.addHook('beforeSave', 'Account.hashPassword')
     }

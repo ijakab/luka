@@ -1,15 +1,8 @@
 'use strict'
 
-const Model = use('Model')
+const BaseModel = use('App/Models/BaseModel')
 
-class Locale extends Model {
-
-    // --- CONFIGURATION
-    static boot() {
-        super.boot()
-        this.addTrait('CastDate')
-    }
-
+class Locale extends BaseModel {
 }
 
 module.exports = Locale
