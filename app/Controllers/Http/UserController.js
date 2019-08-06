@@ -1,5 +1,4 @@
 'use strict'
-const Database = use('Database')
 const Hash = use('Hash')
 const User = use('App/Models/User')
 
@@ -20,27 +19,20 @@ class UserController {
         const validation = await User.validateParams({...allParams, ...user.$attributes})
         if (validation.fails()) return response.badRequest()
 
-        // only update user if password is not sent...
-        let trx // prepare trx if password was sent...
-        if (!allParams.password) {
-            await user.save()
-        } else {
-            // we also need to update password... so start transacting
-            trx = await Database.beginTransaction()
+        // save our user... then continue looking for pass change if needed
+        await user.save()
 
-            // first let's save our user
-            await user.save(trx)
-
+        // if password was sent handle it...
+        if (allParams.password) {
             const mainAccount = await user.fetchMainAccount()
             if (mainAccount) {
                 // check current password
                 if (!allParams.current_password || !await Hash.verify(allParams.current_password, mainAccount.password)) {
-                    await trx.rollback()
                     return response.badRequest('user.invalidCurrentPassword')
                 }
 
                 mainAccount.password = allParams.password
-                await mainAccount.save(trx)
+                await mainAccount.save()
             } else {
                 // we need to create main account
                 await user.accounts().create({
@@ -48,11 +40,10 @@ class UserController {
                     email: user.email,
                     password: allParams.password,
                     validated: true // this user was already logged in, so his email is validated (social login)
-                }, trx)
+                })
             }
         }
 
-        if (trx) await trx.commit()
         return response.ok()
     }
 
