@@ -1,12 +1,13 @@
 'use strict'
 
-const BaseModel = use('App/Models/BaseModel')
+const Model = use('Model')
 
-class User extends BaseModel {
+class User extends Model {
 
     // --- CONFIGURATION
     static boot() {
         super.boot()
+        this.addTrait('BaseModel')
         this.addTrait('CastDate')
         this.addTrait('Paginable')
         this.addTrait('IdOrSlug', {slug: 'username'})
