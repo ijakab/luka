@@ -4,6 +4,21 @@ const Route = use('Route')
 module.exports = Route.group(() => {
 
     /**
+     * @api {get} /api/users Index
+     * @apiGroup User
+     *
+     * @apiDescription Public route to list all users
+     *
+     * @apiParam {string} [search] Search string
+     * @apiParam {string} [orderBy] created_at, updated_at, username
+     * @apiParam {string} [order] asc or desc
+     * @apiParam {string} [page=1]
+     * @apiParam {string} [limit=10]
+     *
+     */
+    Route.get('/', 'UserController.index')
+
+    /**
      * @api {get} /api/users/me Me
      * @apiGroup User
      *

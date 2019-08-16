@@ -4,6 +4,36 @@ const User = use('App/Models/User')
 
 class UserController {
 
+    async index({request, response, transform}) {
+        // ****************************************** NOTE ******************************************
+        // This method is mostly added just so nuxt starter can show few more things...
+        // If you are going to have method like this... Create better search/order logic using
+        // fulltext index or elastic or whatever :)
+        // ****************************************** **** ******************************************
+
+        const qs = request.get()
+
+        let query = User.query()
+
+        const {search, orderBy, order = 'asc'} = qs
+        if (search) {
+            query.where(function () {
+                this.where('firstname', 'like', `%${search}%`)
+                this.orWhere('lastname', 'like', `%${search}%`)
+                this.orWhere('username', 'like', `%${search}%`)
+            })
+        }
+
+        if (['created_at', 'updated_at', 'username'].includes(orderBy)) {
+            query.orderBy(orderBy, order)
+        }
+
+
+        const users = await query.paginable(qs)
+
+        response.ok(await transform.paginate(users, 'User'))
+    }
+
     async me({response, user, transform}) {
         response.ok(await transform.item(user, 'User'))
     }

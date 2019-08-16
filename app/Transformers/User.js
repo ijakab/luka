@@ -29,7 +29,9 @@ class UserTransformer extends TransformerAbstract {
             initials: fullname.split(' ').map(n => n[0]).splice(0, 3).join('').toUpperCase(),
             email: json.email,
             dob: json.dob,
-            language: json.language
+            language: json.language,
+            created_at: json.created_at,
+            updated_at: json.updated_at
         }
     }
 
