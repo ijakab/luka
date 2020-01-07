@@ -32,7 +32,7 @@ class AuthController {
         response.badRequest('auth.emailExists')
     }
 
-    async register({request, response, locale, transform}) {
+    async register({request, response, locale}) {
 
         // get all fields, not just editable (overriding default for getAllowedParams method)
         // + add password field to list of allowed
@@ -88,13 +88,13 @@ class AuthController {
         Event.fire('user::register', {user, mainAccount})
 
         response.ok({
-            user: await transform.item(user, 'User'),
+            user,
             _message: 'auth.userRegistered'
         })
     }
 
 
-    async login({request, response, auth, transform}) {
+    async login({request, response, auth}) {
 
         const {username, password} = request.only(['username', 'password'])
 
@@ -116,7 +116,7 @@ class AuthController {
         const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
 
         response.ok({
-            user: await transform.item(user, 'User'),
+            user,
             token: token.token,
             refreshToken: token.refreshToken
         })
@@ -131,7 +131,7 @@ class AuthController {
         await ally.driver(params.network).redirect()
     }
 
-    async socialLogin({request, response, params, ally, auth, locale, transform}) {
+    async socialLogin({request, response, params, ally, auth, locale}) {
 
         const allParams = request.only(['code', 'accessToken', 'username', 'terms_accepted'])
         if (allParams.terms_accepted) allParams.terms_accepted = new Date()
@@ -243,7 +243,7 @@ class AuthController {
 
 
         response.ok({
-            user: await transform.item(user, 'User'),
+            user,
             token: token.token,
             refreshToken: token.refreshToken
         })
@@ -309,7 +309,7 @@ class AuthController {
     }
 
 
-    async validateEmail({response, auth, token, transform}) {
+    async validateEmail({response, auth, token}) {
 
         // first check if this valid token has account info inside
         if (!token.mailValidation) return response.unauthorized()
@@ -336,7 +336,7 @@ class AuthController {
 
         // respond with all data as if user has just logged in
         response.ok({
-            user: await transform.item(user, 'User'),
+            user,
             token: newToken.token,
             refreshToken: newToken.refreshToken,
             _message: 'auth.emailValidated'
@@ -383,7 +383,7 @@ class AuthController {
     }
 
 
-    async resetPassword({request, response, token, auth, transform}) {
+    async resetPassword({request, response, token, auth}) {
 
         const allParams = request.post()
 
@@ -411,7 +411,7 @@ class AuthController {
         const newToken = await this._generateUserTokens(auth, user)
 
         response.ok({
-            user: await transform.item(user, 'User'),
+            user,
             token: newToken.token,
             refreshToken: newToken.refreshToken,
             _message: 'auth.passwordReseted'
@@ -419,11 +419,11 @@ class AuthController {
     }
 
 
-    async accounts({response, transform, user}) {
+    async accounts({response, user}) {
 
         const accounts = await user.accounts().fetch()
 
-        response.ok(await transform.collection(accounts, 'Account'))
+        response.ok(accounts)
     }
 
 

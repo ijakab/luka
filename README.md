@@ -13,7 +13,7 @@ After cloning, edit your .env file (c/p .env.example) and run `npm run init` to 
 ## What's in a box?
 
 - [x] Cleaned up AdonisJS installation for API usage only
-- [x] Prepared Bumblebee transformer
+- [x] Prepared advanced serializer
 - [x] Added few useful validation hooks
 - [x] Throttle request logic to prevent bot spam on public routes (returns status 429)
 - [x] Slug, date, paginate traits for models
