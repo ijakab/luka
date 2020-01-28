@@ -1,6 +1,6 @@
 const AdvancedSerializer = use('AdvancedSerializer')
 
-class CategorySerializer extends AdvancedSerializer {
+class UserSerializer extends AdvancedSerializer {
     serializeSingle(modelInstance) {
         const json = modelInstance.toObject()
 
@@ -26,4 +26,4 @@ class CategorySerializer extends AdvancedSerializer {
     }
 }
 
-module.exports = CategorySerializer
+module.exports = UserSerializer
