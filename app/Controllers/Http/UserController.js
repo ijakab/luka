@@ -4,7 +4,7 @@ const User = use('App/Models/User')
 
 class UserController {
 
-    async index({request, response, transform}) {
+    async index({request, response}) {
         // ****************************************** NOTE ******************************************
         // This method is mostly added just so nuxt starter can show few more things...
         // If you are going to have method like this... Create better search/order logic using
@@ -31,11 +31,11 @@ class UserController {
 
         const users = await query.paginable(qs)
 
-        response.ok(await transform.paginate(users, 'User'))
+        response.ok(users)
     }
 
-    async me({response, user, transform}) {
-        response.ok(await transform.item(user, 'User'))
+    async me({response, user}) {
+        response.ok(user)
     }
 
     async update({request, response, user}) {

@@ -16,6 +16,11 @@ class Account extends Model {
         return this.belongsTo('App/Models/User')
     }
 
+    static get Serializer() {
+        return 'App/Models/Serializers/Account'
+    }
+
+
     static get hidden() {
         return ['password']
     }

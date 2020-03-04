@@ -13,6 +13,11 @@ class User extends Model {
         this.addTrait('IdOrSlug', {slug: 'username'})
     }
 
+    static get Serializer() {
+        return 'App/Models/Serializers/User'
+    }
+
+
     static get dates() {
         return super.dates.concat(['dob', 'terms_accepted'])
     }

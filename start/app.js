@@ -24,7 +24,7 @@ const providers = [
     'adonis-cache/providers/CacheProvider',
     'adonis-throttle-requests/providers/ThrottleRequestsProvider',
     '@adonisjs/lucid-slugify/providers/SlugifyProvider',
-    'adonis-bumblebee/providers/BumblebeeProvider'
+    'adonis-advanced-serializer'
 ]
 
 /*
@@ -40,7 +40,6 @@ const aceProviders = [
     'adonis-cache/providers/CommandsProvider',
     '@adonisjs/lucid/providers/MigrationsProvider',
     '@adonisjs/vow/providers/VowProvider',
-    'adonis-bumblebee/providers/CommandsProvider'
 ]
 
 /*
