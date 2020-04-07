@@ -139,7 +139,7 @@ class AuthController {
         const validation = await validate(allParams, {
             code: 'required_without_any:accessToken',
             accessToken: 'required_without_any:code',
-            username: User.rules.username.replace(/required\|?/, '') // not required necessarily!!
+            username: User.registrationRules.username.replace(/required\|?/, '') // not required necessarily!!
         })
 
         if (validation.fails()) return response.badRequest()
