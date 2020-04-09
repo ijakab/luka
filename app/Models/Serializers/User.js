@@ -1,28 +1,13 @@
-const AdvancedSerializer = use('AdvancedSerializer')
+const BaseSerializer = use('App/Models/Serializers/')
 
-class UserSerializer extends AdvancedSerializer {
+class UserSerializer extends BaseSerializer {
     serializeSingle(modelInstance) {
-        const json = modelInstance.toObject()
+        const json = super.serializeSingle(modelInstance)
 
         const fullname = `${json.firstname} ${json.lastname}`.trim()
+        json.initials = fullname.split(' ').map(n => n[0]).splice(0, 3).join('').toUpperCase()
 
-        return {
-            id: json.id,
-            resourceType: 'user',
-            username: json.username,
-            firstname: json.firstname,
-            lastname: json.lastname,
-            fullname,
-            initials: fullname.split(' ').map(n => n[0]).splice(0, 3).join('').toUpperCase(),
-            email: json.email,
-            dob: json.dob,
-            language: json.language,
-        }
-    }
-
-    _attachMeta(modelInstance, output) {
-        const meta = modelInstance.$sideLoaded || {}
-
+        return json
     }
 }
 
