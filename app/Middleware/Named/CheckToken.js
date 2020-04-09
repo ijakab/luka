@@ -10,7 +10,12 @@ class CheckToken {
 
         // set token extracted payload to context if it's valid and not expired
         ctx.token = await ctx.auth._verifyToken(ctx.auth.getAuthHeader())
-
+        ctx.user = {
+            id: ctx.token.uuid,
+            role: ctx.token.data
+        }
+    
+    
         await next()
     }
 }
