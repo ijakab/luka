@@ -1,136 +1,48 @@
 'use strict'
-
-const User = use('App/Models/User')
-const Account = use('App/Models/Account')
-
-const {validate, sanitize, sanitizor} = use('Validator')
-const Hash = use('Hash')
-const Event = use('Event')
-
 const Helper = use('App/Helpers/Common')
+
+const UserRepository = use('App/Repositories/User')
 
 class AuthController {
 
-    async checkUsername({request, response}) {
-
-        const existingUsername = await User.query().where('username', request.input('username')).getCount()
-
-        if (!existingUsername) return response.ok()
-
-        response.badRequest('auth.usernameExists')
+    async checkUsername({request}) {
+        await UserRepository.checkUsername(request.input('username'))
     }
 
-    async checkEmail({request, response}) {
-
-        const existingMainAccount = await Account.query().where({
-            email: sanitizor.normalizeEmail(request.input('email')),
-            type: 'main'
-        }).getCount()
-
-        if (!existingMainAccount) return response.ok()
-
-        response.badRequest('auth.emailExists')
+    async checkEmail({request}) {
+        await UserRepository.checkEmail(request.input('email'))
     }
 
-    async register({request, response, locale}) {
-
-        // get all fields, not just editable (overriding default for getAllowedParams method)
-        // + add password field to list of allowed
-        const allParams = User.getAllowedParams(request.post(), [...User.fields, 'password', 'password_confirmation'])
-
-        // handle terms logic...
-        if (!allParams.terms_accepted) return response.badRequest('auth.acceptTerms')
-        allParams.terms_accepted = new Date()
-
-        // validate allParams using registrationRules this time... Pass is mandatory!
-        const validation = await User.validateParams(allParams, User.registrationRules)
-        if (validation.fails()) return response.badRequest()
-
-        // first we check if this email already has MAIN account type
-        const existingMainAccount = await Account.query().where({email: allParams.email, type: 'main'}).getCount()
-
-        if (existingMainAccount) return response.badRequest('auth.emailExists')
-
-        // then... let's try to find any account for this email (user can have fb, google, etc. before main)
-        const existingAccount = await Account.findBy('email', allParams.email)
-
-        // fetch user profile of found account if there is any accounts
-        let user = existingAccount && await existingAccount.user().fetch()
-
-        // if user is not existing, check username and create new user
-        if (!user) {
-            const existingUsername = await User.query().where('username', allParams.username).getCount()
-
-            if (existingUsername) return response.badRequest('auth.usernameExists')
-
-            // manually add params (instead of create(allParams))... registration route is important to have specific logic
-            user = await User.create({
-                username: allParams.username,
-                firstname: allParams.firstname,
-                lastname: allParams.lastname,
-                email: allParams.email,
-                language: allParams.language || locale,
-                terms_accepted: allParams.terms_accepted,
-                terms_ip: Helper.getIp(request)
-            })
-        }
-
-        // now create account
-        const mainAccount = await Account.create({
-            user_id: user.id,
-            type: 'main',
-            email: allParams.email,
-            password: allParams.password, // will be hashed because of lifecycle hook on model
-            validated: false // set validated to false, email needs to be checked for main account...
-        })
-
-        // fire an event that new user was created... we need to send welcome email, etc.
-        Event.fire('user::register', {user, mainAccount})
-
-        response.ok({
-            user,
-            _message: 'auth.userRegistered'
-        })
+    async register({request, locale}) {
+        const params = request.body()
+        if(!params.language) params.language = locale
+        params.terms_ip = Helper.getIp(request)
+        
+        return  await UserRepository.register(params)
     }
 
 
-    async login({request, response, auth}) {
-
+    async login({request, auth}) {
         const {username, password} = request.only(['username', 'password'])
+        const user = await UserRepository.login(username, password)
+        const token = await UserRepository.generateUserTokens(auth, user)
 
-        if (!username || !password) return response.badRequest()
-
-        const {user, mainAccount} = await this._findLoginUser(username) // we are passing username which can be both username or email
-
-        // if we don't have user in db, respond with badRequest invalid username or password instead of 404
-
-        if (!mainAccount || !user) return response.badRequest('auth.invalidPasswordOrUsername')
-        if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')
-
-        // check pass
-        const validPass = await Hash.verify(password, mainAccount.password)
-
-        if (!validPass) return response.badRequest('auth.invalidPasswordOrUsername')
-
-        // generate tokens
-        const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
-
-        response.ok({
+        return {
             user,
             token: token.token,
             refreshToken: token.refreshToken
-        })
+        }
     }
-
+    
+    //todo refactor this to class for handling social stuff
     async socialRedirect({request, response, params, ally}) {
-
         if (request.input('linkOnly')) return response.ok({
             url: await ally.driver(params.network).getRedirectUrl()
         })
-
         await ally.driver(params.network).redirect()
     }
 
+    //todo refactor this to class for handling social stuff
     async socialLogin({request, response, params, ally, auth, locale}) {
 
         const allParams = request.only(['code', 'accessToken', 'username', 'terms_accepted'])
@@ -239,7 +151,7 @@ class AuthController {
         }
 
         // whatever happens... new user, or existing one... generate token for him
-        const token = await this._generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
+        const token = await UserRepository.generateUserTokens(auth, user)  // you can add token payload if needed as third parameter
 
 
         response.ok({
@@ -249,166 +161,40 @@ class AuthController {
         })
     }
 
-    async refreshToken({request, response, auth}) {
-
-        const refreshToken = request.input('refreshToken')
-
-        if (!refreshToken) return response.badRequest()
-
-        // create new token from refresh token
-        const newToken = await auth.newRefreshToken().generateForRefreshToken(refreshToken)
-
-        response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
-
-
-        // TODO Read NOTE below
-        // ****************************************** NOTE ******************************************
-        // If token had any custom payload. Custom payload will not be present in newly generated
-        // access token. If custom payload is easily recreated without knowledge of who user is,
-        // just add second parameter to generateForRefreshToken(refreshToken, CUSTOM_PAYLOAD_HERE)
-        //
-        // If you have custom payload logic, and it's somehow connected to user that is owner of token
-        // please adapt code below to your liking. Of course... delete upper code and use only this bottom one :)
-        //
-        // P.S.: You probably don't need custom payload at all! Think about sending that payload
-        // differently. For example... If you have some kind of user permissions in token, why not
-        // instead sending them together with user object when user is logged in?
-        // ****************************************** **** ******************************************
-
-        // const refreshToken = request.input('token')
-        //
-        // if (!refreshToken) return response.badRequest()
-        //
-        // const Encryption = use('Encryption') // NOTE: put this on top of this file, where other imports are
-        // const Token = use('App/Models/Token') // NOTE: put this on top of this file, where other imports are
-        //
-        //
-        // const decryptedToken = Encryption.decrypt(refreshToken)
-        // const user = await User
-        //     .query()
-        //     .whereHas('tokens', (builder) => {
-        //         builder.where({token: decryptedToken, type: 'jwt_refresh_token', is_revoked: false})
-        //     })
-        //     .first()
-        // if (!user) throw new Error('InvalidRefreshToken')
-        //
-        // // ****************************************** NOTE ******************************************
-        // // handle your custom payload here if needed... you have user object ready :)
-        // // ****************************************** **** ******************************************
-        // const customPayload = null
-        // // ********
-        //
-        // // create new token from refresh token
-        // const newToken = await this._generateUserTokens(auth, user, customPayload)
-        //
-        // // delete old refresh token from db
-        // await Token.query().where('token', decryptedToken).delete()
-        //
-        //
-        // response.ok({token: newToken.token, refreshToken: newToken.refreshToken})
+    async refreshToken({request, auth}) {
+        const user = await UserRepository.useRefreshToken(request.input('token'))
+        return UserRepository.generateUserTokens(auth, user)
     }
-
-
+    
     async validateEmail({response, auth, token}) {
-
-        // first check if this valid token has account info inside
-        if (!token.mailValidation) return response.unauthorized()
-
-        // then update account by using account id from token
-        const account = await Account
-            .query()
-            .where({id: token.mailValidation, type: 'main'})
-            .first()
-
-        // if account was not found... token is most likely invalid
-        if (!account) throw new Error('InvalidJwtToken')
-
-        if (account.validated) return response.badRequest('auth.emailAlreadyValidated')
-
-        account.validated = true
-        await account.save()
-
-        const user = await account.user().fetch()
-        const newToken = await this._generateUserTokens(auth, user)
-
-        // user just validated his account... send welcome mail
-        Event.fire('user::validated', {user})
-
-        // respond with all data as if user has just logged in
+        const user = await UserRepository.validateEmail(token.mailValidation)
+        const newToken = await UserRepository.generateUserTokens(auth, user)
+        
         response.ok({
             user,
             token: newToken.token,
-            refreshToken: newToken.refreshToken,
-            _message: 'auth.emailValidated'
+            refreshToken: newToken.refreshToken
         })
     }
 
 
     async resendValidation({request, response}) {
-
-        const {username} = request.only(['username'])
-
-        // find user and his main account
-        const {user, mainAccount} = await this._findLoginUser(username) // username can be both username or email
-
-        if (!user) return response.notFound('auth.emailOrUsernameNotFound')
-        if (!mainAccount) return response.notFound('auth.mainAccountNotFound')
-        if (mainAccount.validated) return response.badRequest('auth.emailAlreadyValidated')
-
-        // send validation email in async way
-        Event.fire('user::resendValidation', {user, mainAccount})
-
-        response.ok('auth.emailValidationResent')
+        await UserRepository.resendValidation(request.input('username'))
+        return response.ok('auth.emailValidationResent')
     }
 
 
     async forgotPassword({request, response}) {
-
-        const {username} = request.only(['username'])
-
-        // find user and his main account
-        const {user, mainAccount} = await this._findLoginUser(username) // username can be both username or email
-
-        if (!user) return response.notFound('auth.emailOrUsernameNotFound')
-        if (!mainAccount) return response.notFound('auth.mainAccountNotFound')
-
-        // also check if this user validated his account at all
-        if (!mainAccount.validated) return response.forbidden('auth.mailNotValidated')
-
-        // send forgot password email in async way
-        Event.fire('user::forgotPassword', {user, mainAccount})
-
-
-        response.ok('auth.forgotPasswordTokenSent')
+        await UserRepository.forgotPassword(request.input('username'))
+        return response.ok('auth.forgotPasswordTokenSent')
     }
 
 
     async resetPassword({request, response, token, auth}) {
-
         const allParams = request.post()
-
-        // first check if this valid token has account info inside
         if (!token.passwordReset) return response.unauthorized()
-
-        const validation = await validate(allParams, {
-            password: User.registrationRules.password
-        })
-
-        if (validation.fails()) return response.badRequest()
-
-        // find main account by id found inside token
-        const mainAccount = await Account.find(token.passwordReset)
-
-        if (!mainAccount) return response.notFound()
-
-        // update password
-        mainAccount.password = allParams.password
-        await mainAccount.save()
-
-        const user = await mainAccount.user().fetch()
-
-        // generate new token and refresh token after password reset
-        const newToken = await this._generateUserTokens(auth, user)
+        const user = await UserRepository.resetPassword(token.passwordReset)
+        const newToken = await UserRepository.generateUserTokens(auth, user)
 
         response.ok({
             user,
@@ -420,50 +206,9 @@ class AuthController {
 
 
     async accounts({response, user}) {
-
         const accounts = await user.accounts().fetch()
-
         response.ok(accounts)
     }
-
-
-    // --- PRIVATE
-
-    async _findLoginUser(usernameOrEmail) {
-        // find user by username or main account email
-        let user, mainAccount
-
-        // first let's try fetching user via username
-        user = await User.findBy('username', usernameOrEmail)
-
-        if (user) {
-            // we got user, lets fetch his main account
-            mainAccount = await user.fetchMainAccount()
-        } else {
-            // else let's try via main account (sanitize email before)
-            usernameOrEmail = sanitizor.normalizeEmail(usernameOrEmail)
-
-            mainAccount = await Account.query().where({email: usernameOrEmail, type: 'main'}).first()
-            user = mainAccount && await mainAccount.user().fetch()
-        }
-
-        return {mainAccount, user}
-    }
-
-
-    async _generateUserTokens(auth, user, customPayload) {
-
-        return await auth
-            .withRefreshToken()
-            .generate(user, customPayload)
-
-        // TODO Read NOTE below
-        // ****************************************** NOTE ******************************************
-        // If you are adding custom payload, be aware that it will not stay there after token refresh
-        // You need to update refreshToken method to handle custom payload also!
-        // ****************************************** **** ******************************************
-    }
-
 }
 
 

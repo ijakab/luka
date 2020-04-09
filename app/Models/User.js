@@ -37,7 +37,8 @@ class User extends Model {
             'terms_ip',
             'username',
             'email',
-            'language'
+            'language',
+            'role'
         ]
     }
 
@@ -68,9 +69,10 @@ class User extends Model {
             // allow alpha numeric + _- from 4 to 20 chars (from 4 because minimum word length in mysql full text search indexes is 4 characters)
             // also don't allow only numerical username, because slug will not work (it will search for id on or statement because of mysql issue)
             // email and username are not under unique:users rule because of auto merge account rule (handled on controller level)
-            username: 'required|notNumber|not_in:admin,super|min:4|max:20|regex:^[0-9a-zA-Z-_]+$',
+            username: 'required|notNumber|min:4|max:20|regex:^[0-9a-zA-Z-_]+$',
             email: 'required|email',
-            password: `required|${this.rules.password}` // we added required logic on registration
+            password: `required|${this.rules.password}`, // we added required logic on registration
+            role: 'required|in:user,superAdmin'
         }
     }
 

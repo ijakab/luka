@@ -107,4 +107,16 @@ module.exports = [
         sanitizeRule: '',
         required: false
     },
+    {
+        name: 'role',
+        addToResponse: true,
+        userWritable: false,
+        canSortBy: false,
+        canFilterBy: true,
+        canSearchBy: false,
+        isJSON: false,
+        validateRule: '',
+        sanitizeRule: '',
+        required: true
+    },
 ]

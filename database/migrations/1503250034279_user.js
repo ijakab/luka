@@ -22,6 +22,8 @@ class UserSchema extends Schema {
 
             table.dateTime('terms_accepted')
             table.string('terms_ip', 45)
+            
+            table.string('role').notNullable().defaultsTo('user')
 
             table.timestamps()
         })
