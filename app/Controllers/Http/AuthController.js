@@ -14,7 +14,7 @@ class AuthController {
     }
 
     async register({request, locale}) {
-        const params = request.body()
+        const params = request.post()
         if(!params.language) params.language = locale
         params.terms_ip = Helper.getIp(request)
         
@@ -28,7 +28,7 @@ class AuthController {
         const token = await UserRepository.generateUserTokens(auth, user)
 
         return {
-            user,
+            user: user.toJSON(),
             token: token.token,
             refreshToken: token.refreshToken
         }
@@ -176,8 +176,7 @@ class AuthController {
             refreshToken: newToken.refreshToken
         })
     }
-
-
+    
     async resendValidation({request, response}) {
         await UserRepository.resendValidation(request.input('username'))
         return response.ok('auth.emailValidationResent')
@@ -193,7 +192,7 @@ class AuthController {
     async resetPassword({request, response, token, auth}) {
         const allParams = request.post()
         if (!token.passwordReset) return response.unauthorized()
-        const user = await UserRepository.resetPassword(token.passwordReset)
+        const user = await UserRepository.resetPassword(token.passwordReset, allParams)
         const newToken = await UserRepository.generateUserTokens(auth, user)
 
         response.ok({

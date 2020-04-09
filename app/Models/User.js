@@ -17,7 +17,7 @@ class User extends Model {
     }
     
     static get _AttributeConfig() {
-        return 'App/Models/Attributes/Account'
+        return 'App/Models/Attributes/User'
     }
     
     static get dates() {

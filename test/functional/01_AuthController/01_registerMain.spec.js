@@ -256,9 +256,7 @@ test('Resend validation should fail with 404 if wrong username', async ({client,
     const response = await client.post('/api/auth/resendValidation').send({username: 'whoami'}).end()
     assertStatus(response, 404)
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.emailOrUsernameNotFound'
-        }
+        code: 'auth.emailOrUsernameNotFound'
     })
 })
 
@@ -276,8 +274,6 @@ test('Resend validation should fail with 400 if validated username', async ({cli
     const response = await client.post('/api/auth/resendValidation').send({username: this.testUser.username}).end()
     assertStatus(response, 400)
     response.assertJSONSubset({
-        debug: {
-            untranslatedMsg: 'auth.emailAlreadyValidated'
-        }
+        code: 'auth.emailAlreadyValidated'
     })
 })

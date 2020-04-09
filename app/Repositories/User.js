@@ -90,7 +90,7 @@ const UserRepository = {
         if(!username || !password) throwError(400, 'auth.noUsernameOrPassword')
         const {user, mainAccount} = await UserRepository.findLoginUser(username) // we are passing username which can be both username or email
         if (!mainAccount || !user) throwError(400, 'auth.invalidPasswordOrUsername')
-        if (!mainAccount.validated) throwError(400, 'auth.mailNotValidated')
+        if (!mainAccount.validated) throwError(403, 'auth.mailNotValidated')
         
         const validPass = await Hash.verify(password, mainAccount.password)
         if (!validPass) throwError(400, 'auth.invalidPasswordOrUsername')
@@ -120,7 +120,7 @@ const UserRepository = {
             .query()
             .where({id: accountId, type: 'main'})
             .first()
-        if (!account) throwError(400, 'auth.accountNofFound')
+        if (!account) throwError(404, 'auth.accountNofFound')
         if (account.validated) throwError(400, 'auth.emailAlreadyValidated')
         
         account.validated = true
@@ -134,8 +134,8 @@ const UserRepository = {
     
     async resendValidation(usernameOrEmail) {
         const {user, mainAccount} = await UserRepository.findLoginUser(usernameOrEmail) // username can be both username or email
-        if (!user) throwError(400, 'auth.emailOrUsernameNotFound')
-        if (!mainAccount) throwError(400, 'auth.mainAccountNotFound')
+        if (!user) throwError(404, 'auth.emailOrUsernameNotFound')
+        if (!mainAccount) throwError(404, 'auth.mainAccountNotFound')
         if (mainAccount.validated) throwError(400, 'auth.emailAlreadyValidated')
         
         Event.fire('user::resendValidation', {user, mainAccount})
@@ -144,9 +144,9 @@ const UserRepository = {
     
     async forgotPassword(usernameOrEmail) {
         const {user, mainAccount} = await UserRepository.findLoginUser(usernameOrEmail) // username can be both username or email
-        if (!user) throwError(400, 'auth.emailOrUsernameNotFound')
-        if (!mainAccount) throwError(400, 'auth.mainAccountNotFound')
-        if (!mainAccount.validated) throwError(400, 'auth.mailNotValidated')
+        if (!user) throwError(404, 'auth.emailOrUsernameNotFound')
+        if (!mainAccount) throwError(404, 'auth.mainAccountNotFound')
+        if (!mainAccount.validated) throwError(403, 'auth.mailNotValidated')
         
         Event.fire('user::forgotPassword', {user, mainAccount})
         return user;
