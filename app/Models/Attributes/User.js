@@ -1,0 +1,110 @@
+module.exports = [
+    {
+        name: 'id',
+        addToResponse: true,
+        userWritable: false,
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: false,
+        isJSON: false,
+        validateRule: 'number',
+        sanitizeRule: '',
+        required: false, // even thou it is required, we generate it so user does not need to send it
+    },
+    {
+        name: 'created_at',
+        addToResponse: true,
+        userWritable: false,
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: false,
+        isJSON: false,
+        validateRule: 'date',
+        sanitizeRule: 'to_date',
+        required: false
+    },
+    {
+        name: 'updated_at',
+        addToResponse: true,
+        userWritable: false,
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: false,
+        isJSON: false,
+        validateRule: 'date',
+        sanitizeRule: 'to_date',
+        required: false
+    },
+    {
+        name: 'username',
+        addToResponse: true,
+        userWritable: true,
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: true,
+        isJSON: false,
+        validateRule: 'notNumber|not_in:admin,super|min:4|max:20|regex:^[0-9a-zA-Z-_]+$',
+        sanitizeRule: '',
+        required: true
+    },
+    {
+        name: 'email',
+        addToResponse: true,
+        userWritable: false, // custom logic is made for registration and email stuff
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: true,
+        isJSON: false,
+        validateRule: 'email',
+        sanitizeRule: '',
+        required: true
+    },
+    {
+        name: 'firstname',
+        addToResponse: true,
+        userWritable: true,
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: true,
+        isJSON: false,
+        validateRule: 'string|max:50',
+        sanitizeRule: '',
+        required: true
+    },
+    {
+        name: 'lastname',
+        addToResponse: true,
+        userWritable: true,
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: true,
+        isJSON: false,
+        validateRule: 'string|max:50',
+        sanitizeRule: '',
+        required: false
+    },
+    {
+        name: 'dob',
+        addToResponse: true,
+        userWritable: true,
+        canSortBy: true,
+        canFilterBy: true,
+        canSearchBy: false,
+        isJSON: false,
+        validateRule: 'date',
+        sanitizeRule: 'to_date',
+        required: false
+    },
+    {
+        name: 'language',
+        addToResponse: true,
+        userWritable: true,
+        canSortBy: false,
+        canFilterBy: true,
+        canSearchBy: false,
+        isJSON: false,
+        validateRule: 'string|min:2|max:2',
+        sanitizeRule: '',
+        required: false
+    },
+]
