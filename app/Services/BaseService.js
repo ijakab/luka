@@ -8,14 +8,12 @@ class BaseService {
     constructor(ctx, Model) {
         this.Model = Model
         this.ctx = ctx
-        this.apiKey = ctx.apiKey
         this.user = ctx.user
     }
 
     getAll(filters = {}) {
         let q = this.Model
             .query()
-            .whereApp(this.apiKey)
         if(q.standardFilters){
             q.standardFilters(filters)
         }
@@ -32,10 +30,7 @@ class BaseService {
         Object.assign(allowedParams, forceParams)
         await BaseService.validateInput(allowedParams, this.Model.attributeRules, ...this.Model.required)
 
-        return await this.Model.create({
-            ...allowedParams,
-            apiKey: this.ctx.apiKey
-        })
+        return await this.Model.create(allowedParams)
     }
 
     async update(instanceOrId, allParams, forceParams={}) {
@@ -54,6 +49,11 @@ class BaseService {
         const instance = await this.getInstance(instanceOrId)
         await instance.delete()
         return instance
+    }
+    
+    async getInstance(instanceOrId) {
+        if (typeof instanceOrId === 'object') return instanceOrId
+        return await this.getSingle(instanceOrId).first()
     }
 
     static sanitizeInput(allParams, sanitization) {

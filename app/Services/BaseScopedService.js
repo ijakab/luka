@@ -11,11 +11,6 @@
          return instance
      }
     
-     async getInstance(instanceOrId) {
-         if (typeof instanceOrId === 'object') return instanceOrId
-         return await this.getSingle(instanceOrId).first()
-     }
-    
      delete(...params) {
          return super.delete(this.mainInstance)
      }
