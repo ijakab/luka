@@ -162,7 +162,7 @@ class AuthController {
     }
 
     async refreshToken({request, auth}) {
-        const user = await UserRepository.useRefreshToken(request.input('token'))
+        const user = await UserRepository.useRefreshToken(request.input('refreshToken'))
         return UserRepository.generateUserTokens(auth, user)
     }
     

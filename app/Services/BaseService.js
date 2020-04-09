@@ -30,7 +30,7 @@ class BaseService {
     async create(userParams, forceParams = {}) {
         const allowedParams = BaseService.allowedInput(userParams, this.Model.allowed)
         Object.assign(allowedParams, forceParams)
-        await BaseService.validateInput(allowedParams, this.Model.rules, ...this.Model.required)
+        await BaseService.validateInput(allowedParams, this.Model.attributeRules, ...this.Model.required)
 
         return await this.Model.create({
             ...allowedParams,
@@ -44,7 +44,7 @@ class BaseService {
         const allowedParams = BaseService.allowedInput(allParams, this.Model.allowed)
         Object.assign(allowedParams, forceParams)
         instance.merge(allowedParams)
-        await BaseService.validateInput(instance.$attributes, this.Model.rules, ...this.Model.required)
+        await BaseService.validateInput(instance.$attributes, this.Model.attributeRules, ...this.Model.required)
 
         await instance.save()
         return instance
@@ -67,7 +67,7 @@ class BaseService {
     }
 
     static parseInput(allParams, Model = {}) {
-        return this.sanitizeInput(this.allowedInput(allParams, Model.allowed), Model.sanitize)
+        return this.sanitizeInput(this.allowedInput(allParams, Model.allowed), Model.attributeSanitize)
     }
 
     static async validateInput(allParams, rules, ...requiredFields) {

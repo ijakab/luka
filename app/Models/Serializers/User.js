@@ -1,4 +1,4 @@
-const BaseSerializer = use('App/Models/Serializers/')
+const BaseSerializer = use('App/Models/Serializers/Base')
 
 class UserSerializer extends BaseSerializer {
     serializeSingle(modelInstance) {

@@ -1,23 +1,25 @@
 'use strict'
 
 const Model = use('Model')
+const addStandardTraits = use('App/Helpers/AddStandardTraits')
 
 class User extends Model {
 
     // --- CONFIGURATION
     static boot() {
         super.boot()
-        this.addTrait('BaseModel')
-        this.addTrait('CastDate')
-        this.addTrait('Paginable')
+        addStandardTraits(this)
         this.addTrait('IdOrSlug', {slug: 'username'})
     }
 
     static get Serializer() {
         return 'App/Models/Serializers/User'
     }
-
-
+    
+    static get _AttributeConfig() {
+        return 'App/Models/Attributes/Account'
+    }
+    
     static get dates() {
         return super.dates.concat(['dob', 'terms_accepted'])
     }

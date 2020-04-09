@@ -87,6 +87,7 @@ const UserRepository = {
     },
     
     async login(username, password) {
+        if(!username || !password) throwError(400, 'auth.noUsernameOrPassword')
         const {user, mainAccount} = await UserRepository.findLoginUser(username) // we are passing username which can be both username or email
         if (!mainAccount || !user) throwError(400, 'auth.invalidPasswordOrUsername')
         if (!mainAccount.validated) throwError(400, 'auth.mailNotValidated')
@@ -182,10 +183,12 @@ const UserRepository = {
         return {mainAccount, user}
     },
     
-    async generateUserTokens(auth, user, customPayload) {
+    async generateUserTokens(auth, user) {
         return await auth
             .withRefreshToken()
-            .generate(user, customPayload)
+            .generate(user, {
+                role: user.role
+            })
     }
     
 }
