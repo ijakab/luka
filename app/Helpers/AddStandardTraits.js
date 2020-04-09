@@ -13,6 +13,7 @@ module.exports = (Model) => {
         Model.addTrait('App/Models/Traits/Attributes/AddRules', Model.AttributeConfig)
         Model.addTrait('App/Models/Traits/Attributes/AddListConfig', Model.AttributeConfig)
         Model.addTrait('App/Models/Traits/Attributes/AddHasSlugs', Model.AttributeConfig)
+        Model.addTrait('App/Models/Traits/Attributes/AddRequired', Model.AttributeConfig)
         Model.addTrait('App/Models/Traits/StandardFiltering')
     }
 }
