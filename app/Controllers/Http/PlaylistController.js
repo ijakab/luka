@@ -11,6 +11,13 @@ class SongController {
         return await this.service.getAll(filters).paginable(filters)
     }
     
+    async single({params}) {
+        return await Playlist.query()
+            .where('id', params.id)
+            .with('songs')
+            .firstOrFail()
+    }
+    
     async create({request}) {
         return await this.service.create(request.post())
     }
