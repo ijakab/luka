@@ -5,10 +5,8 @@ const throwError = use('App/Helpers/ThrowError')
 
 class BaseService {
 
-    constructor(ctx, Model) {
+    constructor(Model) {
         this.Model = Model
-        this.ctx = ctx
-        this.user = ctx.user
     }
 
     getAll(filters = {}) {
