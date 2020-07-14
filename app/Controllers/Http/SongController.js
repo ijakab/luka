@@ -15,6 +15,13 @@ class SongController {
         return await this.service.create(request.post())
     }
     
+    async attach({request}) {
+        const songId = request.input('songId')
+        const song = await Song.findOrFail(songId)
+        await song.playlist().attach([request.input('playlistId')])
+        return {}
+    }
+    
     async update({params, request}) {
         return await this.service.update(params.id, request.post())
     }

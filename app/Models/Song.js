@@ -20,7 +20,7 @@ class Song extends Model {
     
     // --- RELATIONS
     playlist() {
-        return this.belongsToMany('App/Models/Playlist')
+        return this.belongsToMany('App/Models/Playlist').pivotTable('playlist_songs')
     }
     
     

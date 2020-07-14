@@ -7,6 +7,8 @@ module.exports = Route.group(() => {
     
     Route.post('/create', 'SongController.create')
     
+    Route.post('/attach', 'SongController.attach')
+    
     Route.patch('/update/:id', 'SongController.update')
     
     Route.delete('/delete/:id', 'SongController.delete')
